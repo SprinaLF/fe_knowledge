@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // 递归的版本
+    function fibonacci(index) {
+        if (index == 0 || index == 1) {
+            return index;
+        } else {
+            return fibonacci(index - 1) + fibonacci(index - 2);
+        }
+    }
+
+
+
+    // 动态规划的版本
+    function fibonacci(n) {
+        let current = 0;
+        let next = 1;
+        let temp;
+        for(let i = 0; i < n; i++) {
+            temp = current;
+            current = next;
+            next += temp;
+        }
+        return current;
+    }
+
+    // 递归优化缓存版本
+    function fibonacci(n) {
+        var catce = [];
+        function f1(n, catce) {
+            if (catce[n]) {
+                return catce[n]
+            }
+            if (n<2) {
+                return catce[n] = n
+            }
+            return catce[n] = f1(n-1,catce) + f1(n-2,catce)
+        }
+        return f1(n, catce)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
