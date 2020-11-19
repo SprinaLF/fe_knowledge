@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<a href="https://lc-api-gold-cdn.xitu.io/ffef8bdf5a3b0dd54859?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">冒泡动画演示</a>
+<script>
+    function bubbleSort(arr) {
+        var len = arr.length;
+        for (var i = 0; i < len; i++) { // i排好的个数
+            for (var j = 0; j < len - 1 - i; j++) {
+                if (arr[j] > arr[j+1]) {        //相邻元素两两对比
+                    var temp = arr[j+1];        //元素交换
+                    arr[j+1] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+        console.log(i);
+        return arr;
+    }
+
+    console.log(bubbleSort([3, 1, 2,4]));
+
+    // 怎么优化算法 (一次循环没有一个需要交换的)
+
+    function bubbleSort1(arr) {
+        var len = arr.length;
+        for (var i = 0; i < len; i++) { // i排好的个数
+            var flag = false;
+            for (var j = 0; j < len - 1 - i; j++) {
+                if (arr[j] > arr[j+1]) {        //相邻元素两两对比
+                    var temp = arr[j+1];        //元素交换
+                    arr[j+1] = arr[j];
+                    arr[j] = temp;
+                    flag = true
+                }
+            }
+            console.log(flag, i);
+            if (!flag) return arr
+        }
+        return arr;
+    }
+
+    console.log(bubbleSort1([3, 1, 2,4]));
+
+    // 什么时候最慢
+
+    // 倒着排的时候 [4,3,2,1]
+
+
+    // 什么时候最快
+
+    // 已经排好了[1,2,3,4]
+
+    // 扩展一下，那么我们要按照距离5的绝对值排序
+</script>
+
+</body>
+</html>

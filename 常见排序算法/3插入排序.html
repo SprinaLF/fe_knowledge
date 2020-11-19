@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="https://lc-api-gold-cdn.xitu.io/9a1264832cad9bfd4100?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">插入排序演示图</a>
+<script>
+    function insertionSort(arr) {
+        var len = arr.length;
+        var preIndex, current;
+        for (var i = 1; i < len; i++) {// 从i=1开始插入   默认第0个元素已经排好
+            preIndex = i - 1; // 已经排好的元素 准确的说是要插入的位置
+            current = arr[i]; // 要插入的元素
+            while(preIndex >= 0 && arr[preIndex] > current) { // 排好的比要插入的大，就往后腾一个位置
+                arr[preIndex+1] = arr[preIndex]; //
+                preIndex--;
+            }
+            arr[preIndex+1] = current;
+        }
+        return arr;
+    }
+
+    console.log(insertionSort([1, 3, 4, 2]));
+
+
+</script>
+
+</body>
+</html>
