@@ -1,8 +1,8 @@
 ## 引用类型与基本数据类型
 
+6种基本：string number Boolean undefined null  symbol
+
 引用类型有这几种：object、Array、RegExp、Date、Function、特殊的基本包装类型(String、Number、Boolean)以及单体内置对象(Global、Math)。
-
-
 
 let obj = {name: 'xiaoming'}; let obj2 = obj; obj2.name = "xiaohong"
  Obj.name = ??   //xiaohong
@@ -12,6 +12,8 @@ obj = null , obj2.name =??   //仍然为xiaohong   obj不指向这块堆区域�
 
 
 ## JS的内存空间
+
+https://juejin.cn/post/6844903615300108302
 
 分为栈(stack)、堆(heap)、池(一般也会归类为栈中)。
 
@@ -45,6 +47,8 @@ obj = null , obj2.name =??   //仍然为xiaohong   obj不指向这块堆区域�
 
 ## 闭包
 
+https://segmentfault.com/a/1190000021725949
+
 变量作用域->      <u>有权访问另一个函数作用域中变量的**函数**</u>
 
 函数 A 返回了一个函数 B，并且函数 B 中使用了函数 A 的变量，函数 B 就被称为闭包。
@@ -62,9 +66,18 @@ function fn(){
 fn()
 ```
 
+**闭包特点：**
+
+第一，闭包是一个函数，而且存在于另一个函数当中
+第二，闭包可以访问到父级函数的变量，且该变量不会销毁
+
 **闭包作用**
 
-最大用处有两个，一个在fn外部作用域可以读取函数内的局部变量，延申了变量的作用范围；**另一个就是让这些变量的值始终保持在内存中，不会在fn调用后被自动清除。**
+```
+一个在fn外部作用域可以读取函数内的局部变量，延申了变量的作用范围；
+另一个就是让这些变量的值始终保持在内存中，不会在fn调用后被自动清除。
+隐藏变量，避免全局污染
+```
 
 为什么会这样呢？原因就在于f1是f2的父函数，而f2被赋给了一个全局变量，这导致f2始终在内存中，而f2的存在依赖于f1，因此f1也始终在内存中，不会在调用结束后，被垃圾回收机制（garbage collection）回收。
 
@@ -116,6 +129,11 @@ f2()   //11
 （1）闭包会使得函数中的变量都被保存在内存中，**内存消耗很大，所以不能滥用闭包**。解决方法是，在退出函数之前，将不使用的局部变量全部删除。
 
 （2）闭包会在父函数外部，改变父函数内部变量的值。所以，如果你把父函数当作对象（object）使用，把闭包当作它的公用方法（Public Method），把内部变量当作它的私有属性（private value），这时一定要小心，不要随便改变父函数内部变量的值。
+
+**为什么使用闭包时变量不会被垃圾回收机制收销毁？**
+
+JS垃圾回收机制：
+ JS规定在一个函数作用域内，程序执行完以后变量就会被销毁，这样可节省内存；**使用闭包时，按照作用域链的特点，闭包（函数）外面的变量不会被销毁，因为函数会一直被调用，所以一直存在，如果闭包使用过多会造成内存销毁。**
 
 #### 闭包应用
 
@@ -714,7 +732,7 @@ navigator.userAgent      //浏览器用于 HTTP 请求的用户代理头的值�
 
 ## 判断array的方法
 
-### 1. instanceof判断（判断引用类型）
+**1. instanceof（判断引用类型）**
 
 判断某个构造函数的prototype属性所指向的對象是否存在于另外一个要检测对象的原型链上。 语法：
 
@@ -732,7 +750,11 @@ console.log(a instanceof Object);//true,在数组的原型链上也能找到Obje
 console.log(b instanceof Array);//false
 ```
 
-### 2. constructor
+思考：
+
+![image-20201123172535646](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20201123172535646.png)
+
+**2. constructor**
 
 也可用于判断某个实例的构造函数p.constructor==Person
 
@@ -753,7 +775,7 @@ console.log(b.constructor == Array);//false
 console.log(b.constructor == Object);//true
 ```
 
-### 3.用Object的toString方法
+**3.Object的toString方法**
 
 再加上call或者apply方法来改变toString方法的执行上下文来判断，每一个继承自Object的对象都拥有toString的方法。如果一个对象的toString方法**没有被重写过的话**，那么toString方法将会返回"[object type]"。
 
@@ -793,7 +815,7 @@ Object.prototype.toString.call(a);//弹框你吃过饭没有
 
 https://www.jianshu.com/p/0c6a2427e47f
 
-### 4.用Array对象的isArray方法判断
+**4.用Array对象的isArray方法判断**
 
 ```
 const a = [];
@@ -824,6 +846,8 @@ if (!Array.isArray) {
 }
 ```
 
+5.  a.\__proto__ === Array.prototype
+
 ### 其他：typeof运算符
 
 typeof是javascript原生提供的判断数据类型的运算符， 
@@ -836,6 +860,44 @@ console.log(typeof(a));
 typeof并没有办法区分数组，对象，null等原型链上都有Object的数据类型。能区分"function"
 
 typeof p=="symbol"
+
+**typeof null == 'object'**
+
+原理是这样的， 不同的对象在底层都表示为二进制， 在 JavaScript 中二进制前三位都为 0 的话会被判断为 object 类型， null 的二进制表示是全 0， 自然前三位也是 0， 所以执行 typeof 时会返回“object”。
+
+其实这个是一个历史遗留的bug，在 javascript 的最初版本中，使用的 32 位系统，为了性能考虑使用低位存储了变量的类型信息：
+
+·   000：对象
+
+·   1：整数
+
+·   010：浮点数
+
+·   100：字符串
+
+·   110：布尔
+
+有 2 个值比较特殊：
+
+·   undefined：用 - （−2^30）表示。
+
+·   null：对应机器码的 NULL 指针，一般是全零。
+
+所以当你使用typeof null时返回就是object了
+
+```js
+const myInstanceof = (target, origin) => {
+    while (target) {
+      if (target.__proto__ === origin.prototype) {
+        return true
+      }
+      target = target.__proto__
+    }
+    return false
+  }
+```
+
+### 
 
 #### 返回新数组：slice   map   filter  concat
 
@@ -959,44 +1021,6 @@ arr.myMap(function(item,index,arr){
 补充：instance和typeof实现原理
 
 https://juejin.im/post/6844903613584654344
-
-#### type of:
-
-typeof null == 'object'
-
-原理是这样的， 不同的对象在底层都表示为二进制， 在 JavaScript 中二进制前三位都为 0 的话会被判断为 object 类型， null 的二进制表示是全 0， 自然前三位也是 0， 所以执行 typeof 时会返回“object”。
-
-其实这个是一个历史遗留的bug，在 javascript 的最初版本中，使用的 32 位系统，为了性能考虑使用低位存储了变量的类型信息：
-
-·   000：对象
-
-·   1：整数
-
-·   010：浮点数
-
-·   100：字符串
-
-·   110：布尔
-
-有 2 个值比较特殊：
-
-·   undefined：用 - （−2^30）表示。
-
-·   null：对应机器码的 NULL 指针，一般是全零。
-
-所以当你使用typeof null时返回就是object了
-
-```js
-const myInstanceof = (target, origin) => {
-    while (target) {
-      if (target.__proto__ === origin.prototype) {
-        return true
-      }
-      target = target.__proto__
-    }
-    return false
-  }
-```
 
 ### 数组扁平化
 
@@ -1260,12 +1284,6 @@ p2.sayHi()
 
 4. 如果无返回值或者返回一个非对象值，则将 obj 返回作为新对象；如果返回值是一个新对象的话那么直接直接返回该对象。
 
-## Object.create和new的区别
-
-
-
-## Object.assign
-
 ### 函数实现一秒钟输出一个数
 
 ```
@@ -1276,7 +1294,15 @@ for(let i=0;i<=10;i++){   //用var打印的都是11
 }
 ```
 
+## Object.create和new的区别
 
+
+
+## Object.assign
+
+**页面优化之滚动优化**
+
+https://www.cnblogs.com/coco1s/p/5499469.html
 
 ## 节流和防抖
 
@@ -1566,10 +1592,6 @@ getData(url1).then(data1=>{
 )
 ```
 
-## json
-
-
-
 ## 创建10个标签，点击的时候弹出来对应的序号？
 
 ```js
@@ -1588,7 +1610,243 @@ for(let i=0;i<10;i++){
 }
 ```
 
-## event loop
+## js严格模式
+
+https://juejin.im/post/5c66c24df265da2da83560d7
+
+**ES5新增**      严格条件下运行js代码
+
+1.消除js语法不合理严谨的地方，减少怪异行为
+
+   变量必须声明才能使用
+
+2.消除代码运行不安全之处
+
+3.提高编译器效率，增加运行速度
+
+4.禁用未来版本的可能语法。如某些保留字（class,enum,expory,super,extends……不能做变量名）
+
+**开启：**
+
+1.为脚本开启严格模式   
+
+​	<script>标签中或<script>标签立即执行函数中
+
+  	‘use strict’    
+
+2.为函数开启严格模式
+
+​	写在函数内第一行
+
+**变化**
+
+#### **1**、普通变量
+
+```
+//严格模式下对不可写属性赋值，将报错。
+var demo2 = {};
+Object.defineProperty(demo2, "x", { value: 42, writable: false });
+demo2.x = 9; //报错
+ 
+//严格模式下对只读属性赋值，将报错。
+var demo3 = { get x() { return 17; } };
+demo3.x = 5;  //报错
+ 
+//严格模式下对禁止扩展的对象添加新属性，将报错。
+var demo4 = {};
+Object.preventExtensions(demo4);
+demo4.newProp = "ohai"; //报错
+ 
+//严格模式下删除一个不可删除的属性，将报错。
+delete Object.prototype; //报错
+ 
+//严格模式下无法删除变量。只有configurable设置为true的对象属性，才能被删除。
+var x;
+delete x; // 报错
+ 
+var demo5 = Object.create(null, {'x': {
+    value: 1,
+    configurable: true
+}});
+delete demo5.x; // 删除成功
+ 
+```
+
+#### **3****、禁止this关键字指向全局对象**
+
+严格模式下，全局作用域的函数中的this不再指向全局而是undefined。
+ 如果使用构造函数时，如果忘了加new，this不再指向全局对象，而是undefined报错。
+
+```
+function demo7_1(){
+    console.log(this);
+}
+function demo7_2(){
+    function demo7_3(){
+    console.log(this);
+    }
+    demo7_3();
+}
+demo7_1(); //undefined
+demo7_2(); //undefined
+ 
+function demo7_4(){
+&emsp;  this.a = 1;
+};
+demo7_4();// 报错，使用构造函数时，如果忘了加new，this不再指向全局对象，而是undefined.a。
+复制代码
+```
+
+#### **4****、静态绑定**
+
+- 禁止使用with语句
+- eval语句本身就是一个作用域，它所生成的变量只能用于eval内部。
+
+```
+//严格模式下禁用with
+var demo8 = 1;
+with (o){ // 报错 
+&emsp;&emsp;demo8 = 2;
+}
+ 
+//正常模式下，eval语句的作用域，取决于它处于全局作用域，还是处于函数作用域。
+//严格模式下，eval语句本身就是一个作用域，不再能够生成全局变量了，它所生成的变量只能用于eval内部。
+//严格模式下，eval语句内传入的字符串也是按照严格模式执行。
+function demo9() {
+    var x = 2;
+    eval("var y = 1; console.log(y); "); //1
+    eval("var x = 12");
+    console.log(x); //2
+    console.log(y); //报错：y is not defined
+}
+demo9();
+```
+
+#### **5****、arguments对象的限制**
+
+```
+//不允许对arguments赋值
+arguments++; //报错
+ 
+//arguments不再追踪参数的变化
+//在非严格模式中,修改arguments对象中某个索引属性的值,和这个属性对应的形参变量的值也会同时变化,反之亦然。
+//在严格模式中arguments 对象会以形参变量的拷贝的形式被创建和初始化，因此arguments对象的改变不会影响形参。
+function demo10_1(a) {
+    a = 2;
+    return [a, arguments[0]];
+}
+console.log(demo10_1(1)); // 正常模式为[2,2]
+ 
+function demo10_2(a) {
+    "use strict"
+    a = 2;
+    return [a, arguments[0]];
+}
+console.log(demo10_2(1)); // 严格模式为[2,1]
+ 
+//禁止使用arguments.callee
+var demo11 = function() { return arguments.callee; };
+demo11(); // 报错
+复制代码
+```
+
+#### **6****、禁止在函数内部遍历调用栈**
+
+```
+function demo12(){
+    demo12.caller; // 报错
+    demo12.arguments; // 报错
+}
+demo12();
+```
+
+#### **7****、保留字**
+
+使用未来保留字(也许会在ECMAScript 6中使用):implements, interface, let, package, private, protected, public, static,和yield作为变量名或函数名会报错。
+
+ 
+
+​	1.变量必须先声明再使用（之前默认全局变量）
+
+
+
+​	2.不能删除已声明的变量    //严格模式下无法删除变量。只有configurable设置为true的对象属性，才能被删除。 var x; delete x; // 报错
+
+​	3.**this指向问题** 
+
+​		之前全局作用this指向window,；**严格模式为undefined**
+
+​		之前构造函数不加new直接调用, this指向window, 相当与给window添加属性；严格模式报错（不能给		undefined添加属性）
+
+​	   定时器this仍然指向window
+
+​		事件、对象仍指向调用者
+
+​	4.函数中不能有重名参数
+
+```
+//正常模式下，如果函数有多个重名的参数，可以用arguments[i]读取。
+function demo6(a,a,b){return ;} //报错
+```
+
+​	5. 不允许在非函数代码块内声明函数（if,for……）
+
+## [JS基础——同步异步的区别](https://segmentfault.com/a/1190000017996968)
+
+q: js是单线程的为什么可以进行异步操作？->js异步原理及事件循环机制
+
+**什么是异步操作？**
+
+```
+最基础的异步是setTimeout和setInterval函数，
+因为它们可以控制js的执行顺序。
+可简单理解为：可以改变程序正常执行顺序的操作就可以看成是异步操作。
+```
+
+**js为什么是单线程的 ？**(同一个时间只能做一件事)
+
+源于其语言特性， `JavaScript` 是浏览器脚本语言，它可以操纵 `DOM` ，可以渲染动画，与用户交互，如果是多线程的话，执行顺序无法预知，而且操作以哪个线程为准也是个难题。
+
+为了避免复杂性，从一诞生，JavaScript就是单线程(核心特征)
+
+`HTML5` 时代，浏览器为了充分发挥 `CPU` 性能优势，允许 `JavaScript` 创建多个线程，<u>但即使能额外创建线程，这些子线程仍然是受到主线程控制，而且不得操作 `DOM`</u>，类似于开辟一个线程来运算复杂性任务，运算好了通知主线程运算完毕，结果给你，这类似于异步的处理方式，没有改变 `JavaScript` 单线程的本质。
+
+**同步和异步，无论如何，做事情的时候都是只有一条流水线（单线程），**
+**同步和异步的差别就在于这条流水线上各个流程的执行顺序不同。**
+
+1. JS 是单线程的，只有一个主线程
+2. 函数内的代码从上到下顺序执行，遇到被调用的函数先进入被调用函数执行，待完成后继续执行
+3. **遇到异步事件，浏览器另开一个线程，主线程继续执行**，待结果返回后，执行回调函数
+
+其实 **`JS` 这个语言是运行在宿主环境中**，比如 `浏览器环境`，`nodeJs环境`
+
+- 浏览器中，浏览器负责提供这个额外的线程（调用栈先进行顺序调用，一旦发现异步操作的时候就会交给浏览器内核的其他模块进行处理，对于 `Chrome` 浏览器来说，这个模块就是 `webcore` 模块，上面提到的异步API，`webcore` 分别提供了 `DOM Binding` 、 `network`、`timer` 模块进行处理。等到这些模块处理完这些操作的时候将回调函数放入任务队列中，之后等栈中的任务执行完之后再去执行任务队列之中的回调函数。）
+-  `Node` 中，`Node.js` 借助 `libuv` 来作为抽象封装层， 从而屏蔽不同操作系统的差异，`Node`可以借助`libuv`来实现多线程。
+
+`javaScript` 只有一个主线程和一个调用栈（`call stack`）
+
+而这个异步线程又分为 `微任务` 和 `宏任务`
+
+所有任务分成两种：
+
+```
+同步任务：主线程上排队执行的任务，前一个任务执行完毕，才能执行后一个任务； 
+
+异步任务：不进入主线程、而进入"任务队列"（task queue），只有等主线程任务执行完毕，"任务队列"开始通知主线程，请求执行任务，该任务才会进入主线程执行。
+```
+
+**发展：**
+
+单线程->调用栈原理 ->在调用栈中，前一个函数在执行的时候，下面的函数全部需要等待前一个任务执行完毕，才能执行。有很多任务需要很长时间才能完成，如果一直都在等待的话，调用栈的效率极其低下，这时，`JavaScript` 语言设计者意识到，这些任务主线程根本不需要等待，只要将这些任务挂起，先运算后面的任务，等到执行完毕了，再回头将此任务进行下去，于是就有了 `任务队列` 的概念。
+
+**"任务队列"中的事件，除了IO设备的事件以外，**
+**还包括一些用户产生的事件（比如鼠标点击、页面滚动等等），**
+**比如$(selectot).click(function)，这些都是相对耗时的操作。**
+**只要指定过这些事件的回调函数，这些事件发生时就会进入"任务队列"，等待主线程读取。**
+
+所谓"回调函数"（callback），就是那些会被主线程挂起来的代码，前面说的点击事件$(selectot).click(function)中的function就是一个回调函数。异步任务必须指定回调函数，当主线程开始执行异步任务，就是执行对应的回调函数。例如ajax的success，complete，error也都指定了各自的回调函数，这些函数就会加入“任务队列”中，等待执行。
+
+### event loop
 
 https://juejin.im/post/5b8f76675188255c7c653811#heading-4
 
@@ -1625,82 +1883,7 @@ https://www.jianshu.com/p/9d64450f547c  案例，判断输出顺序https://jueji
 
 **setImmediate保持在宏队列最后面（同类型谁先来谁执行）**
 
-## js严格模式
 
-https://juejin.im/post/5c66c24df265da2da83560d7
-
-**ES5新增**      严格条件下运行js代码
-
-1.消除js语法不合理严谨的地方，减少怪异行为
-
-   变量必须声明才能使用
-
-2.消除代码运行不安全之处
-
-3.提高编译器效率，增加运行速度
-
-4.禁用未来版本的可能语法。如某些保留字（class,enum,expory,super,extends……不能做变量名）
-
-**开启：**
-
-1.为脚本开启严格模式   
-
-​	<script>标签中或<script>标签立即执行函数中
-
-  	‘use strict’    
-
-2.为函数开启严格模式
-
-​	写在函数内第一行
-
-**变化**
-
-​	1.变量必须先声明再使用（之前默认全局变量）
-
-
-
-​	2.不能删除已声明的变量    //严格模式下无法删除变量。只有configurable设置为true的对象属性，才能被删除。 var x; delete x; // 报错
-
-​	3.**this指向问题** 
-
-​		之前全局作用this指向window,；**严格模式为undefined**
-
-​		之前构造函数不加new直接调用, this指向window, 相当与给window添加属性；严格模式报错（不能给		undefined添加属性）
-
-​	   定时器this仍然指向window
-
-​		事件、对象仍指向调用者
-
-​	4.函数中不能有重名参数
-
-```
-//正常模式下，如果函数有多个重名的参数，可以用arguments[i]读取。
-function demo6(a,a,b){return ;} //报错
-```
-
-​	5. 不允许在非函数代码块内声明函数（if,for……）
-
-## [JS基础——同步异步的区别](https://segmentfault.com/a/1190000017996968)
-
-**同步和异步，无论如何，做事情的时候都是只有一条流水线（单线程），**
-**同步和异步的差别就在于这条流水线上各个流程的执行顺序不同。**
-
-最基础的异步是setTimeout和setInterval函数，
-因为它们可以控制js的执行顺序。我们也可以简单地理解为：
-可以改变程序正常执行顺序的操作就可以看成是异步操作。
-
-所有任务可以分成两种，
-
-一种是同步任务（synchronous），另一种是异步任务（asynchronous）。 同步任务指的是，在主线程上排队执行的任务，
-只有前一个任务执行完毕，才能执行后一个任务； 异步任务指的是，不进入主线程、而进入"任务队列"（task queue）的任务，
-只有等主线程任务执行完毕，"任务队列"开始通知主线程，请求执行任务，该任务才会进入主线程执行。
-
-**"任务队列"中的事件，除了IO设备的事件以外，**
-**还包括一些用户产生的事件（比如鼠标点击、页面滚动等等），**
-**比如$(selectot).click(function)，这些都是相对耗时的操作。**
-**只要指定过这些事件的回调函数，这些事件发生时就会进入"任务队列"，等待主线程读取。**
-
-所谓"回调函数"（callback），就是那些会被主线程挂起来的代码，前面说的点击事件$(selectot).click(function)中的function就是一个回调函数。异步任务必须指定回调函数，当主线程开始执行异步任务，就是执行对应的回调函数。例如ajax的success，complete，error也都指定了各自的回调函数，这些函数就会加入“任务队列”中，等待执行。
 
 ### **JS 异步编程六种方案
 
@@ -1733,6 +1916,25 @@ var foo1 = {n: 2};
 foo.x = foo1;
 foo = foo1;
 console.log(foo.x,bar);
+
+## 函数调用的方法
+
+ 4 种
+
+1. 作为一个函数调用
+
+a(); 这样一个最简单的函数，不属于任何一个对象，就是一个函数，这样的情况this在 JavaScript 的在浏览器中的非严格模式默认是属于全局对象 window 的，在严格模式，就是 undefined。
+
+1. 函数作为方法调用
+
+**this** **永远指向最后调用它的那个对象**”
+
+1. 使用构造函数调用函数
+
+如果函数调用前使用了 new 关键字, 则是调用了构造函数。
+ 这看起来就像创建了新的函数，但实际上 JavaScript 函数是重新创建的对象
+
+作为函数方法调用函数（call、apply）
 
 ## 立即执行函数
 
@@ -2589,6 +2791,10 @@ https://blog.csdn.net/qq_34586870/article/details/89515336
 ## 虚拟DOM
 
 https://juejin.im/entry/5aedcfa351882506a36c664c
+
+## Generator函数的Trunk输出的是什么
+
+http://www.ruanyifeng.com/blog/2015/05/thunk.html
 
 ## JavaScript中为什么string可以拥有方法？
 

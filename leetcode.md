@@ -741,8 +741,6 @@ MyStack.prototype.empty = function() {
 ```
 ## 二分查找
 
-### 二分查找
-
 ```js
 var search = function(nums, target) {
     let low=0,high=nums.length-1
@@ -1409,6 +1407,52 @@ var validateStackSequences = function(pushed, popped) {
 
 ## 二叉树
 
+### 二叉树前中后序遍历 迭代
+
+```
+  ///1. 前序
+  var preorderTraversal = (root)=>{
+        let res = []
+        if(!root) return res
+        let stack = [root]
+        while(stack.length) {
+            let top = stack.pop()
+            res.push(top.val)
+            if(top.right) stack.push(top.right) ///先放右子树
+            if(top.left) stack.push(top.left)
+        }
+        return res
+    }
+   ////2. 中序遍历
+   var inorderTraversal = (root) => {
+        let res = []
+        if(!root) return res
+        let stack = [root]
+        while(stack.length) {
+            let top = stack[stack.length-1]
+            while(top) {
+                stack.push(top)
+                top = top.left
+            }
+            stack.pop()
+            if(top.right) res.push(top.right)
+        }
+        return res
+    }
+    /////后序
+    var postorderTraversal = function(root) {
+      let res = [],stack = []
+        while(root||stack.length) {
+            res.unshift(root.val)
+            if(root.left) stack.push(root.left)
+            if(root.right) stack.push(root.right)
+            root = stack.pop()
+
+        }
+        return res
+};
+```
+
 ### 700. 二叉搜索树中的搜索
 
 ```js
@@ -1487,7 +1531,7 @@ var isBalanced = function(root) {
     return true
 };
 function judge(root){
-    if(!root){
+    if(!root){··
         return 0
     }
     let left=judge(root.left)
@@ -1498,19 +1542,25 @@ function judge(root){
     if (Math.abs(left-right)>1) return -1
     return Math.max(left,right)+1
 }
+
+/// 简化上面的代码
+var isBalanced = function(root) {
+    let judge = function(root) {
+        if(!root) return 0     // 高度为0
+        let left = judge(root.left)
+        if(left==-1) return -1
+        let right = judge(root.right)
+        if(right==-1) return -1
+        return Math.abs(left-right)>1?-1: Math.max(left,right)+1
+    }
+    return judge(root)==-1?false:true
+};
 ```
 
 ### 102 二叉树层序遍历
 
 出队时左右孩子入队
 ```js
-/**
- * Definition for a binary tree node.
- * function TreeNode(val) {
- *     this.val = val;
- *     this.left = this.right = null;
- * }
- */
       var levelOrder=function(root){
         let result=[];
         if(root==null)
@@ -1558,7 +1608,7 @@ var largestValues = function(root) {
 };
 ```
 
-### 1603 二叉树的镜像
+### 二叉树的镜像/翻转二叉树
 
 ```js
 ///////////递归
@@ -1895,6 +1945,26 @@ let find=function(A,B){
 }
 ```
 
+### [100. 相同的树](https://leetcode-cn.com/problems/same-tree/)
+
+比较两颗二叉树是否相同
+
+```
+var isSameTree = function(p, q) {
+    if(!q&&!p) {
+        return true
+    }else if(!p||!q) {
+        return false
+    }
+    if(p.val!==q.val) {
+        return false
+    }
+    return isSameTree(p.left,q.left)&&isSameTree(p.right,q.right)
+};
+```
+
+
+
 ## 滑动窗口
 
 ### 最长不含重复字符的子字符串
@@ -2147,7 +2217,7 @@ var minSubsequence = function(nums) {
 
 ## 回溯
 
-### 全排列
+### 全排列1
 
 给定一个 没有重复 数字的序列，返回其所有可能的全排列。
 
@@ -2183,6 +2253,31 @@ var permute = function(nums) {
 };
 ```
 
+### 全排列2
+
+无重复字符串全排列
+
+```js
+var permutation = function(S) {
+    let res = []
+    let backTrack = function(path) {
+        if(path.length==S.length) {
+            res.push(path)
+            return
+        }
+        for(let i in S) {
+            if(path.indexOf(S[i])==-1) {
+                path.concat(S[i])
+                backTrack(path)
+                path.slice(0,path.length-1)
+            }
+        }
+    }
+    backTrack("")
+    return res
+};
+```
+
 ### 字符串全排列
 
 用了set
@@ -2205,6 +2300,33 @@ var permutation = function(s){
     backtrack('',s)
     return [...res]
 }
+```
+
+### 幂集
+
+```
+ 输入： nums = [1,2,3]
+ 输出：
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+var subsets = function(nums) {
+    let res = [[]]
+    for(let i in nums) {
+        for(let j in res) { // 遍历res每一项，把当前nums[i]拼上
+            res.push(res[j].concat(nums[i]))
+        }
+    }
+    return res
+};
+
 ```
 
 顺时针打印矩形***
@@ -2448,6 +2570,8 @@ var generate = function(numRows) {
 
 ### 不使用临时变量交换值
 
+https://blog.csdn.net/weixin_44827421/article/details/93717370
+
 解法：
 
 加减法 a=b-a;b=b-a;a=b+a （要考虑溢出问题）
@@ -2676,4 +2800,4 @@ function insertionSort(arr){
 }
 ```
 
-## 
+##  

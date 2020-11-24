@@ -427,6 +427,52 @@ https://zhuanlan.zhihu.com/p/114750961
 设置token
 	在请求中放入攻击者无法伪造的东西，从而避免此类攻击，如在http请求中加入随机的token，然后在数据提交时，先进行token验证，如果正确，则继续后续操作，否则阻止继续进行。
 
+# 前端安全
+
+https://juejin.im/entry/598d6eb46fb9a03c3a25d2c1
+
+一、XSS攻击与防御
+
+  跨站脚本攻击，是说攻击者通过注入恶意的脚本，在用户浏览网页的时候进行攻击，比如获取cookie，或者其他用户身份信息，可以分为存储型和反射型，存储型是攻击者输入一些数据并且存储到了数据库中，其他浏览者看到的时候进行攻击，反射型的话不存储在数据库中，往往表现为将攻击代码放在url地址的请求参数中，防御的话为cookie设置httpOnly属性，对用户的输入进行检查，进行特殊字符过滤
+
+ 
+
+ 
+
+二、CSRF攻击
+
+跨站请求伪造，可以理解为攻击者盗用了用户的身份，以用户的名义发送了恶意请求，比如用户登录了一个网站后，立刻在另一个ｔａｂ页面访问量攻击者用来制造攻击的网站，这个网站要求访问刚刚登陆的网站，并发送了一个恶意请求，这时候CSRF就产生了，比如这个制造攻击的网站使用一张图片，但是这种图片的链接却是可以修改数据库的，这时候攻击者就可以以用户的名义操作这个数据库，防御方式的话：使用验证码，检查https头部的refer，使用token
+
+防御CSRF 攻击主要有三种策略：验证 HTTP Referer 字段；在请求地址中添加 token 并验证；在 HTTP 头中自定义属性并验证。
+
+ 
+
+三、HTTP劫持与对策
+
+当我们访问页面的时候，运营商在页面的HTML代码中，插入弹窗、广告等HTML代码，来获取相应的利益。
+
+针对这种情况，最好的解决方式也就是使用HTTPS，加密过后，他们就没法插入广告代码了。
+
+那么对于还没有升级的情况，我们可以努力让影响降到最低。
+
+ 
+
+四、界面操作劫持
+
+五、防御手段
+
+**上面列举的例子都不具备实际攻击作用**，因为浏览器厂商，W3C等已经做了很多安全工作，让我们的页面可以安稳的运行起来。但道高一尺魔高一丈，我们要合理运用防护手段，才能让页面不被攻击。
+
+1、HTTP响应头，在响应头可以通过这些字段来提高安全性
+
+- X-Frame-Options 禁止页面被加载进iframe中
+- X-XSS-Protection 对于反射型XSS进行一些防御
+- X-Content-Security-Policy 这个就比较复杂了，可选项很多，用来设置允许的的资源来源以及对脚本执行环境的控制等。
+
+2、使用HTTPS、使用HTTP ONLY的cookie。cookie的secure字段设置为true
+
+3、GET请求与POST请求，要严格遵守规范，不要混用，不要将一些危险的提交使用JSONP完成。
+
 ## 大前端性能总结
 
 https://juejin.im/post/5b025d856fb9a07aa0484e54
@@ -560,11 +606,13 @@ Javascript 的确是单线程的，阻塞和其他异步的需求的确是通过
 
 ### jsonp
 
+https://www.jianshu.com/p/e1e2920dac95
+
 面试相关：https://blog.csdn.net/weixin_43424101/article/details/84288991
 
 1) JSONP原理
 
-**利用 `<script>` 标签没有跨域限制的漏洞，网页可以得到从其他来源动态产生的 JSON 数据。JSONP请求一定需要对方的服务器做支持才可以。**
+JSONP的跨域方式是<u>利用`<script>`标签的src属性可以跨域引用资源的特点</u>，有这些属性的标签还有`<img>`、`<iframe>`，但是JSONP只支持GET方式。JSONP请求一定需要对方的服务器做支持才可以。
 
 2) JSONP和AJAX对比
 
@@ -574,26 +622,72 @@ JSONP和AJAX相同，都是客户端向服务器端发送请求，从服务器�
 
 优点是简单兼容性好，可用于解决主流浏览器的跨域数据访问的问题。**缺点是仅支持get方法具有局限性,不安全可能会遭受XSS攻击。**
 
-4) **实现流程**
+下面我们以点击获取随机新闻列表的例子来演示一下JSONP的具体工作原理(test.com访问a.test.com)
 
-https://www.jianshu.com/p/447fe4d86dd5（跨域的几种方式）
+HTML如下:
 
-- 声明一个回调函数，函数名当做参数值传递给跨域请求数据的服务器，函数形参为目标数据(服务器返回的data)
-- 创建一个`<script>`标签，把跨域的API数据接口地址赋值给src，还要在这个地址中向服务器传递该函数名（可以通过问号传参:?callback=show）。
-- **服务器接收到请求后，把传递进来的函数名和要传递的数据拼接成一个字符串**,例如：传递进去的函数名是show，它准备好的数据是`show('我不爱你')`。
-- 把准备的数据通过HTTP协议返回给客户端，客户端调用执行之前声明的回调函数，对返回的数据进行操作。
-
-```js
-html文件中
-				<script>
-					window.callback=function(data){
-						console.log(data)
-					}
-				</script>
-				<script src="http://xxx/jsonp.js"></script>
-			jsonp.js文件中
-				callback({hi:'hello,world'})
+```html
+<div class="container">
+  <ul class="news">
+    <li>第11日前瞻：中国冲击4金 博尔特再战</li>
+    <li>男双力争会师决赛 </li>
+    <li>女排将死磕巴西！</li>
+  </ul>
+  <button class="change">换一组</button>
+</div>
 ```
+
+<u>首先，我们在前端要在调用资源的时候动态创建script标签，并设置src属性指向资源的URL地址</u>，代码如下:
+
+```javascript
+document.querySelector('.change').addEventListener('click', function() {
+  var script = document.createElement('script')
+  script.setAttribute('src', '//a.test.com:8080/getNews?callback=appendHtml')   //callback=appendHtml是给后端资源打包数据用的参数，同时也是前端定义的回调函数
+  document.head.appendChild(script)
+  document.head.removeChild(script) //删除script标签是因为script标签插入页面的时候资源已经请求到了
+})
+```
+
+定义获取资源后需要执行的回调函数:
+
+```javascript
+function appendHtml(news) {
+    var html = ''
+    for (var i = 0; i < news.length; i++) {
+        html += '<li>' + news[i] + '</li>'
+    }
+    document.querySelector('.news').innerHTML = html
+}
+```
+
+后端是把前端发送的URL地址拿到的数据以前端定义的回调函数（appendHtml）的<u>参数的形式返回</u>给前端，这样到了前端就可以调用执行了:
+
+```javascript
+var news = [
+    "第11日前瞻：中国冲击4金 博尔特再战200米羽球",
+    "正直播柴飚/洪炜出战 男双力争会师决赛",
+    "女排将死磕巴西！郎平安排男陪练模仿对方核心",
+    "没有中国选手和巨星的110米栏 我们还看吗？",
+    "中英上演奥运金牌大战",
+    "博彩赔率挺中国夺回第二纽约时报：中国因对手服禁药而丢失的奖牌最多",
+    "最“出柜”奥运？同性之爱闪耀里约",
+    "下跪拜谢与洪荒之力一样 都是真情流露"
+]
+var data = [];
+for (var i = 0; i < 3; i++) {
+  var index = Math.floor(Math.random() * news.length);
+
+  data.push(news[index]);
+}
+var callback = req.query.callback;   //查询前端有没有传入回调函数
+if (callback) {
+    res.send(callback + '(' + JSON.stringify(data) + ')');    //数据以函数参数的方式传给前端
+} else {
+    res.send(data);
+}
+```
+
+这样我们就从test.com访问到了a.test.com下的资源
 
 ### cors  跨域资源共享
 
@@ -668,30 +762,6 @@ innerHTML,  包含内部标签
 innerText,   除了内部标签的内容
 
 outerHTML  包含自身标签，内部标签以及内容
-
-## 强缓存和协商缓存
-
-https://www.jianshu.com/p/1a1536ab01f1
-
-浏览器缓存(Brower Caching)是浏览器在本地磁盘对用户最近请求过的文档进行存储，当访问者再次访问同一页面时，浏览器就可以直接从本地磁盘加载文档。
-
-浏览器缓存主要有两类：缓存协商和彻底缓存，也有称之为协商缓存和强缓存。
-
-1.强缓存：不会向服务器发送请求，直接从缓存中读取资源，在chrome控制台的network选项中可以看到该请求返回200的状态码;
-
-2.协商缓存：向服务器发送请求，服务器会根据这个请求的request header的一些参数来判断是否命中协商缓存，如果命中，则返回304状态码并带上新的response header通知浏览器从缓存中读取资源；
-
-两者的共同点是，都是从客户端缓存中读取资源；区别是强缓存不会发请求，协商缓存会发请求。
-
-**浏览器缓存过程**
-
-1.浏览器第一次加载资源，服务器返回200，浏览器将资源文件从服务器上请求下载下来，并把response header及该请求的返回时间一并缓存；
-
-2.下一次加载资源时，先比较当前时间和上一次返回200时的时间差，如果没有超过cache-control设置的max-age，则没有过期，命中强缓存，不发请求直接从本地缓存读取该文件（如果浏览器不支持HTTP1.1，则用expires判断是否过期）；如果时间过期，则向服务器发送header带有If-None-Match和If-Modified-Since的请求
-
-3.服务器收到请求后，优先根据Etag的值判断被请求的文件有没有做修改，Etag值一致则没有修改，命中协商缓存，返回304；如果不一致则有改动，直接返回新的资源文件带上新的Etag值并返回200；；
-
-4.如果服务器收到的请求没有Etag值，则将If-Modified-Since和被请求文件的最后修改时间做比对，一致则命中协商缓存，返回304；不一致则返回新的last-modified和文件并返回200
 
 ## 两个静态html页面传值方法的总结
 
