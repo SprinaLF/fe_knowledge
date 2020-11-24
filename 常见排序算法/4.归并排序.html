@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href=""></a>
+<script>
+    
+    // 分治 的思维
+
+    function mergeSort(arr) {  //采用自上而下的递归方法
+        var len = arr.length;
+        if(len < 2) {
+            return arr;
+        }
+        var middle = Math.floor(len / 2),
+            left = arr.slice(0, middle),
+            right = arr.slice(middle);
+        return merge(mergeSort(left), mergeSort(right));
+    }
+
+    // 把两个左右排序好的数组合并成有序的数组
+
+    const merge = (left, right) => {
+        const result = [];
+
+        while (left.length && right.length) {
+            // 注意: 判断的条件是小于或等于，如果只是小于，那么排序将不稳定.
+            if (left[0] <= right[0]) {
+                result.push(left.shift()); //每次都要删除left或者right的第一个元素，将其加入result中
+            } else {
+                result.push(right.shift());
+            }
+        }
+        //将剩下的元素加上
+        while (left.length) result.push(left.shift());
+
+        while (right.length) result.push(right.shift());
+
+        return result;
+    };
+
+    mergeSort([2,4,3,1])
+
+</script>
+</body>
+</html>

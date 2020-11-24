@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="https://lc-api-gold-cdn.xitu.io/4763d5ee13e7f21dfbef?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">计数排序动态图</a>
+<script>
+    // 计数排序要求输入的数据必须是有确定范围的整数。
+
+    // 和统计字符串或者数组出现的次数的思路一样
+
+    // 学生成绩排序
+
+    function countingSort(arr, maxValue) {
+        // bucket 就是统计 要排序值为3的个数
+        var bucket = new Array(maxValue+1),
+            sortedIndex = 0,
+             arrLen = arr.length,
+            bucketLen = maxValue + 1;
+
+
+
+        for (var i = 0; i < arrLen; i++) {
+            if (!bucket[arr[i]]) {
+                bucket[arr[i]] = 0;
+            }
+            bucket[arr[i]]++;
+        }
+        // 把统计分组的情况展开
+        for (var j = 0; j < bucketLen; j++) {
+            while(bucket[j] > 0) {
+                arr[sortedIndex++] = j;
+                bucket[j]--;
+            }
+        }
+
+        return arr;
+    }
+</script>
+</body>
+</html>

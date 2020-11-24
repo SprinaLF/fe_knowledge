@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<a href="https://lc-api-gold-cdn.xitu.io/9c3e16e6e5d0a5ac7721?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">选择动态排序图</a>
+<script>
+
+    // [5,5,3]
+    function selectionSort(arr) {
+        var len = arr.length;
+        for (var i = 0; i < len - 1; i++) {
+            for (var j = i + 1; j < len; j++) {
+                if (arr[j] < arr[i]) {
+                    var temp;
+                    temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+        return arr;
+    }
+
+    console.log(selectionSort([4, 2, 3, 4]));
+
+    // 优化
+    function selectionSort1(arr) {
+        var len = arr.length;
+        var minIndex, temp;
+        for (var i = 0; i < len - 1; i++) {
+            minIndex = i;
+            for (var j = i + 1; j < len; j++) {
+                if (arr[j] < arr[minIndex]) {     //寻找最小的数
+                    minIndex = j;                 //将最小数的索引保存
+                }
+            }
+            temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+        return arr;
+    }
+    console.log(selectionSort1([4, 2, 3, 4]));
+    
+</script>
+</body>
+</html>
