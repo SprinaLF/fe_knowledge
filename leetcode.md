@@ -489,6 +489,71 @@ var reverseList = function(head) {
 };
 ```
 
+### **面试题  判断链表是否有环
+
+```js 
+// 两种思路，1.判断该节点是否访问过，用Map/Set  2.快慢指针，空间复杂度为1
+// 1.Map   m.has  m.set   m.delete  m.get
+var hasCycle = function(head) {
+    let m = new Map()
+    let p = head
+    while(p) {
+        if(m.has(p)) return true
+        m.set(p,true)
+        p=p.next
+    }
+    return false
+};
+// 2，Set   set.add  set.delete   set.has   可存储任何类型
+var hasCycle = function(head) {
+    let s = new Set()
+    let p = head
+    while(p) {
+        if(s.has(p)) return true
+        s.add(p)
+        p=p.next
+    }
+    return false
+};
+// 3. 快慢指针
+var hasCycle = function(head) {
+    if(!head) return false
+    let fast = head.next, slow = head
+    while(fast) {
+        if(fast==slow||!fast.next) break
+        fast = fast.next.next
+        slow = slow.next
+    }
+    // 跳出循环有两种情况，一是指针相遇，二是快指针走到头
+    if(fast==slow) return true
+    return false
+};
+```
+
+### 面试题 两个链表是否相交
+
+```js
+// 1. set/map记录节点，去另一个链表中找
+
+// 2. 都遍历一遍，记录长度，长度先走的跟短的一样长的位置，再同时走
+
+// 3. ***双指针法，走完当前链表去走另外的链表
+// 双指针时一定相交与D点(速度相同) AD+DC+BD = BD+DC+AD   不相交时最后会同时指向null
+var getIntersectionNode = function(headA, headB) {
+    if(!headA||!headB) return null
+    let p = headA, q = headB
+    while(p!=q) {   // 一种是相交点相遇，另一种是都为null
+        if(!p) p=headB
+        else p = p.next
+        if(!q) q=headA
+        else q = q.next
+    }
+    return p
+};
+```
+
+![ListNode.png](https://pic.leetcode-cn.com/9361ba6ca0b2203a0304156cb3d5e10337836d52f4a41464b66854ea0562418f-ListNode.png)
+
 ### 面试题35. 复杂链表的复制 ***
 
 思路一：先复制相同节点放在后面，再复制random指针，最后拆分链表
@@ -1080,7 +1145,34 @@ var islandPerimeter = function(grid) {
 };
 ```
 
+### 岛屿的最大面积
 
+```js
+var maxAreaOfIsland = function(grid) {
+    let res = 0, num = 0
+    let row = grid.length-1, col = grid[0].length-1
+    const dfs = (x,y) => {
+        if(grid[x][y]==1) {
+            num++
+            grid[x][y] = 0
+            if(x>0) dfs(x-1,y)
+            if(y>0) dfs(x,y-1)
+            if(x<row) dfs(x+1,y)
+            if(y<col) dfs(x,y+1)
+        }
+    }
+    for(let i = 0;i<=row;i++) {
+        for(let j = 0; j<=col;j++) {
+            if(grid[i][j]==1) {
+                 dfs(i,j)
+                 res = Math.max(res,num)
+                 num = 0  // 重新计数
+            }
+        }
+    }
+    return res
+};
+```
 
 ## 1337 方阵中战斗力最弱的 K 行
 
@@ -1424,21 +1516,20 @@ var validateStackSequences = function(pushed, popped) {
         return res
     }
    ////2. 中序遍历
-   var inorderTraversal = (root) => {
-        let res = []
-        if(!root) return res
-        let stack = [root]
-        while(stack.length) {
-            let top = stack[stack.length-1]
-            while(top) {
-                stack.push(top)
-                top = top.left
+  	var inorderTraversal = function(root) {
+        const res = [];
+        const stack = [];
+        while (root||stack.length) {
+            while (root) {
+                stack.push(root);
+                root = root.left;
             }
-            stack.pop()
-            if(top.right) res.push(top.right)
+            root = stack.pop();
+            res.push(root.val);
+            root = root.right;
         }
-        return res
-    }
+        return res;
+	};
     /////后序
     var postorderTraversal = function(root) {
       let res = [],stack = []
@@ -1460,8 +1551,7 @@ var searchBST = function(root, val) {
     if(root==null) return null;
     if(root.val==val) return root;
     if(root.val<val){
-    /////////这里不加return返回了undefined
-     //外层函数无法收到返回值
+     //外层函数需接收返回值
         return searchBST(root.right,val)
     }else {
        return searchBST(root.left,val)
@@ -1520,8 +1610,6 @@ var treeToDoublyList = function(root) {
     }
 };
 ```
-
-
 
 ### 平衡二叉树    ***
 
@@ -1939,7 +2027,7 @@ let find=function(A,B){
      if(!B) return true
     if(!A) return false
     if(A.val!==B.val){
-        return false
+        return false 
     }
     return find(A.left,B.left)&&find(A.right,B.right)
 }
@@ -2023,6 +2111,30 @@ var findContinuousSequence = function(target) {
 ```
 
 ## 动态规划
+
+### **最长公共子序列
+
+```
+/////  动态规划
+///   状态转移方程：i,j位置不相同时， dp[i][j] = Math.max(dp[i][j-1],dp[i-1][j])
+var longestCommonSubsequence = function(text1, text2) {
+    const m = text1.length, n = text2.length
+    let dp = Array.from(Array(m+1),()=>Array(n+1).fill(0))
+    for(var i = 1;i<=m;i++) {
+        for(var j=1;j<=n;j++) {
+            if(text1[i-1]==text2[j-1]){   // 注意dp和对应数组的下标！！
+                dp[i][j]=dp[i-1][j-1]+1
+            } 
+            else {
+                dp[i][j] = Math.max(dp[i][j-1],dp[i-1][j]) 
+            }
+        }
+    }
+    return dp[i-1][j-1]
+};
+```
+
+
 
 ### 打家劫舍
 
@@ -2800,4 +2912,4 @@ function insertionSort(arr){
 }
 ```
 
-##  
+###  

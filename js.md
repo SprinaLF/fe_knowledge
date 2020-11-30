@@ -9,15 +9,13 @@ let obj = {name: 'xiaoming'}; let obj2 = obj; obj2.name = "xiaohong"
 
 obj = null , obj2.name =??   //仍然为xiaohong   obj不指向这块堆区域了
 
-
-
 ## JS的内存空间
 
 https://juejin.cn/post/6844903615300108302
 
 分为栈(stack)、堆(heap)、池(一般也会归类为栈中)。
 
-其中栈存放变量，堆存放复杂对象，池存放常量，所以也叫常量池。
+其中栈存放变量，堆存放复杂对象，池存放常量(也叫常量池)。
 
 引用数据类型存储在堆内存中，因为引用数据类型占据空间大、大小不固定。 如果存储在栈中，将会影响程序运行的性能； <u>引用数据类型在栈中存储了指针，该指针指向堆中该实体的起始地址。</u> 当解释器寻找引用值时，会首先检索其在栈中的地址，取得地址后从堆中获得实体
 
@@ -27,13 +25,15 @@ https://juejin.cn/post/6844903615300108302
 
 **栈内存和堆内存的优缺点**
 
-在JS中，基本数据类型变量大小固定，并且操作简单容易，所以把它们放入栈中存储。 引用类型变量大小不固定，所以把它们分配给堆中，让他们申请空间的时候自己确定大小，这样把它们分开存储能够使得程序运行起来占用的内存最小。
+JS中，基本数据类型变量大小固定，操作简单，所以把放入栈中存储。
 
-栈内存由于它的特点，所以它的系统效率较高。 堆内存需要分配空间和地址，还要把地址存到栈中，所以效率低于栈。
+引用类型变量大小不固定，把它们分配给堆中，让他们申请空间时自己确定大小，<u>这样把它们分开存储能够使得程序运行起来占用的内存最小。</u>
+
+栈内存由于它的特点，所以它的系统效率较高。 堆内存需要分配空间和地址，还要把地址存到栈中，效率低。
 
 **垃圾回收**
 
-栈内存中变量一般在它的当前执行环境结束就会被销毁被垃圾回收制回收， 
+栈内存中变量一般在当前执行环境结束就会被销毁， 
 
 堆内存中的变量只有在**所有对它的引用**都结束的时候才会被回收。
 
@@ -152,9 +152,7 @@ for(let i=0;i<lis.length;i++){
 }
 ```
 
-## 
 
-![image-20200915174745706](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200915174745706.png)
 
 
 
@@ -189,6 +187,8 @@ c.构造函数：var fun = new Function("a",console.log(a));
 原型也是对象，因此它也有自己的原型。这样构成一个原型链。
 
 ![image-20200531220537262](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200531220537262.png)
+
+ps: 对象实例也有一条constructor指向它的构造函数
 
 可在原型链追加方法，实现对内置方法的扩展
 
@@ -296,8 +296,6 @@ console.log(cat instanceof Cat); // false
 - 实例是父类的实例，不是子类的实例
 - 不支持多继承
 
-
-
 核心：原型式继承的object方法本质上是对参数对象的一个浅复制。
 优点：父类方法可以复用
 缺点：父类的引用属性会被所有子类实例共享，子类构建实例时**不能向父类传递参数**
@@ -343,7 +341,7 @@ console.log(cat instanceof Cat); // true
 
 - 支持多继承
   缺点：
-- 效率较低，内存占用高（因为要拷贝父类的属性）
+- 效率较低，内存占用高（要拷贝父类的属性）
 - 无法获取父类不可枚举的方法，原型上的可以获取（不可枚举方法，不能使用for in 访问到:需手动设置enurable为false:Object.defineProperty()  和symbol() ）  Object.keys()不能获取原型上的   Object.getOwnPropertyNames()原型上无法遍历，自身可枚举和不可枚举都可以遍历
 
 5. **组合继承**（原型，构造函数继承的组合）
@@ -652,7 +650,7 @@ clientRect是一个DOMRect对象，包含left，top，right，bottom，它是相
 
 ### 2. `BOM`中的对象
 
-#### 2.1 `window`对象
+**2.1 `window`对象**
 
 `window`对象对象表示一个浏览器窗口或一个`frame`框架，它处于对象层次的最顶端，它提供了处理浏览器窗口的方法和属性。
 
@@ -675,7 +673,7 @@ window.innerHeight - 浏览器窗口的内部高度(包括滚动条)
 - window.moveTo() - 移动当前窗口
 - window.resizeTo() - 调整当前窗口的尺寸
 
-#### 2.2 `DOM`（`document`）相关对象
+**2.2 `DOM`（`document`）相关对象**
 
 `DOM`可以认为是`BOM`的一个子集，`DOM`中文档操作相关对象，如：[`Node`](http://itbilu.com/javascript/js/Ny3B0ddWg.html)、[`Document`](http://itbilu.com/javascript/js/N1PfJNgMe.html)、[`Element`](http://itbilu.com/javascript/js/VJYOZrWml.html)等`DOM`节点类型对象，都是做为`window`对象的子属性出现的。
 
@@ -687,11 +685,11 @@ window.document.getElementById("header");
 
 `document`是一个`Document`对象实例，表示当前窗口中文档对象。通过该对象，可以对文档和文档中元素、节点等进行操作。
 
-#### 2.3 `frames`对象
+**2.3 `frames`对象**
 
 `frames`对象是一个集合，表示当前页面中使用的子框架。如果页面中使用了框架，将产生一个框架集合`frames`，在集合中可以用数字下标（从0开始）或名字索引框架。集全中的每一个对象，包含了框架的页面布局信息，以及每一个框架所对应的`window`对象。
 
-#### 2.4 `navigator`对象
+**2.4 `navigator`对象**
 
 `navigator`是指浏览器对象，提供了当前正在使用的浏览器的信息。`navigator`对象中的属性是只读的
 
@@ -701,7 +699,7 @@ navigator.userAgent      //浏览器用于 HTTP 请求的用户代理头的值�
 		  appVersion     //返回浏览器的平台和版本信息。
 ```
 
-#### 2.5 `history`对象
+**2.5 `history`对象**
 
 `history`对象来保存浏览器历史记录信息，也就是用户访问的页面。
 
@@ -709,7 +707,7 @@ navigator.userAgent      //浏览器用于 HTTP 请求的用户代理头的值�
 - history.forward() - 与在浏览器中点击向前按钮相同
 - history.go(number|URL)   加载历史列表中的某个具体的页面。
 
-#### 2.6 `location`对象
+**2.6 `location`对象**
 
 用于获得当前页面的地址 (URL)，并把浏览器重定向到新的页面。
 
@@ -721,9 +719,9 @@ navigator.userAgent      //浏览器用于 HTTP 请求的用户代理头的值�
 - location.assign("https://www.runoob.com")  加载新文档
 - location.search  可设置或返回当前 URL 的查询部分（问号 ? 之后的部分）
 
-#### 2.7 `screen`对象
+**2.7 `screen`对象**
 
-用户显示器屏幕相关信息。用户显示器屏幕宽、高、色深等信息。
+用户显示器屏幕相关信息。显示器屏幕宽、高、色深等信息。
 
 - screen.width / screen.height    屏幕宽度/高度
 
@@ -734,7 +732,7 @@ navigator.userAgent      //浏览器用于 HTTP 请求的用户代理头的值�
 
 **1. instanceof（判断引用类型）**
 
-判断某个构造函数的prototype属性所指向的對象是否存在于另外一个要检测对象的原型链上。 语法：
+判断某个构造函数的prototype属性所指向的對象是否存在于另外一个要检测对象的原型链上。 
 
 ```
 object instanceof constructor
@@ -931,7 +929,7 @@ if (JSON.stringify(data) === '{}') {
 return true
 ```
 
-这里需要注意为什么不用 `toString()`，因为它返回的不是我们需要的。
+需要注意为什么不用 `toString()`，因为返回的不是我们需要的。
 
 ```js
 var a = {}
@@ -940,7 +938,7 @@ a.toString() // "[object Object]"
 
 3.`ES6` 新增的方法 `Object.keys()`:
 
-`Object.keys()` 方法会返回一个由一个给定对象的自身可枚举属性组成的数组。
+`Object.keys()` 方法返回一个由一个给定对象的自身可枚举属性组成的数组。
 
 如果我们的对象为空，他会返回一个空数组，如下：
 
@@ -1012,9 +1010,7 @@ arr.myMap(function(item,index,arr){
 
 ### 手写instanceof
 
-**instanceof** **主要的作用就是判断一个实例是否属于某种类型**
-
-**也可以判断一个实例是否是其父类型或者祖先类型的实例。**
+**判断一个实例是否是其父类型或者祖先类型的实例。**
 
 **instanceof** **主要的实现原理就是只要右边变量的 prototype** **在左边变量的原型链上。因此，instanceof** <u>**在查找的过程中会遍历左边变量的原型链，直到找到右边变量的 prototype**</u>查找失败，返回 false，(左边变量并非是右边变量的实例.)
 
@@ -1027,8 +1023,6 @@ https://juejin.im/post/6844903613584654344
 数组扁平化就是把多维数组转化成一维数组
 
 https://juejin.im/post/5c971ee16fb9a070ce31b64e#heading-3
-
-https://www.zhihu.com/question/52742115
 
 **es6提供的新方法 flat(depth)**
 
@@ -1053,7 +1047,7 @@ a.flat(Infinity); // [1,2,3,4,5]  a是4维数组
 
 在数学和计算机科学中的柯里化函数，一次只能传递一个参数；
 
-而我们Javascript实际应用中的柯里化函数，可以传递一个或多个参数。对于柯里化的定义：接收一部分参数，返回一个函数接收剩余参数，接收足够参数后，执行原函数。
+Javascript实际应用中的柯里化函数，可以传递一个或多个参数。对于柯里化的定义：<u>接收一部分参数，返回一个函数接收剩余参数，接收足够参数后，执行原函数。</u>
 
 https://juejin.im/post/6844903882208837645
 
@@ -1167,10 +1161,10 @@ result(22, '家里蹲大学') //这个参数会和预置的参数合并到一起
 简单版本
 
 ```js
-Function.prototype.bind = function(context, ...args) {
+Function.prototype.bind = function(context, ...outerArgs) {
     var fn = this;
-    return function(...rest) {   //返回了一个函数，...rest为实际调用时传入的参数
-        return fn.apply(context,[...args, ...rest]);  //返回改变了this的函数，
+    return function(...innerArgs) {   //返回了一个函数，...rest为实际调用时传入的参数
+        return fn.apply(context,[...outerArgs, ...innerArgs]);  //返回改变了this的函数，
                                                       //参数合并
     }
 }
@@ -1307,33 +1301,31 @@ https://www.cnblogs.com/coco1s/p/5499469.html
 ## 节流和防抖
 
 - window对象频繁的onresize,onscroll等事件
-- 拖拽的mousemove事件
+- 拖拽的mousemove事件 (每次mouseover就会触发一次函数)
 - 射击游戏的mousedown，keydown事件
 - 文字输入，自动完成的keyup事件
 
-比如每次mouseover就会触发一次函数，又比如每次搜索一下就会向服务器发送一个请求，这样既没有意义，也很浪费资源。
+比如，又比如每次搜索一下就会向服务器发送一个请求，这样既没有意义，也很浪费资源。
 
 实际需求大多为<u>停止改变大小n毫秒后</u>执行后续处理；而其他事件大多数的需求是以<u>一定的频率</u>执行后续处理。
 
 **节流**
- mouseover，resize这种事件，每当有变化的时候，就会触发一次函数，这样很浪费资源。而节流就是每隔n的时间调用一次函数，而不是一触发事件就调用一次，这样就会减少资源浪费。
+ mouseover，resize这种事件，每当有变化的时候，就会触发一次函数，这样很浪费资源。而节流就是每隔n的时间调用一次函数，减少资源浪费。（触发后一段时间内不调用）
 
 **防抖**
- A和B说话，A一直bbbbbb，当A持续说了一段时间的话后停止讲话，过了10秒之后，我们判定A讲完了，B开始回答A的话；如果10秒内A又继续讲话，那么我们判定A没讲完，B不响应，等A再次停止后，我们再次计算停止的时间，如果超过10秒B响应，如果没有则B不响应。
+ A持续说了一段时间的话后停止讲话，过了10秒之后，判定A讲完了，B开始回答；如果10秒内A又继续讲话，那么我们判定A没讲完，B不响应，等A再次停止后，我们再次计算停止的时间，如果超过10秒B响应，如果没有则B不响应。(防抖以最后一次触发为准)
 
 **节流与防抖的区别**
  前提都是某个行为持续地触发，不同之处只要判断是要优化到减少它的执行次数还是只执行一次就行。
 
-- 节流例子，像dom的拖拽，如果用消抖的话，就会出现卡顿的感觉，因为只在停止的时候执行了一次，这个时候就应该用节流，在一定时间内多次执行，会流畅很多。
-- 防抖例子，像仿百度搜索，就应该用防抖，当我连续不断输入时，不会发送请求；当我一段时间内不输入了，才会发送一次请求；如果小于这段时间继续输入的话，时间会重新计算，也不会发送请求。
+- 节流例子（连续不断动都需要调用时用，设一时间间隔），像dom的拖拽，如果用消抖的话，就会出现卡顿的感觉，因为只在停止的时候执行了一次，这个时候就应该用节流，在一定时间内多次执行，会流畅很多。
+- 防抖例子（连续不断触发时不调用，触发完后过一段时间调用），像仿百度搜索，就应该用防抖，当我连续不断输入时，不会发送请求；当我一段时间内不输入了，才会发送一次请求；如果小于这段时间继续输入的话，时间会重新计算，也不会发送请求。
 
 https://www.jianshu.com/p/c8b86b09daf0
 
 节流：指连续触发事件但是在 n 秒中只执行一次函数       时间戳版和定时器版  
 
 防抖： 指触发事件后在 n 秒内函数只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数执行时间。
-
-
 
 **防抖函数**https://segmentfault.com/a/1190000018445196
 
@@ -1356,9 +1348,12 @@ const input1 = document.getElementById('input1')
 上述注释掉的代码存在什么问题？   timer暴露在外面，容易被篡改
 
 function debounce(fn, delay) {
-    var timer; // 维护一个 timer
+    if(typeof fn!=='function') {
+        throw new TypeError('fn不是函数')
+	}
+    let timer; // 维护一个 timer
     return function () {
-        var _this = this; // 取debounce执行作用域的this
+        var _this = this; // 取debounce执行作用域的this(原函数挂载到的对象)
         var args = arguments;
         if (timer) {
             clearTimeout(timer);
@@ -1396,7 +1391,7 @@ const div1 = document.getElementById("div1")
 
 // 节流
 function throttle(fn, delay) {
-    var timer;
+    let timer;
     return function () {
         var _this = this;     //
         var args = arguments;  //
@@ -1404,7 +1399,8 @@ function throttle(fn, delay) {
             return;
         }
         timer = setTimeout(function () {
-            fn.apply(_this, args);
+            fn.apply(_this, args); // 这里args接收的是外边返回的函数的参数，不能用arguments
+         // fn.apply(_this, arguments); 需要注意：Chrome 14 以及 Internet Explorer 9 仍然不接受类数组对象。如果传入类数组对象，它们会抛出异常。
             timer = null; // 在delay后执行完fn之后清空timer，此时timer为假，throttle触发可以进入计时器
         }, delay)
     }
@@ -1414,83 +1410,6 @@ div1.addEventListener('drag', throttle((e) => {
   console.log(e.offsetX, e.offsetY)
 }, 100))
 ```
-
-##  promise
-
-https://blog.csdn.net/qq_34645412/article/details/81170576
-
-**then方法**中接受两个回调，一个成功的回调函数，一个失败的回调函数，并且能在回调函数中拿到成功的数据和失败的原因
-
-**catch** <u>和then方法中接受的第二参数rejected的回调是一样的</u>
-
-**all的用法**与then同级的另一个方法，all方法，该方法提供了并行执行异步操作的能力，并且在所有异步操作执行完后并且执行结果都是成功的时候才执行回调。all会把所有异步操作的结果放进一个数组中传给then，然后再执行then方法的成功回调将结果接收
-
-![img](https://img-blog.csdn.net/20180725102513955?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0NjQ1NDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
-
-**race的用法**
-
-all是等所有的异步操作都执行完了再执行then方法，那么race方法就是相反的，谁先执行完成就先执行回调。先执行完的不管是进行了race的成功回调还是失败回调，其余的将不会再进入race的任何回调
-
-手写promise:  处理异步， 加载图片
-
-```js
-//callback hell
-// 获取第一份数据
-$get(url1, (data1) =>{
-    console.log(data1)
-    // 获取第二份数据
-    $get(url2, (data2) => {
-        console.log(data2)
-        // 获取第三份数据
-        $get(url3, (data3) => {
-            console.log(data3)
-            // 获取更多数据
-        })
-    })
-})
-```
-
-https://blog.csdn.net/express_yourself/article/details/106212762
-
-解决方法：使用promise
-
-```js
-// promise
-function getData(url) {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url,
-            success(data) {
-                resolve(data)
-            },
-            error(err) {
-                reject(err)
-            }
-        })
-    })
-}
-
-const url1 = 'data1.json'
-const url2 = 'data2.json'
-const url3 = 'data3.json'
-getData(url1).then(data1 => {
-    console.log(data1)
-    return getData(url2)
-}).then(data2 => {
-    console.log(data2)
-    return getData(url3)
-}).then(data3 => {
-    console.log(data3)
-}).catch(er => console.error(err))    // 串联形式
-```
-
-**原生promise实现**
-
-https://juejin.im/post/5cb2f5f3f265da034d2a069d
-
-如果有大量的异步请求的时候，流程复杂的情况下，会发现充满了屏幕的`then`，看起来非常吃力，而ES7的Async/Await的出现就是为了解决这种复杂的情况。
-
-https://segmentfault.com/a/1190000016788484
 
 ## AJAX
 
@@ -1638,9 +1557,7 @@ https://juejin.im/post/5c66c24df265da2da83560d7
 
 ​	写在函数内第一行
 
-**变化**
-
-#### **1**、普通变量
+**1、普通变量**
 
 ```
 //严格模式下对不可写属性赋值，将报错。
@@ -1672,7 +1589,7 @@ delete demo5.x; // 删除成功
  
 ```
 
-#### **3****、禁止this关键字指向全局对象**
+**3、禁止this关键字指向全局对象**
 
 严格模式下，全局作用域的函数中的this不再指向全局而是undefined。
  如果使用构造函数时，如果忘了加new，this不再指向全局对象，而是undefined报错。
@@ -1691,13 +1608,12 @@ demo7_1(); //undefined
 demo7_2(); //undefined
  
 function demo7_4(){
-&emsp;  this.a = 1;
+   this.a = 1;
 };
 demo7_4();// 报错，使用构造函数时，如果忘了加new，this不再指向全局对象，而是undefined.a。
-复制代码
 ```
 
-#### **4****、静态绑定**
+**4、静态绑定**
 
 - 禁止使用with语句
 - eval语句本身就是一个作用域，它所生成的变量只能用于eval内部。
@@ -1706,7 +1622,7 @@ demo7_4();// 报错，使用构造函数时，如果忘了加new，this不再指
 //严格模式下禁用with
 var demo8 = 1;
 with (o){ // 报错 
-&emsp;&emsp;demo8 = 2;
+  demo8 = 2;
 }
  
 //正常模式下，eval语句的作用域，取决于它处于全局作用域，还是处于函数作用域。
@@ -1722,7 +1638,7 @@ function demo9() {
 demo9();
 ```
 
-#### **5****、arguments对象的限制**
+**5、aruments对象的限制**
 
 ```
 //不允许对arguments赋值
@@ -1750,7 +1666,7 @@ demo11(); // 报错
 复制代码
 ```
 
-#### **6****、禁止在函数内部遍历调用栈**
+**6、禁止在函数内部遍历调用栈**
 
 ```
 function demo12(){
@@ -1760,15 +1676,11 @@ function demo12(){
 demo12();
 ```
 
-#### **7****、保留字**
+**7、保留字**
 
 使用未来保留字(也许会在ECMAScript 6中使用):implements, interface, let, package, private, protected, public, static,和yield作为变量名或函数名会报错。
 
- 
-
 ​	1.变量必须先声明再使用（之前默认全局变量）
-
-
 
 ​	2.不能删除已声明的变量    //严格模式下无法删除变量。只有configurable设置为true的对象属性，才能被删除。 var x; delete x; // 报错
 
@@ -1888,6 +1800,184 @@ https://www.jianshu.com/p/9d64450f547c  案例，判断输出顺序https://jueji
 ### **JS 异步编程六种方案
 
 https://juejin.im/post/5c30375851882525ec200027#heading-1
+
+### 回调地狱->promise->async await
+
+`Promise`是避免回调地狱的一个进步。此方法并没有移除回调函数，但是将函数的调用连接起来并且简化了代码，使得代码更易于阅读。
+
+**promise**
+
+https://blog.csdn.net/qq_34645412/article/details/81170576
+
+**then方法** 可以接受两个参数，第一个对应resolve的回调，第二个对应reject的回调。（也就是说then方法中接受两个回调，一个成功的回调函数，一个失败的回调函数，并且能在回调函数中拿到成功的数据和失败的原因），所以我们能够分别拿到成功和失败传过来的数据就有以上的运行结果
+
+**catch** <u>和then方法中接受的第二参数rejected的回调是一样的</u>。它还有另外一个作用：执行resolve的回调（也就是上面then中的第一个参数）时，**如果抛出异常了（代码出错了），并不会报错卡死js，而是会进到这个catch方法中**。
+
+```
+Promise.reject(reason);
+```
+
+**all的用法**
+
+与then同级的另一个方法，all方法，该方法提供了并行执行异步操作的能力，并且在所有异步操作执行完后并且执行结果都是成功的时候才执行回调。<u>all会把所有异步操作的结果放进一个数组中传给then</u>，然后再执行then方法的成功回调将结果接收
+
+![img](https://img-blog.csdn.net/20180725102513955?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0NjQ1NDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+```js
+Promise
+		.all([promiseClick3(), promiseClick2(), promiseClick1()])
+		.then(function(results){
+			console.log(results);
+		});
+		
+/// 手写promise.all
+// 静态all方法
+  static all(promiseArr) {   // 它返回的也是一个promise对象
+    let count = 0
+    let result = []
+    return new Promise((resolve, reject) => {
+      if (!promiseArr.length)  return resolve(result)
+      promiseArr.forEach((item, i) => {   //当前项，索引
+        Promise.resolve(item).then(value => {  //then里接收两个参数，成功时的回调和失败时的回调   Promise.resolve(value)方法返回一个以给定值解析后的Promise 对象
+          count++
+          result[i] = value
+          if (count === promiseArr.length) {
+            resolve(result)
+          }
+        }, error => {
+          reject(error)
+        })
+      })
+    })
+  }
+```
+
+**race的用法**
+
+all是等所有的异步操作都执行完了再执行then方法，那么race方法就是相反的，谁先执行完成就先执行回调。先执行完的不管是进行了race的成功回调还是失败回调，其余的将不会再进入race的任何回调
+
+```js
+statuc race(arr) {
+    return new Promise((resolve,reject)=>{
+        arr.forEach(item=>{
+            Promise.resolve(p).then(value=>{
+                resolve(value)
+            },err=>{reject(err)})
+        })
+    })
+}
+```
+
+**promise.finally**
+
+无论成功失败都执行callback
+
+p.then().catch().finall()  参数都是函数
+
+```
+Promise.prototype.finally = function (callback) {
+  let P = this.constructor;
+  return this.then(
+    value  => {
+          callback();
+          return value;
+     },
+    reason => {
+        callback();
+        throw reason
+    }
+  );
+};
+```
+
+
+
+### Promise中的then第二个参数和catch有什么区别？
+
+第一，reject是用来抛出异常的，catch是用来处理异常的；第二：reject是Promise的方法，而then和catch是Promise实例的方法（Promise.prototype.then 和 Promise.prototype.catch）。
+
+主要区别就是，如果在then的第一个函数里抛出了异常，后面的catch能捕获到，而then的第二个函数捕获不到。
+
+https://www.cnblogs.com/yuanjili666/p/12203253.html
+
+手写promise:  处理异步， 加载图片
+
+```js
+//callback hell
+// 获取第一份数据
+$get(url1, (data1) =>{
+    console.log(data1)
+    // 获取第二份数据
+    $get(url2, (data2) => {
+        console.log(data2)
+        // 获取第三份数据
+        $get(url3, (data3) => {
+            console.log(data3)
+            // 获取更多数据
+        })
+    })
+})
+```
+
+https://blog.csdn.net/express_yourself/article/details/106212762
+
+解决方法：使用promise
+
+```js
+// promise
+function getData(url) {
+    return new Promise((resolve, reject) => {
+        .$ajax({
+            url,
+            success(data) {
+                resolve(data)
+            },
+            error(err) {
+                reject(err)
+            }
+        })
+    })
+}
+
+const url1 = 'data1.json'
+const url2 = 'data2.json'
+const url3 = 'data3.json'
+getData(url1).then(data1 => {
+    console.log(data1)
+    return getData(url2)
+}).then(data2 => {
+    console.log(data2)
+    return getData(url3)
+}).then(data3 => {
+    console.log(data3)
+}).catch(er => console.error(err))    // 串联形式
+```
+
+**原生promise实现**
+
+https://juejin.im/post/5cb2f5f3f265da034d2a069d
+
+如果有大量的异步请求的时候，流程复杂的情况下，会发现充满了屏幕的`then`，看起来非常吃力，而ES7的Async/Await的出现就是为了解决这种复杂的情况。
+
+https://segmentfault.com/a/1190000016788484
+
+**async await**
+
+`async`用于申明一个`function`是异步的，而`await` 用于等待一个异步方法执行完成。
+
+**使用 Async.js 库**
+
+`async.waterfall()` 和 `async.series()`。
+
+async.waterfall()
+
+当你要一个接一个地运行某些任务，然后将结果从上一个任务传到下一个任务时，这个函数非常有用。它需要一个函数“任务”数组和一个最终的“回调”函数，它会在“任务”数组中所有的函数完成后，或者用错误对象调用“回调”之后被调用。
+
+async.series()
+
+当你要运行一个函数然后在所有函数成功执行后需要获取结果时，它很有用。  `async.waterfall()` 和 `async.series()` 之间的主要区别在于， `async.series()` 不会将数据从一个函数传递到另一个函数。
+
+
 
 ## JS连续等号赋值问题 ***
 
@@ -2796,31 +2886,31 @@ https://juejin.im/entry/5aedcfa351882506a36c664c
 
 http://www.ruanyifeng.com/blog/2015/05/thunk.html
 
-## JavaScript中为什么string可以拥有方法？
+## 基本包装类型
+
+**q: JavaScript中为什么string可以拥有方法？**
 
 https://www.cnblogs.com/SheilaSun/p/4765394.html
 
-### 基本包装类型
-
-除了一开始提到的Object、Array等引用类型，JavaScript还为我们提供了三种特殊的引用类型：String、Number和Boolean，方便我们操作对应的基本类型。
+JavaScript还提供了三种特殊引用类型：String、Number和Boolean，方便操作对应的基本类型。
 
 继续看上面的剪辑字符串的例子，有没有注意到，尽管使用了substring方法，realMessage本身的值是不会变的，调用这个方法只是返回了一个新的字符串。
 
-这就是基本包装类型的作用了。本来你是没有方法的，但是你想用方法的时候，你尽管调，对应的基本包装类型有这个方法就行。例如上面的substring方法，string这个基本类型是不可能有这个方法的，但是String这个包装类型有啊，它会吭吭哧哧地把这个方法执行完把结果返回。在执行到：
+这就是基本包装类型的作用了。想用方法的时候，你尽管调，对应的基本包装类型有这个方法就行。例如上面的substring方法，string这个基本类型是不可能有这个方法的，但是String这个包装类型有啊，它会把这个方法执行完把结果返回。
+
+执行到这行代码时，发生了很多事。：
 
 ```
 realMessage.substring(5,15)
 ```
 
-这行代码时，发生了很多事。
-
-首先，它会从内存中读取realMessage的值。当处于这种读取模式下的时候，后台就开始干活了。JS高程是这样描述后台完成的这些动作的：
+首先，它会从内存中读取realMessage的值。当处于这种读取模式下的时候，后台就开始干活了：
 
 > 1.创建String类型的一个实例；
 > 2.在实例上调用指定的方法；
 > 3.销毁这个实例
 
-上面的例子可以用这样的代码来说明：
+上面的例子可以用这样的代码说明：
 
 ```
 var _realMessage=new String("Said I love you but I lied");
@@ -2828,7 +2918,7 @@ var myMessage=_realMessage.substring(5,15);
 _realMessgae=null; //方法调用后即销毁
 ```
 
-所以，这样我们就明白了，并不是基本类型string执行了自身方法，而是后台为它创建了一个对应的基本包装类型String，它根据基本类型的值实例化出了一个实例，让这个实例去调用指定方法，最后销毁自己，感天动地有木有。
+所以，并不是基本类型string执行了自身方法，是后台为它创建了一个对应的基本包装类型String，它根据基本类型的值实例化出了一个实例，让这个实例去调用指定方法，最后销毁自己。
 
 注意最后一步基本包装类型“会销毁”的特性，这决定了我们不能为基本类型值添加自定义属性和方法。
 
@@ -2837,6 +2927,8 @@ var me="sunjing";
 me.age=18;
 console.log(me.age);//undefined
 ```
+
+![image-20200915174745706](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200915174745706.png)
 
 ## 前端常用设计模式
 
