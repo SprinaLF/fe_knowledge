@@ -101,7 +101,11 @@ HTTP使用统一资源标识符（Uniform Resource Identifiers, URI）来传输�
 
 ## 前端性能优化
 
+**性能优化黄金法则**： 只有10%~20%的最终用户响应时间花在了下载HTML文档上，其余的80%~90%时间花在了下载页面中的所有组件上（脚本、CSS样式表、图片、Flash）。(改动前端的收益大)
+
 https://segmentfault.com/a/1190000020867090
+
+https://segmentfault.com/a/1190000021580224
 
 ### 1.加载优化
 
@@ -109,6 +113,7 @@ https://segmentfault.com/a/1190000020867090
 
 ![rule1.2.png](https://segmentfault.com/img/bVbCH94)
 
+- 图片地图  若导航栏和超链接中使用多个图片，则使用图片地图是加速页面的最简单的方式
 - 合并CSS和JS
 - CSS精灵图
 
@@ -427,7 +432,7 @@ https://zhuanlan.zhihu.com/p/114750961
 设置token
 	在请求中放入攻击者无法伪造的东西，从而避免此类攻击，如在http请求中加入随机的token，然后在数据提交时，先进行token验证，如果正确，则继续后续操作，否则阻止继续进行。
 
-# 前端安全
+## 前端安全
 
 https://juejin.im/entry/598d6eb46fb9a03c3a25d2c1
 
@@ -590,7 +595,23 @@ Javascript 的确是单线程的，阻塞和其他异步的需求的确是通过
 
 ## 跨域
 
-实现不同域的接口可以进行数据交互
+https://segmentfault.com/a/1190000011145364
+
+跨域是指一个域下的文档或脚本试图去请求另一个域下的资源，这里跨域是广义的。
+
+广义的跨域：
+
+1.) 资源跳转： A链接、重定向、表单提交
+
+2.) 资源嵌入： <link>、<script>、<img>、<frame>等dom标签，还有样式中background:url()、@font-face()等文件外链
+
+3.) 脚本请求： js发起的ajax请求、dom和js对象的跨域操作等
+
+通常所说的跨域是狭义的，是由浏览器相似策略限制的一类请求场景
+
+同源策略/ SOP（Same origin policy）是一种约定，是浏览器最核心最基本的安全功能，
+
+​     “协议+域名+端口”三者相同
 
 **同源策略限制内容有：**
 
@@ -603,6 +624,24 @@ Javascript 的确是单线程的，阻塞和其他异步的需求的确是通过
 - `<img src=XXX>`
 - `<link href=XXX>`
 - `<script src=XXX>`
+
+**跨域如何解决**
+
+1. JSONP：动态创建script，再请求一个带参网址实现跨域通信。
+
+2. document.domain + iframe跨域：两个页面都通过js强制设置document.domain为基础主域，就实现了同域。
+
+3. location.hash + iframe跨域：a欲与b跨域相互通信，通过中间页c来实现。 三个页面，不同域之间利用iframe的location.hash传值，相同域之间直接js访问来通信。
+
+4. window.name + iframe跨域：通过iframe的src属性由外域转向本地域，跨域数据即由iframe的window.name从外域传递到本地域。
+
+5. postMessage跨域：可以跨域操作的window属性之一。（HTML5）
+
+6. CORS：服务端设置Access-Control-Allow-Origin即可，前端无须设置，若要带cookie请求，前后端都需要设置。
+
+7. 代理跨域：启一个代理服务器，实现数据的转发
+
+8. WebSocket协议跨域
 
 ### jsonp
 

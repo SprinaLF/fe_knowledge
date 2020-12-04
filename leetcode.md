@@ -103,79 +103,6 @@ var subSort = function(array) {
 };
 console.log(subSort( [1,2,4,7,10,11,7,12,6,7,16,18,19]));
 ```
-## 17. 电话号码的字母组合
-```js
-var letterCombinations = function(digits){
-  let res=[];
-    let a={
-        2:'abc',
-        3:'def',
-        4:'ghi',
-        5:'jkl',
-        6:'mno',
-        7:'pqrs',
-        8:'tuv',
-        9:'wxyz'
-    }
-      for(let i=0;i<digits.length;i++){
-        let temp=[];
-        let word=a[digits[i]];
-        if(res.length>0){  //有数字，开始result中与当前word组合，没有就先放入
-          for(let char of word){  //对每个字符分别与每个res组合
-            for(let t of res){  //result之前的数与新单词的组合，再放入result
-              temp.push(t+char)
-            }
-          }
-          res=temp;
-        }else{
-          res.push(...word);  //['abc']与['a','b','c']的差别
-          // let s='abcd';
-          // let a=[]
-          //  a.push(...s)
-          //  console.log(a)
-        }
-    } return res;
-};
-////////求笛卡尔积方法   reducer
-// var descartFn = function(nums) {   //a:累计
-// 	let res= nums.reduce((a, curr)=> {
-// 		let m = a.map(item=> curr.map(i=> [i].concat(item)))
-// 		return  m.reduce((c, d)=> c.concat(d))
-// 	})
-//   return res;
-// }
-// console.log( descartFn([[1,5],[2,3],[3,4]]));
-```
-
-### 面试题 16.20. T9键盘
-
-```js
-var getValidT9Words = function(num, words){
-    let f,res=[]
-    let map={
-        2:['a','b','c'],
-        3:['d','e','f'],
-        4:['g','h','i'],
-        5:['j','k','l'],
-        6:['m','n','o'],
-        7:['p','q','r','s'],
-        8:['t','u','v'],
-        9:['w','x','y','z']
-    }
-    for(let word of words){   //检查每个单词
-        f=true
-        for(let i=0;i<num.length;i++){ //检查当前单词中的每个字符
-            if(!map[num[i]].includes(word[i])){
-                f=false
-                break
-            }
-        }
-        if(f) res.push(word)
-    }
-    return res
-};
-```
-
 ## 58 字符串左旋    字符串截取/拼接
 
 <!-- 常用的字符串截取函数要信手拈来，三个：slice(start, end)，substring(start, end)，substr(start,length)，其中slice跟substring效果一样，包含start，但是不包含end-->
@@ -530,6 +457,30 @@ var hasCycle = function(head) {
 };
 ```
 
+### II链表环的起点
+
+```js
+////1. map/set
+/// 2. 快慢指针 数学推导 相遇时再定义一个指针,再相遇时就是交点
+var detectCycle = function(head) {
+    if(!head) return null
+    let fast = head, slow = head
+     while(fast&&fast.next) {
+         fast = fast.next.next
+         slow = slow.next
+         if(fast==slow) {
+             let n = head
+             while(n!=slow) {      
+                 n = n.next
+                 slow = slow.next
+             }
+             return n
+         }
+     }
+     return null
+};
+```
+
 ### 面试题 两个链表是否相交
 
 ```js
@@ -544,7 +495,7 @@ var getIntersectionNode = function(headA, headB) {
     let p = headA, q = headB
     while(p!=q) {   // 一种是相交点相遇，另一种是都为null
         if(!p) p=headB
-        else p = p.next
+        else p = p.next      //////////这里else容易忘记！！
         if(!q) q=headA
         else q = q.next
     }
@@ -1497,7 +1448,23 @@ var validateStackSequences = function(pushed, popped) {
 };
 ```
 
-## 二叉树
+## 树
+
+### **二叉树构造字符串
+
+面试构造HTML
+
+```
+var tree2str = function(node) {
+        if(!node) return '' 
+        if(!node.left&&!node.right) return node.val+''
+        if(!node.right) return node.val+'(' + tree2str(node.left) + ')'
+        return node.val +'('+ tree2str(node.left)+')' +'(' + tree2str(node.right) + ')'
+        // 或者不区分，最后用replace去除空括号()
+};
+```
+
+
 
 ### 二叉树前中后序遍历 迭代
 
@@ -1619,7 +1586,7 @@ var isBalanced = function(root) {
     return true
 };
 function judge(root){
-    if(!root){··
+    if(!root){
         return 0
     }
     let left=judge(root.left)
@@ -1883,11 +1850,47 @@ const minDepth = (root) => {
 };
 ```
 
+### 路径总和
 
+```js
+var hasPathSum = function(root, sum) {
+    const dfs = (root,path)=> {   // path存放当前路径和
+        if(!root) return false
+        if(!root.left&&!root.right) {
+            return (path+root.val)===sum
+        }
+        return dfs(root.left,path+root.val)||dfs(root.right,path+root.val)
+    }
+    return dfs(root,0)
+};
+```
 
 ### **面试题34. 二叉树中和为某一值的路径**
 
 ```js
+///// 自己写的
+var pathSum = function(root, sum) {
+    const res = []
+    const dfs = (root,sum,path)=> {
+        if(!root) return
+        if(!root.left&&!root.right) {
+            if(sum-root.val==0) {
+                path.push(root.val)
+                res.push(path) 
+                return
+            }
+        }
+        path.push(root.val)
+        dfs(root.left,sum-root.val,path.slice())
+        dfs(root.right,sum-root.val,path.slice())
+        path.pop()  /////关键
+    }
+    dfs(root,sum,[])
+    return res
+};
+
+
+
 var pathSum = function(root, sum) {
     let res = []
     let dfs=function(root, path, sum){
@@ -1970,7 +1973,7 @@ var lowestCommonAncestor = function(root, p, q) {
 };
 ```
 
-#### 剑指 Offer 33. 二叉搜索树的后序遍历序列
+### 剑指 Offer 33. 二叉搜索树的后序遍历序列
 
 ```js
 //分治  每次判断左子树所有节点均小于当前根节点，右子树均大于当前根节点
@@ -2051,7 +2054,39 @@ var isSameTree = function(p, q) {
 };
 ```
 
+### 另一个树的子树
 
+```js
+/////转为比较s的左/右子树是否与t相同(100.相同的树)
+let isSame = function(s,t) {
+    if(!s&&!t) return true
+    if(!s||!t) return false
+    return s.val==t.val&&isSame(s.left,t.left)&&isSame(s.right,t.right)
+}
+var isSubtree = function(s, t) {
+  if(!s) return false
+  if(isSame(s,t)) return true
+  return isSubtree(s.left,t)||isSubtree(s.right,t)
+};
+```
+
+### [654. 最大二叉树](https://leetcode-cn.com/problems/maximum-binary-tree/)
+
+数组->二叉树    由数组构造二叉树
+
+```js
+var constructMaximumBinaryTree = function(nums) {
+    if(!nums.length) return null
+    let max = Math.max(...nums)
+    const pos = nums.indexOf(max)
+    let left = nums.slice(0,pos)
+    let right = nums.slice(pos+1)
+    let node = new TreeNode(max)
+    node.left = constructMaximumBinaryTree(left)
+    node.right = constructMaximumBinaryTree(right)
+    return node
+};
+```
 
 ## 滑动窗口
 
@@ -2153,7 +2188,7 @@ var rob = function(nums) {
 };
 ```
 
-#### 70. 爬楼梯
+### 70. 爬楼梯
 
 ```js
 //动态规划 dp[n]=dp[n-1]+dp[n-2]
@@ -2167,7 +2202,7 @@ var climbStairs = function(n) {
 };
 ```
 
-#### 面试题46. 把数字翻译成字符串
+### 面试题46. 把数字翻译成字符串
 
 ```js
 //动态规划，类似于跳台阶问题  加个判断条件
@@ -2189,7 +2224,7 @@ var translateNum = function(num) {
 };
 ```
 
-#### 面试题47. 礼物的最大价值
+### 面试题47. 礼物的最大价值
 
 ```js
 ////dp  dp[i][j] = grid[i][j] + max(dp[i - 1][j], dp[i][j - 1]) 
@@ -2221,7 +2256,7 @@ var maxValue = function(grid) {
 }
 ```
 
-#### 面试题63. 股票的最大利润
+### 面试题63. 股票的最大利润
 
 ```js
 //1. 记录当前最小的min   2.当天价格减去min，与最大利润比较，若是大，则更新最大利润
@@ -2241,7 +2276,7 @@ var maxProfit = function(prices) {
 };
 ```
 
-#### 面试题 16.17. 连续数列
+### 面试题 16.17. 连续数列
 
 ```js
 var maxSubArray = function(nums) {
@@ -2258,7 +2293,7 @@ var maxSubArray = function(nums) {
 }
 ```
 
-#### 丑数
+### 丑数
 
 ```js
 var nthUglyNumber = function(n) {
@@ -2439,6 +2474,105 @@ var subsets = function(nums) {
     return res
 };
 
+```
+
+### [面试题 08.09. 括号](https://leetcode-cn.com/problems/bracket-lcci/)
+
+给定数量，生成有效括号组合
+
+```js
+// 回溯+剪枝
+var generateParenthesis = function(n) {
+    const res = []
+    const dfs = (l,r,str) => {   // 左右剩余括号 当前字符串
+        if(str.length==n*2) {
+            res.push(str)
+            return
+        }
+        if(l) {
+            dfs(l-1,r,str+'(')
+        }
+        if(r>l) {    // 剩的右括号多时才可以选
+            dfs(l,r-1,str+')')
+        }  
+    }
+    dfs(n,n,'')
+    return res
+};
+```
+
+### 17. 电话号码的字母组合
+
+```js
+var letterCombinations = function(digits){
+  let res=[];
+    let a={
+        2:'abc',
+        3:'def',
+        4:'ghi',
+        5:'jkl',
+        6:'mno',
+        7:'pqrs',
+        8:'tuv',
+        9:'wxyz'
+    }
+      for(let i=0;i<digits.length;i++){
+        let temp=[];
+        let word=a[digits[i]];
+        if(res.length>0){  //有数字，开始result中与当前word组合，没有就先放入
+          for(let char of word){  //对每个字符分别与每个res组合
+            for(let t of res){  //result之前的数与新单词的组合，再放入result
+              temp.push(t+char)
+            }
+          }
+          res=temp;
+        }else{
+          res.push(...word);  //['abc']与['a','b','c']的差别
+          // let s='abcd';
+          // let a=[]
+          //  a.push(...s)
+          //  console.log(a)
+        }
+    } return res;
+};
+////////求笛卡尔积方法   reducer
+// var descartFn = function(nums) {   //a:累计
+// 	let res= nums.reduce((a, curr)=> {
+// 		let m = a.map(item=> curr.map(i=> [i].concat(item)))
+// 		return  m.reduce((c, d)=> c.concat(d))
+// 	})
+//   return res;
+// }
+// console.log( descartFn([[1,5],[2,3],[3,4]]));
+```
+
+### 面试题 16.20. T9键盘
+
+```js
+var getValidT9Words = function(num, words){
+    let f,res=[]
+    let map={
+        2:['a','b','c'],
+        3:['d','e','f'],
+        4:['g','h','i'],
+        5:['j','k','l'],
+        6:['m','n','o'],
+        7:['p','q','r','s'],
+        8:['t','u','v'],
+        9:['w','x','y','z']
+    }
+    for(let word of words){   //检查每个单词
+        f=true
+        for(let i=0;i<num.length;i++){ //检查当前单词中的每个字符
+            if(!map[num[i]].includes(word[i])){
+                f=false
+                break
+            }
+        }
+        if(f) res.push(word)
+    }
+    return res
+};
 ```
 
 顺时针打印矩形***
@@ -2692,7 +2826,9 @@ es6新特性 [a,b]=[b,a]
 y=[x, x = y] [0]
 异或 a=a^b;b=a^b;a=a^b;
 
+### 数组去重方法(十几种)
 
+https://blog.csdn.net/qq_29483485/article/details/83115224?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.control
 
 ```js
  //判断英文，数字，中文
@@ -2762,6 +2898,18 @@ for (let c of s) {
 return ' ';
 };
 ```
+
+### [面试题 01.01. 判定字符是否唯一](https://leetcode-cn.com/problems/is-unique-lcci/)
+
+```
+1. set/map 空间复杂度
+2. indexOf, lastIndexOf
+3. 排序，比较相邻的
+4. 双指针(双重循环)
+5. 位运算
+```
+
+
 
 ### Map对象的方法
 

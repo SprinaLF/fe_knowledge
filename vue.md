@@ -718,12 +718,7 @@ var app = new Vue({
         "domain": "www.cnblogs.com"
     }
 }
-复制代码
 ```
-
-
-
-- 
 
 ## 25、虚拟 DOM 的优缺点？
 
