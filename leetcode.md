@@ -1149,6 +1149,32 @@ console.log(kWeakestRows(a,k));
 ```
 ## 字符串
 
+### [125. 验证回文串](https://leetcode-cn.com/problems/valid-palindrome/)
+
+```js
+   //// 双指针
+    const test = (val)=> {
+        if(val>='0'&&val<='9'||val>='a'&&val<='z') return true
+        return false
+    }
+    var isPalindrome = function(s) {
+        if(!s) return true
+        s = s.toLowerCase()  // 统一转成小写
+        /// 否则就是 charCodeAt()
+        let p = 0, q = s.length-1
+        while(p<q) {
+            while(!test(s[p])&&p<q) p++
+            while(!test(s[q])&&p<q) q--
+            if(s[p]!=s[q]) return false
+            p++
+            q--
+        }
+        return true
+    };
+```
+
+
+
 ### 字符串压缩
 
 ```
@@ -1449,6 +1475,23 @@ var validateStackSequences = function(pushed, popped) {
 ```
 
 ## 树
+
+#### [814. 二叉树剪枝](https://leetcode-cn.com/problems/binary-tree-pruning/)
+
+```js
+var pruneTree = function(root) {
+   if(!root) return null
+   if(root.left) {
+       root.left = pruneTree(root.left)
+   }
+   if(root.right) {
+       root.right = pruneTree(root.right) 
+   }
+   // 后序遍历
+   if(!root.left && !root.right && root.val==0) return null
+   return root
+};
+```
 
 ### **二叉树构造字符串
 
@@ -2256,6 +2299,34 @@ var maxValue = function(grid) {
 }
 ```
 
+### 最小路径和
+
+与礼物最大价值做法一样
+
+```js
+var minPathSum = function(grid) {
+    const row = grid.length
+    const col = grid[0].length
+    const dp = Array.from(new Array(row),()=>new Array(col))
+    dp[0][0] = grid[0][0]
+    // 1. 确定边界值
+    for(let i=1;i<row;i++) {
+        dp[i][0] = dp[i-1][0] + grid[i][0]
+    }
+    for(let j=1;j<col;j++) {
+        dp[0][j] = dp[0][j-1] + grid[0][j]
+    }
+    for(let i = 1; i<row; i++) {
+        for(let j = 1; j<col; j++) {
+            dp[i][j] = Math.min(dp[i-1][j],dp[i][j-1]) + grid[i][j]
+        }
+    }
+    return dp[row-1][col-1]
+};
+```
+
+
+
 ### 面试题63. 股票的最大利润
 
 ```js
@@ -2414,9 +2485,9 @@ var permutation = function(S) {
         }
         for(let i in S) {
             if(path.indexOf(S[i])==-1) {
-                path.concat(S[i])
+                path = path+S[i]
                 backTrack(path)
-                path.slice(0,path.length-1)
+                path = path.slice(0,path.length-1)
             }
         }
     }
@@ -2688,6 +2759,14 @@ var deleteNode = function(node) {
     node.next = node.next.next
 };
 ```
+
+### [面试题 03.02. 栈的最小值](https://leetcode-cn.com/problems/min-stack-lcci/)
+
+执行push、pop和min操作的时间复杂度必须为**O(1)**。
+
+双栈，用一个栈去记录最小值    <空间换时间>
+
+
 
 ## 应用
 
@@ -2977,6 +3056,33 @@ class Stack {
   }
 }
 ```
+
+### 数组方法(哪些改变原数组，哪些不改变)
+
+> 改变原始数组的操作方法：
+
+1. push：向数组末尾添加元素，并返回新的长度
+2. pop：删除最后一个并返回删除的元素
+3. unshift：向数组开头添加元素，并返回新的长度
+4. shift：将第一个元素删除并且返回删除元素，空即为undefined
+5. reverse：颠倒数组顺序
+6. sort：对数组排序
+7. splice：删，增，替换数组元素，返回被删除数组，无删除则不返回
+
+> 不会改变原始数组的操作方法：
+
+1. concat：连接多个数组，返回新的数组
+2. join：将数组中所有元素以参数作为分隔符放入一个字符
+3. slice：返回选定元素
+4. map(es6)：数组映射为新的数组
+5. filter(es6)：数组过滤，返回所有通过方法判断后(判断为true时)生成的新数组
+6. forEach：数组遍历，没有返回值
+7. every(es6)：对数组中的每一项运行给定函数，如每一项均为true时返回true，否则返回false
+8. some(es6)：数组中的的元素运行给定函数，如其中有一项为true时返回true，此时剩余的元素不会再执行检测，如果所以都为false则返回false
+9. find(es6)：寻找数组中符合测试方法（函数）条件的第一个元素，并且返回该元素
+10. reduce(es6)：方法接收一个函数作为累加器，数组中的每个值（从左到右）开始缩减，最终计算为一个值。
+11. indexOf:  方法返回在数组中可以找到一个给定元素的第一个索引，如果不存在，则返回-1。
+12. includes(es7)：方法用来判断一个数组是否包含一个指定的值，根据情况，如果包含则返回true，否则返回false。
 
 ## 排序
 
