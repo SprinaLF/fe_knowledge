@@ -467,11 +467,23 @@ CSS3中建议使用:表示伪元素，如：a:hover
 
 1. display：none，改变页面布局，可理解成在页面中把该元素删除。
 2. visibility：hidden，占位，不触发该元素已经绑定的事件
-3. opacity：0     不占位， 触发
+3. opacity：0     占位， 触发
 
 **补充：**
 
 `z-index` 属性设定了一个定位元素及其后代元素或 flex 项目的 z-order。 当元素之间重叠的时候， z-index 较大的元素会覆盖较小的元素在上层进行显示。
+
+| css                                                          | 特性                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| display: none;                                               | 不占据空间，无法点击                                         |
+| visibility: hidden;                                          | 占据空间，无法点击                                           |
+| position: absolute; top: -999em;                             | 不占据空间，无法点击                                         |
+| position: relative; top: -999em;                             | 占据空间，无法点击                                           |
+| position: absolute; visibility: hidden;                      | 不占据空间，无法点击                                         |
+| height: 0; overflow: hidden;                                 | 不占据空间，无法点击                                         |
+| opacity: 0; filter:Alpha(opacity=0);                         | 占据空间，可以点击                                           |
+| position: absolute; opacity: 0; filter:Alpha(opacity=0);     | 不占据空间，可以点击                                         |
+| zoom: 0.001;-moz-transform: scale(0); -webkit-transform: scale(0); -o-transform: scale(0);transform: scale(0); | IE6/IE7/IE9不占据空间，IE8/FireFox/Chrome/Opera占据空间。都无法点击 |
 
 ## js的各种位置，比如clientHeight,scrollHeight,o...
 
@@ -479,7 +491,7 @@ CSS3中建议使用:表示伪元素，如：a:hover
 
 ## flex布局***
 
-比浮动简单   移动端**
+移动端**
 
 灵活性
 
@@ -504,11 +516,13 @@ CSS3中建议使用:表示伪元素，如：a:hover
 
 4. flex-basis属性定义了在分配多余空间之前，项目占据的主轴空间（main size）。浏览器根据这个属性，计算主轴是否有多余空间。默认值为auto，项目的本来大小。
 
-5.  flex:  flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。
+5. flex:  flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。
 
    当 `flex` 取值为一个非负数字，则该数字为 `flex-grow` 值，`flex-shrink` 取 1，`flex-basis` 取 0%
 
-   flex取值详细：https://www.cnblogs.com/ceceliahappycoding/p/10791191.html
+   flex取值详细：
+
+   https://www.jianshu.com/p/57a94430dcbe
 
 6. align-self    允许单个项目有与其他项目不一样的对齐方式。默认值auto，继承父元素的align-items属性
 

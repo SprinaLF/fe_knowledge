@@ -9,9 +9,13 @@ let obj = {name: 'xiaoming'}; let obj2 = obj; obj2.name = "xiaohong"
 
 obj = null , obj2.name =??   //仍然为xiaohong   obj不指向这块堆区域了
 
+**ES6 新增：**set, map
+
 ## JS的内存空间
 
 https://juejin.cn/post/6844903615300108302
+
+https://juejin.im/post/6844903873992196110
 
 分为栈(stack)、堆(heap)、池(一般也会归类为栈中)。
 
@@ -152,13 +156,7 @@ for(let i=0;i<lis.length;i++){
 }
 ```
 
-
-
-
-
 ## 声明提前
-
-https://juejin.im/post/6844903873992196110
 
 1.变量
 
@@ -238,8 +236,8 @@ console.log(cat instanceof Cat); //true
 
 - 非常纯粹的继承关系，实例是子类的实例，也是父类的实例
 - 父类新增原型方法/原型属性，子类都能访问到，很好的实现了方法的共享； 
-- 简单易实现
-  缺点：
+- 简单
+  **缺点**：
 - 无法实现多继承 
 - 来自原型对象的引用属性是所有实例共享的(一个实例的修改，其他也会发生变化)
 - 创建子类实例时，无法向父类构造函数传参
@@ -263,7 +261,7 @@ console.log(cat instanceof Cat); // true
 
 优点：
 
-- 解决了1中，子类实例共享父类引用属性的问题（不是prototype）
+- 解决了1中 子类实例共享父类引用属性问题（不是prototype）
 - 创建子类实例时，可以向父类传递参数
 - 可实现多继承（call多个父类对象）
   缺点：
@@ -291,7 +289,7 @@ console.log(cat instanceof Cat); // false
 
 优点：
 
-- 不限制调用方式，new 子类()和 子类(),返回的对象具有相同的效果
+- 不限制调用方式，new 子类()和 子类(),返回的对象有相同效果
   缺点：
 - 实例是父类的实例，不是子类的实例
 - 不支持多继承
@@ -986,7 +984,7 @@ console.log(arr3)
 let arr3 = Math.max(...arr)
 ```
 
-其中第一种方法标准循环运行速度最快，其次是第四种内置函数max方法；最慢的是ES6扩展，稍快一点的是内置的reduce函数方法。
+其中第一种方法标准循环运行速度最快，其次是第四种内置函数max方法；稍快一点的是内置的reduce函数方法; 最慢的是ES6扩展
 
 ## 常见手写
 
@@ -1010,9 +1008,9 @@ arr.myMap(function(item,index,arr){
 
 ### 手写instanceof
 
-**判断一个实例是否是其父类型或者祖先类型的实例。**
+**判断一个实例是否是其父类或者祖先类型的实例。**
 
-**instanceof** **主要的实现原理就是只要右边变量的 prototype** **在左边变量的原型链上。因此，instanceof** <u>**在查找的过程中会遍历左边变量的原型链，直到找到右边变量的 prototype**</u>查找失败，返回 false，(左边变量并非是右边变量的实例.)
+**instanceof** <u>**在查找的过程中会遍历左边变量的原型链，直到找到右边变量的 prototype**</u>查找失败，返回 false
 
 补充：instance和typeof实现原理
 
@@ -1102,8 +1100,8 @@ Function.prototype.myCall=function(context=window){  // 函数的方法，所以
     obj.fn=this      //this为调用的上下文,this此处为函数，将这个函数作为obj的方法
     const arg=[...arguments].slice(1)   //第一个为obj,删除   伪数组转为数组******
     res=obj.fn(...arg)
-    delete obj.fn   // 不删除会导致context上的属性越来越多
-    return res   //执行结果 
+    delete obj.fn   // 不删除会导致context属性越来越多
+    return res
 }
 
 //用法：f.call(obj,arg1)
@@ -1225,7 +1223,7 @@ Function.prototype.bind = function (context, ...outerArgs) {
       that.call(context, ...outerArgs, ...innerArgs)
     }
   }
-  res.prototype = this.prototype
+  res.prototype = this.prototype //！！！
   return res
 }
 ```
@@ -1272,7 +1270,7 @@ p2.sayHi()
 
 1. 创建一个空对象 obj;
 
-2. 将新创建的空对象的隐式原型（__proto__）指向其构造函数的显示原型(prototype)。
+2. 将空对象的隐式原型（__proto__）指向构造函数的prototype。
 
 3. 使用 call 改变 this 的指向
 
@@ -1591,7 +1589,7 @@ delete demo5.x; // 删除成功
 
 **3、禁止this关键字指向全局对象**
 
-严格模式下，全局作用域的函数中的this不再指向全局而是undefined。
+全局作用域的函数中的this不再指向全局而是undefined。
  如果使用构造函数时，如果忘了加new，this不再指向全局对象，而是undefined报错。
 
 ```
@@ -2125,7 +2123,9 @@ numbers.sort((a, b) => a - b);
 console.log(numbers);
 ```
 
+**数组sort方法用的是哪种排序算法**
 
+不同浏览器实现原理不同，火狐是归并排序，谷歌是插入和快速排序的结合 大于10用快速排序
 
 ## 事件流
 
@@ -2141,7 +2141,7 @@ console.log(numbers);
 (1)capturing phase:**事件捕获阶段**。
  事件被从document一直向下传播到目标元素,在这过程中依次检查经过的节点是否注册了**该事件的监听函数**，若有则执行。   （给元素绑定监听器）
 
-(2)target phase:事件处理阶段。
+(2)target phase:事件处理阶段（处于目标阶段）。
  事件到达目标元素,执行目标元素的事件处理函数.
 
 (3)bubbling phase:事件冒泡阶段。
@@ -2185,7 +2185,7 @@ element.onclick = function2;
 etc.
 ```
 
-[stopPropagation()](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation)的函数, 当在事件对象上调用该函数时，它只会让当前事件处理程序运行，但事件不会在冒泡链上进一步扩大，因此将不会有更多事件处理器被运行(不会向上冒泡)
+[stopPropagation()](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation)的函数, **当在事件对象上调用该函数时，它只会让当前事件处理程序运行，但事件不会在冒泡链上进一步扩大，因此将不会有更多事件处理器被运行(不会向上冒泡)**
 
 **事件委托应用场景**
 
@@ -2241,7 +2241,7 @@ function bindEvent(elem, type, selector, fn){
 > ul.addEventListener("click",function(e) { 
 >
 > 	if(e.target && e.target.nodeName.toLowerCase() == "li") { // 检查事件源e.target是否为Li 
-> 	
+> 						
 > 	 console.log("List item ",e.target.id.replace("post-","")," was clicked!"); // 打印当前点击是第几个item 
 >
 > } 
@@ -2589,7 +2589,13 @@ https://www.jianshu.com/p/0f49c88cf169
 
 ### 箭头函数，它的this指向
 
-有点乱，，可以理解为指向最外层函数，没有就window
+https://zhuanlan.zhihu.com/p/26475137
+
+箭头函数中的this，指向与一般function定义的函数不同，
+
+箭头函数中的this是在定义函数的时候绑定，而不是在执行函数的时候绑定。
+
+所谓的定义时候绑定，就是this是继承自父执行上下文！！中的this，比如这里的箭头函数中的this.x，箭头函数本身与say平级以key:value的形式，也就是箭头函数本身所在的对象为obj，而obj的父执行上下文就是window
 
 https://segmentfault.com/a/1190000014027459
 
@@ -2660,11 +2666,79 @@ https://segmentfault.com/a/1190000010946164
    // Throws "TypeError: Message is not a constructor"
    var helloMessage = new Message('Hello World!');  
 
-### **js this指向
+## **js this指向
 
 https://juejin.im/post/5c0c87b35188252e8966c78a
 
 1. 构造函数的this指向：实例化前，构造函数指向window，实例化之后，指向new的这个实例
+
+```js
+// Q1
+var a = 1;
+
+function print () {
+  console.log(this.a)  1
+}
+
+print()
+// Q2
+const obj = {
+   a: 2,
+   print: function () { console.log(this.a) }   2
+}
+
+obj.print();
+
+// Q3
+const obj = {
+   a: 3,
+   print: function () { console.log(this.a) }   
+}
+
+const foo = obj.print; 
+foo()
+undefined
+
+// Q4
+const obj = {
+   a: 4,
+   print: () => { console.log(this.a) }
+}
+obj.print();
+undefined
+
+// Q5
+var a = 5
+const obj = {
+   a: 6,
+   print: () => { console.log(this.a) }
+}
+obj.print.call({a: 7});
+箭头函数 undefined
+
+// Q6
+function Person () {
+  this.a = 8
+  this.print = function () {console.log(this.a)}
+  return {a: 9}
+}
+
+const p = new Person() // new中this指向return的对象(想想new的原理)
+console.log(p.a)     9
+console.log(p.print())  // 报错 this指向的对象没有这个方法
+
+
+// Q7
+'use strict';
+var a = 1;
+
+function print () {
+  console.log(this.a)
+}
+print()  报错 this为undefined
+```
+
+
 
 ### Promise
 
@@ -2828,6 +2902,8 @@ https://blog.csdn.net/weixin_42152035/article/details/88345527?utm_medium=distri
 https://blog.csdn.net/qq_31853247/article/details/84994933?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.nonecase
 
 ## ==  和===
+
+**NaN 与任何值都不相等，包括 NaN 自身**
 
 对于Array,Object等高级类型，==和===是没有区别的
  基础类型与高级类型，==和===是有区别的

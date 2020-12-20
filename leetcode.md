@@ -1476,7 +1476,7 @@ var validateStackSequences = function(pushed, popped) {
 
 ## 树
 
-#### [814. 二叉树剪枝](https://leetcode-cn.com/problems/binary-tree-pruning/)
+### [814. 二叉树剪枝](https://leetcode-cn.com/problems/binary-tree-pruning/)
 
 ```js
 var pruneTree = function(root) {
@@ -1682,6 +1682,36 @@ var isBalanced = function(root) {
 
 ```
 补充： 自低向下的层序遍历只需将每层的元素插入到最前面（push改为unshift）
+
+**层序遍历时只用一层循环**
+
+例：层序遍历求每层平均值
+
+思路：用temp去记录下一层，遍历完当前层后更新temp和queue
+
+```js
+var averageOfLevels = function(root) {
+    if(!root) return []
+    let res= []
+    let queue = [root] // 存放当前层的节点
+    let temp = [] // 存放下一层的节点
+    let sum = 0, l = queue.length
+    while(queue.length>0||temp.length>0) { /// 单层循环
+        if(queue.length===0) {  // 当前层遍历完
+            queue = temp
+            temp = []
+            res.push(sum/l)
+            sum = 0, l = queue.length
+        } 
+        let node = queue.shift()
+        sum+=node.val
+        if(node.left) temp.push(node.left)
+        if(node.right) temp.push(node.right)
+    }
+    res.push(sum/l)
+    return res
+};
+```
 
 ### 515. 在每个树行中找最大值
 
