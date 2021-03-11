@@ -2241,7 +2241,7 @@ function bindEvent(elem, type, selector, fn){
 > ul.addEventListener("click",function(e) { 
 >
 > 	if(e.target && e.target.nodeName.toLowerCase() == "li") { // 检查事件源e.target是否为Li 
-> 						
+> 							
 > 	 console.log("List item ",e.target.id.replace("post-","")," was clicked!"); // 打印当前点击是第几个item 
 >
 > } 
@@ -2252,9 +2252,9 @@ function bindEvent(elem, type, selector, fn){
 
 
 
-
-
 ## 正则表达式
+
+常考: 匹配手机号，匹配不同文件类型
 
 **正则匹配手机**
 

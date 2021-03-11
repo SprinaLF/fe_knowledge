@@ -102,6 +102,14 @@ https://juejin.im/post/5b6f1800f265da282d45a79a#heading-0
 
 ## Redux
 
+问题来了，React 中一个组件里面维护数据只需要 state 和 setState 就可以轻松搞定。假如多个组件都需要维护这一份数据怎么办呢？
+
+没有redux时，1. 都传给公共父组件，再由父组件一层层传给需要的组件。   2. 消息订阅与发布的方式，需要该数据的组件去订阅
+
+Redux 核心的部分 Store，Store 中管理的数据独立于 React 组件之外，如果 React 某个组件中的某个数据在某个时刻改变了（可以称之为状态改变了），就可以直接更改这个 Store 中管理的数据，这样其他组件想要拿到此时的数据直接拿就行了，不需要传来传去。
+
+Store 通常要和 Reducer 来配合使用，Store 存数据，Reducer 是个纯函数，它接收并更新数据。
+
 提供可预测化状态管理。State以对象树形式存在store中。通过触发action来改变state.用到函数reducer
 
 ## react高频面试题
@@ -118,7 +126,7 @@ https://www.ruanyifeng.com/blog/2019/09/react-hooks.html
 
 https://zh-hans.reactjs.org/docs/hooks-intro.html
 
-Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。
+在不编写 class 的情况下(函数组件)使用 state 以及其他的 React 特性。
 
 你可以使用 Hook 从组件中提取状态逻辑，使得这些逻辑可以单独测试并复用。Hook 使你在无需修改组件结构的情况下复用状态逻辑。
 
@@ -228,6 +236,10 @@ https://ssshooter.com/2019-03-15-react-render/
 https://juejin.im/post/5cbea2535188250a52246717
 
 https://www.jianshu.com/p/77467c15a0ce
+
+## react-router
+
+如何工作？如果输入 '/a/b/c/index.html'应该怎么处理
 
 ## 项目中的难点
 
