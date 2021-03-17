@@ -1793,7 +1793,7 @@ https://www.jianshu.com/p/9d64450f547c  案例，判断输出顺序https://jueji
 
 **setImmediate保持在宏队列最后面（同类型谁先来谁执行）**
 
-
+[]:   <u>setTimeout指定的时间不是从运行完setTimeout开始计算而是从当前执行栈执行完开始计算。</u>
 
 ### **JS 异步编程六种方案
 
@@ -2241,7 +2241,7 @@ function bindEvent(elem, type, selector, fn){
 > ul.addEventListener("click",function(e) { 
 >
 > 	if(e.target && e.target.nodeName.toLowerCase() == "li") { // 检查事件源e.target是否为Li 
-> 							
+> 								
 > 	 console.log("List item ",e.target.id.replace("post-","")," was clicked!"); // 打印当前点击是第几个item 
 >
 > } 

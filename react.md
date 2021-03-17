@@ -112,6 +112,8 @@ Store 通常要和 Reducer 来配合使用，Store 存数据，Reducer 是个纯
 
 提供可预测化状态管理。State以对象树形式存在store中。通过触发action来改变state.用到函数reducer
 
+![img](http://www.ruanyifeng.com/blogimg/asset/2016/bg2016091802.jpg)
+
 ## react高频面试题
 
 https://zhuanlan.zhihu.com/p/82840768

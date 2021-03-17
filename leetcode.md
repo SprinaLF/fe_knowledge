@@ -3020,10 +3020,6 @@ return ' ';
 
 
 
-### Map对象的方法
-
-https://blog.csdn.net/wuyujin1997/article/details/88739311
-
 ### 循环、迭代与递归
 
 http://www.nowamagic.net/librarys/veda/detail/2324
@@ -3196,4 +3192,66 @@ function insertionSort(arr){
 }
 ```
 
-###  
+# 知识点
+
+### 几种数组遍历
+
+```js
+//filter遍历方法 过滤，满足条件返回一个新数组，不满足条件返回一个空数组
+        let arr1 = [1, 2, 3, 4, 5, 6];
+        let res = arr1.filter((item) => { 
+            return item == 0
+        })
+        if(res.length){
+            console.log(true);
+        }else{
+            console.log(false);
+        }
+
+  //map遍历 返回一个经过处理的新数组
+        let aa = arr1.map((item)=>{
+            return item+1
+        })
+        console.log(aa);
+
+ //every遍历 判断数组中的所有元素是否满足条件，返回结果为布尔值
+        let bb= arr1.every((item)=>{
+            return item!=1
+        })
+        console.log(bb);
+
+ //some遍历 若数组中元素有一个满足条件，就返回true，全部不满足，才返回false
+        let cc = arr1.some((item)=>{
+            return item>=5
+        })
+        console.log(cc);
+
+//find遍历,判断是否满足条件，如果满足，返回第一个满足的元素，全部不满足，返回undefined
+        let dd = arr1.find((a)=>{
+            return a>=10
+        })
+        console.log(dd);
+
+ //findIndex遍历,判断是否满足条件，如果满足，返回第一个满足的索引，全部不满足，返回-1
+        let ee = arr1.findIndex((a)=>{
+            return a>=7
+        })
+        console.log(ee);
+
+```
+
+### Map对象的方法
+
+https://blog.csdn.net/wuyujin1997/article/details/88739311
+
+![image-20210317115538612](/Users/wenxin/Library/Application Support/typora-user-images/image-20210317115538612.png)
+
+![image-20210317142629776](/Users/wenxin/Library/Application Support/typora-user-images/image-20210317142629776.png)
+
+This.map.keys().next().value   // 得到第一个键值
+
+等价于 this.map.entries().next().value[0]
+
+### Set
+
+![image-20210317142853906](/Users/wenxin/Library/Application Support/typora-user-images/image-20210317142853906.png)
