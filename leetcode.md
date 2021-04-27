@@ -3252,6 +3252,8 @@ This.map.keys().next().value   // 得到第一个键值
 
 等价于 this.map.entries().next().value[0]
 
+遍历： https://blog.csdn.net/wuyujin1997/article/details/88739311
+
 ### Set
 
 ![image-20210317142853906](/Users/wenxin/Library/Application Support/typora-user-images/image-20210317142853906.png)

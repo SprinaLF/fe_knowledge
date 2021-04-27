@@ -1,5 +1,7 @@
 ## 从输入URL到页面展示
 
+![img](https://filescdn.proginn.com/699ae93abb42cecba50760d04df74577/60ac0b5f7f6bf49e67efa9b37a5aeed5.webp)
+
 https://juejin.im/post/5b148a2ce51d4506965908d2 （详细）
 
 区分：浏览器工作、服务器所做工作
@@ -160,21 +162,21 @@ https://segmentfault.com/a/1190000021580224
 - 频繁DOM操作合成一个
   	
   	[使用文档碎片（DocumentFragments）追加DOM元素](https://www.cnblogs.com/jehorn/p/8117100.html)
-    	
-    	因为DocumentFragment不是真实DOM树的一部分，它的变化不会引起DOM树的重新渲染的操作(reflow)，且不会导致性能等问题。
-    	
-    	```js
-    	const listNode=document.getElementsByClassName('list')
-    		//创建一个文档片段
-    		const frag=document.createDocumentFragment()
-    		//执行插入
-    		for(let x=0;x<10;x++){
-    			const li=document.createElement('li')
-    			frag.appendChild(li)
-    		}
-    		//再插入到DOM树
-    		listNode.appendChild(frag)
-    	```
+  	
+  	因为DocumentFragment不是真实DOM树的一部分，它的变化不会引起DOM树的重新渲染的操作(reflow)，且不会导致性能等问题。
+  	
+  	```js
+  	const listNode=document.getElementsByClassName('list')
+  		//创建一个文档片段
+  		const frag=document.createDocumentFragment()
+  		//执行插入
+  		for(let x=0;x<10;x++){
+  			const li=document.createElement('li')
+  			frag.appendChild(li)
+  		}
+  		//再插入到DOM树
+  		listNode.appendChild(frag)
+  	```
   
 - DOM查询缓存
   
