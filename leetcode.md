@@ -1,5 +1,5 @@
 
-## leetcode 07 整数反转
+##  leetcode 07 整数反转
 ```js
 // 在java中整除用/  取余用% 但js /  所的结果为浮点数
 // 应该调用以下方法
@@ -2923,6 +2923,98 @@ var generate = function(numRows) {
 
 ## 其它
 
+### **大数相加
+
+https://cloud.tencent.com/developer/article/1483443
+
+![image-20210727155010974](https://tva1.sinaimg.cn/large/008i3skNgy1gsvk40mg79j31160aajt8.jpg)
+
+> 在 JavaScript 中, Number 是一种 定义为 64位双精度浮点型（double-precision 64-bit floating point format） (IEEE 754)的数字数据类型。在其他编程语言中，有不同的数字类型存在，比如：整型（Integers），单精度浮点型（Floats），双精度浮点型（Doubles），大数（Bignums）。
+
+IEEE754类型的值有一个特点，它在介于 -(2^53 -1) 到 2^53-1之间时是精确的，一旦不在这个区间的时候便出现精度问题，所以出现上面问题的原因是Javascript的采用的IEEE754标准而导致的
+
+![image-20210727155651349](/Users/wenxin/Library/Application Support/typora-user-images/image-20210727155651349.png)
+
+**MAX_VALUE：** 该属性是 JavaScript 中可表示的最大的数。它的近似值为 1.7976931348623157e+308。
+
+**MIN_VALUE**： 该属性是 JavaScript 里最接近 0 的正值，而不是最小的负值。它的值约为 5-324，小于 MIN_VALUE的值将会转换为 0。
+
+**MAX_SAFE_INTEGER**：它的值精确表示为9007199254740991，这个属性出现的原因正是因为JavaScript使用了IEEE754中指定的双精度浮点格式数字丢失精度，它定义了JavaScript计算中避免丢失精度最大安全数字边界2的53次方- 1。
+
+**MIN_SAFE_INTEGER**: 它的值精确表示为-9007199254740991, 代表在 JavaScript计算中避免丢失精度的最小安全数字边界 -(2的53次方 - 1).
+
+**如何进行一个大于2的53次方的数运算**
+
+> 面试高频考点，俗称“大数相加”，主要考查是否了解JavaScript的数值类型的底层原理，以及超出精度下的超大数计算思想。
+
+
+
+**求解：**
+
+将这里的“大数加法”运算变成两个超大数字从末尾一个一个向前加求和的过程。
+
+leetcode对应题目https://leetcode-cn.com/problems/add-strings/
+
+
+
+```js
+var addStrings = function(num1, num2) {
+    let p = num1.length-1, q = num2.length-1, temp = 0 // 保存进位
+    let res = ''  // 保存结果字符串
+    while( p>=0 || q>=0 ) {
+        let i = p>=0?(num1[p]-'0'):0   // 没数了，当成0处理====字符转数字
+        let j = q>=0?(num2[q]-'0'):0
+        res = (i + j + temp)%10 + res
+        temp = Math.floor((i + j + temp)/10)  // !这里注意加上之前的进位
+        p--, q--
+    }  
+    if(temp) {    // 最后可能会多一位
+        return 1+res
+    }
+    return res
+};
+
+
+或者把最后的判断写到循环条件里
+while( p>=0 || q>=0 || temp )
+```
+
+
+
+### 统计出现最多的单词及次数
+
+1. 请写一个函数，计算一篇英文文章中出现次数最多的单词及出现次数。
+
+这道题用正则表达式分割然后计数，最后面试官说做的不错，参考代码
+
+
+
+```swift
+function mostFrequentWord(str) {
+  let count = {}
+  let words = str.split(/\W+/)
+  let max = 0
+  let result = []
+  words.forEach(word => {
+    count[word] = count.hasOwnProperty(word) ? count[word]+1 : 1;
+    if (count[word] > max) {
+      max = count[word]
+      result = [word]
+    } else if (count[word] === max) {
+      result.push(word)
+    }
+  })
+  return {words: result, count: max}
+}
+```
+
+
+
+作者：C脖子
+链接：https://www.jianshu.com/p/f3f079876395
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
 ### 不使用临时变量交换值
 
 https://blog.csdn.net/weixin_44827421/article/details/93717370
@@ -3024,7 +3116,7 @@ return ' ';
 
 http://www.nowamagic.net/librarys/veda/detail/2324
 
-### 不用数组，实现栈结构 
+### 不用数组，实现栈结构
 
 用对象 count记录栈顶
 
@@ -3243,6 +3335,16 @@ function insertionSort(arr){
 ### Map对象的方法
 
 https://blog.csdn.net/wuyujin1997/article/details/88739311
+
+```js
+var m = new Map([['Michael', 95], ['Bob', 75], ['Tracy', 85]]);
+m.get('Michael'); // 95
+
+let s = new Set([0,1,2])
+      s.add(0)
+      s.delete(1)
+      console.log(s,s.has(2));
+```
 
 ![image-20210317115538612](/Users/wenxin/Library/Application Support/typora-user-images/image-20210317115538612.png)
 

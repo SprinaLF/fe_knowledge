@@ -38,6 +38,8 @@ JSX是一种 JavaScript 的语法扩展。 推荐在 React 中使用 JSX 来描�
 
 https://juejin.im/post/5b6f1800f265da282d45a79a#heading-0
 
+![在这里插入图片描述](https://user-gold-cdn.xitu.io/2019/12/19/16f1e95830a01935?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
 ### 挂载阶段
 
 挂载阶段，也可以理解为组件的初始化阶段，就是将我们的组件插入到DOM中，只会发生一次
@@ -127,6 +129,8 @@ https://www.bbsmax.com/A/nAJvyxMmzr/
 https://www.ruanyifeng.com/blog/2019/09/react-hooks.html
 
 https://zh-hans.reactjs.org/docs/hooks-intro.html
+
+https://ahooks.js.org/zh-CN/hooks/dom/use-size/   ahooks
 
 在不编写 class 的情况下(函数组件)使用 state 以及其他的 React 特性。
 
@@ -238,6 +242,14 @@ https://ssshooter.com/2019-03-15-react-render/
 https://juejin.im/post/5cbea2535188250a52246717
 
 https://www.jianshu.com/p/77467c15a0ce
+
+## 受控组件和非受控组件*
+
+https://juejin.cn/post/6858276396968951822
+
+在`React`中定义了一个`input`输入框的话，它并没有类似于`Vue`里`v-model`的这种双向绑定功能。也就是说，我们并没有一个指令能够将数据和输入框结合起来，用户在输入框中输入内容，然后数据同步更新。
+
+在HTML的表单元素中，它们通常自己维护一套`state`，并随着用户的输入自己进行`UI`上的更新，这种行为是不被我们程序所管控的。而如果将`React`里的`state`属性和表单元素的值建立依赖关系，再通过`onChange`事件与`setState()`结合更新`state`属性，就能达到控制用户输入过程中表单发生的操作。被`React`以这种方式控制取值的表单输入元素就叫做**受控组件**。
 
 ## react-router
 

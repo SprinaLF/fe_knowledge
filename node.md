@@ -1,4 +1,70 @@
+Node.js是基于谷歌浏览器的V8引擎打造，C++语言编写的一个js运行环境，Node.js就是使用前端的js语言（有别于传统的js语言）来实现后端的技术（服务器端）。我们以前对于前端开发人员来说，所编写的代码大部分都是运行在浏览器等前端运行环境上，对于后端服务器而言，接触的比较少，现在我们可以通过NodeJS来完成使用前端语言编写后端服务器的操作，使得我们前端的开发人员想要做后端服务方面的事情，不用再去学习一门后端语言，而是使用前端的语言技术就能够实现。本课程将一步一步地让大家快速地掌握NodeJS这样一个前端核心框架，以适应公司的开发需要。
+
+![image-20210519155331084](/Users/wenxin/Library/Application Support/typora-user-images/image-20210519155331084.png)
+
+
+
+原因：浏览器带v8引擎，能执行js代码。安装node也是同样道理，能解析执行js代码。
+
+### 终端操作
+
+$node   进入node环境(交互模型 repl模式)
+
+$.exit  退出node环境
+
 https://www.nodebeginner.org/index-zh-cn.html
+
+### nvm
+
+管理node版本
+
+nvm list
+
+nvm use 10.15.3
+
+nvm install 版本号
+
+
+
+es6不支持  es6-bable-es5（使所有浏览器支持）
+
+箭头函数没有自己的this，指向外部this。函数有自己的作用域
+
+![image-20210519171850874](/Users/wenxin/Library/Application Support/typora-user-images/image-20210519171850874.png)
+
+
+
+### node全局变量
+
+![image-20210519175248521](/Users/wenxin/Library/Application Support/typora-user-images/image-20210519175248521.png)
+
+## 模块化
+
+export以对象形式导出
+
+![image-20210520142646993](/Users/wenxin/Library/Application Support/typora-user-images/image-20210520142646993.png)
+
+require引入模块
+
+./相对路径
+
+模块扩展名可写可不写
+
+![image-20210520175812678](https://tva1.sinaimg.cn/large/008i3skNly1gqp1o5w4czj31gm0lytva.jpg)
+
+
+
+### node.js常用内置模块
+
+![image-20210520175848370](https://tva1.sinaimg.cn/large/008i3skNly1gqp1ors0mkj31c80u0njv.jpg)
+
+### this
+
+交互模式中 this===global
+
+文件中 this指向这个模块导出的对象module.exports
+
+**`fs.readdir(path[, options], callback)`**  读取目录文件名数组
 
 ### 应用不同模块分析
 
@@ -16,8 +82,6 @@ Node.js 是单进程单线程应用程序，但是因为 V8 引擎提供的异�
 Node.js 基本上所有的事件机制都是用设计模式中观察者模式实现。
 
 Node.js 单线程类似进入一个while(true)的事件循环，直到没有事件观察者退出，每个异步事件都生成一个事件观察者，如果有事件发生就调用该回调函数.
-
-
 
 ### 使用Node.js内部模块
 

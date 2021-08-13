@@ -2,6 +2,10 @@
 
 ![image-20200603230854512](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200603230854512.png)               ![image-20200603230906497](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200603230906497.png)
 
+![image-20210729103410792](https://tva1.sinaimg.cn/large/008i3skNgy1gsxm7sin5ej31140ne76n.jpg)
+
+![image-20210729103432441](https://tva1.sinaimg.cn/large/008i3skNgy1gsxm84tbvwj311c0mcgnt.jpg)
+
 ### box-sizing
 
 https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-sizing
@@ -22,7 +26,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-sizing
 
 每个图层能够精确**定位操作**
 
-static：默认值。正常流
+static：静态定位，默认值。正常流
 
 层模型有三种形式： 
 
@@ -32,9 +36,11 @@ static：默认值。正常流
 
 3、固定定位(position: fixed)
 
-绝对定位（相对于父类）
 
-position:absolute(表示绝对定位)，将**元素从文档流中拖出来**，使用left、right、top、bottom属性相对于其最接近的一个具有定位属性的父包含块绝对定位。不存在则相对于body，即浏览器窗口。
+
+**绝对定位（相对于父类）**
+
+position:absolute，<u>脱离文档流</u>，使用left、right、top、bottom属性<u>相对于其最接近的一个具有定位属性的父包含块绝对定位</u>。不存在则相对于body，即浏览器窗口。
 
 如下面代码可以实现div元素相对于浏览器窗口移动div{
 
@@ -52,11 +58,15 @@ position:absolute(表示绝对定位)，将**元素从文档流中拖出来**，
 
 }
 
-相对定位
 
-position:relative。相对于以前的位置移动，偏移前的位置**保留**
 
-固定定位
+**相对定位**  position:relative
+
+相对于以前的位置移动，<u>偏移前的位置**保留(不脱离文档流)**</u>
+
+
+
+**固定定位**
 
 相对移动的坐标是**视图（屏幕内的网页窗口）**本身。不随浏览器窗口的滚动条滚动变化
 
@@ -136,7 +146,31 @@ Autoprefixer是一款自动管理浏览器前缀的插件，它可以解析CSS�
 
 标签的权值为1，类选择符的权值为10，ID选择符的权值最高为100样式的权重可以叠加
 
-层叠：后面的样式覆盖前面的样式。（内联样式表（标签内部）> 嵌入样式表（当前文件中）> 外部样式表（外部文件中）。）
+层叠：后面的样式覆盖前面的样式。（内联样式表（标签内部）> 嵌入样式表（当前文件中）> 外部样式表（外部文件中）。
+
+## 元素选择
+
+**css选择器优先级最高到最低顺序为：**
+
+!important
+
+1.id选择器（#myid）
+
+2.类选择器（.myclassname）
+
+3.标签选择器（div,h1,p）
+
+4.子选择器（ul < li）
+
+5.后代选择器（li a）
+
+6.伪类选择（a:hover,li:nth-child）
+
+**最后，需要注意的是：**　　
+
+- !important的优先级是最高的，但出现冲突时则需比较”四位数“;
+  优先级相同时，则采用就近原则，选择最后出现的样式;
+  继承得来的属性，其优先级最低。
 
 ## 浮动
 
@@ -415,15 +449,15 @@ https://zhuanlan.zhihu.com/p/25070186
 
 圣杯布局，双飞翼布局：https://www.zhihu.com/question/21504052
 
-## 居中
+## 水平垂直居中
 
 [https://blog.csdn.net/weixin_37580235/article/details/82317240#%E8%A1%8C%E5%86%85%E5%85%83%E7%B4%A0
 
-### 水平居中
+**水平居中**
 
 
 
-### 垂直居中
+**垂直居中**
 
 一.**行内元素**
 
@@ -441,8 +475,6 @@ https://zhuanlan.zhihu.com/p/25070186
 
 2. flext   display  align-items: center
 
-### 水平&垂直居中
-
 
 
 ## 伪类和伪元素
@@ -459,15 +491,17 @@ CSS **伪类**
 
  是添加到选择器的关键字，<u>指定要选择的元素的特殊状态</u>。已存在的某个元素处于某种状态，但是通过dom树又无法表示这种状态，就可以通过伪类来为其添加样式。(动态设置元素样式)
 
-例如a元素的:hover, :active(用户按下按键和松开按键之间的时间)等。。
+例如a元素的:hover, :active(用户按下按键和松开按键之间的时间)等。。 
 
 CSS3中建议使用:表示伪元素，如：a:hover
+
+
 
 ## display, visibility, opacity
 
 1. display：none，改变页面布局，可理解成在页面中把该元素删除。
-2. visibility：hidden，占位，不触发该元素已经绑定的事件
-3. opacity：0     占位， 触发
+2. visibility：hidden，**占位**，**不触发该元素已经绑定的事件**
+3. opacity：0     占位， 触发事件
 
 **补充：**
 
@@ -503,7 +537,7 @@ CSS3中建议使用:表示伪元素，如：a:hover
 > - flex-wrap     如果一条轴线排不下，如何换行  默认不换行44
 > - flex-flow     flex-direction属性和flex-wrap属性的简写形式，默认值为row nowrap
 > - justify-content     项目在主轴上的对齐方式。flex-start（默认值）主轴起点对齐
-> - align-items       属性定义项目在交叉轴上如何对齐。 flex-start（默认值）
+> - align-items       项目在交叉轴上如何对齐。 flex-start（默认值）
 > - align-content     多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用。
 
 **项目属性**
