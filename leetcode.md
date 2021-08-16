@@ -170,6 +170,8 @@ var singleNumber = function(nums) {
 
 ### 数组中数字出现的次数
 
+找只出现一次的数字
+
 indexOf效率低
 
 ```js
