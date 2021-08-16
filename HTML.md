@@ -236,6 +236,8 @@ https://segmentfault.com/a/1190000021580224
 
 5. 将渲染树每个节点绘制到屏幕。
 
+渲染过程中，**遇到script标签，如果是普通JS标签则同步加载并执行，阻塞页面渲染，如果标签上有defer / async属性则异步加载JS资源**
+
 ### 渲染阻塞
 
 https://juejin.im/entry/59e1d31f51882578c3411c77
