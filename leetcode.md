@@ -620,6 +620,37 @@ var insertionSortList = function(head) {
 };
 ```
 
+### 一次遍历删除链表倒数第k个节点
+
+// 因为头结点可能被删除，故创建一个头结点来维持
+
+```js
+var removeNthFromEnd = function(head, n) {
+    // !!可能会删除头结点，所以要创建一个头结点用于维持
+    let flag = new ListNode(0, head)
+    let s = flag, f = flag, distance=0
+    // while(n) {  // 或者不用distance,先一次循环找f的初始位置
+    //     f=f.next
+    //     n--
+    // }
+    while(f.next) {
+        if(distance!=n) {   // f比s多走n步
+            f=f.next
+            distance++
+        } else {
+            f=f.next
+            s=s.next
+        }
+    }
+    // 此时f走到最后一个节点，删除s后面的节点
+    s.next = s.next.next
+    return flag.next
+};
+
+```
+
+
+
 ## 189. 旋转数组 空间最小
 
 给定一个数组，将数组中的元素向右移动 k 个位置，其中 k 是非负数。
@@ -2893,6 +2924,28 @@ function format(num){
   return str
 }
 ```
+
+整数的千分位分割：（简单）
+
+```js
+var thousandSeparator = function(n) {
+    let s = n+''
+    if(s.length<4) return s
+
+    let count = 1 // 记录是否遍历到第3位
+    for(let i=s.length-1; i>0; i--) {
+        if(count%3==0&&i) {
+            let array = s.split('')   
+            array.splice(i,0,'.')    // !!!注意splice返回的是被删除元素组成的数组而不是修改后的原数组，这里返回 []
+            s = array.join('')
+        }
+        count++
+    }
+    return s
+};
+```
+
+
 
 ### 杨辉三角
 

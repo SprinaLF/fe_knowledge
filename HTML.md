@@ -316,146 +316,6 @@ display:none 会触发 reflow，visibility: hidden属性并不算是不可见属
 
 https://juejin.im/post/5c15f797f265da61141c7f86#heading-13
 
-## 前端安全性相关
-
-https://juejin.im/post/5e16fc706fb9a02fe45805a6
-
-### **XSS(跨站脚本攻击)**
-
-向web页面或者网站的url添加恶意的script(脚本)代码，使用户访问该网站时，执行恶意代码对客户端网页进行篡改，从而在用户浏览网页时，对用户浏览器进行控制或者获取用户隐私数据。 
-
-注入恶意脚本一般包括Javascript，有时也会包含HTML和Flash,共同点为：将一些隐私数据像cookie、session发送给攻击者，将受害者重定向到一个由攻击者控制的网站，
-
-**发生XSS的场景：**
-
-\1. 网站对用户的输入过滤不足，返回给用户的展示结果过滤不足。
-
-\2. 网站的链接地址未经过过滤
-
-为了减轻这些攻击，需要在HTTP头部配上，set-cookie： httponly-这个属性可以防止XSS,它会禁止javascript脚本来访问cookie。secure - 这个属性告诉浏览器仅在请求为https的时候发送cookie
-
-**XSS攻击的防范：** 
-
-​    1、输入检查    对用户的任何输入进行检查、过滤和转义。建立可信任的字符和HTML标签白名单，对于不在白名单的字符或者标签进行过滤或编码。 
-
-​    2、输出检查    服务器的输出也会存在问题，在变量输出到HTML页面时，可以使用编码或者转义的方式来预防XSS攻击。
-
-- 对 HTML 标签及一些特殊符号进行转义
-
-  > 该种方法是一种非常简单的过滤方法，仅仅是通过转义的方式将一些 HTML 标签和属性转义，比如 < 转义成 &lt ;， 这样像<script>xxx</script>的脚本就运行不了。当然简单的过滤方式也就代表很容易就会被绕过。 
-  > 另外如果需要使用含有富文本的功能时，使用这样的过滤就会使富文本失去作用。
-
-- 使用白名单、黑名单的方式进行过滤
-
-  > 白名单、黑名单顾名思义是要定义哪些东西是可通过的，哪些东西不可通过。比如常见 <b>、<p>; 、< 等等标签，不可通过的比如 javascript、<a>、<script>、<iframe>、onload 等等一些属性，将其进行转义。 
-  > 当然使用该种方法也有自身的缺点，你并不可能穷举出所有元素，也可能会某些元素在黑名单内，但在某些情况它是需要使用的，这就需要我们在设计 XSS 过滤器的时候权衡好，取最合理最适合需求的设计。
-
-### CSRF 跨站请求伪造
-
-https://zhuanlan.zhihu.com/p/114750961
-
-​    是一种劫持受信任用户向服务器发送非预期请求的攻击方式。 通常情况下，CSRF攻击时攻击者借助受害者的Cookie骗取服务器的信任，可以在受害者毫不知情的情况下**以受害者名义伪造请求发送给受攻击服务器，从而在未授权的情况下进行操作。**
-
-你可以这样来理解：攻击者盗用了你的身份，以你的名义发送恶意请求，对服务器来说这个请求是完全合法的，但是却完成了攻击者所期望的一个操作，比如以你的名义发送邮件、发消息，盗取你的账号，添加系统管理员，甚至于购买商品、虚拟货币转账等。
-
-**CSRF的防范** 
-
-  验证 HTTP Referer 字段；在请求地址中添加 token 并验证；在 HTTP 头中自定义属性并验证。
-
-将cookie设置为HttpOnly
-	具体的设置方法因网站的语言不同，而有所差异，具体方法请自行谷歌
-检测Referer
-	HTTP头部的Referer用来记录HTTP请求的来源地址，一般情况下，来自本站的请求都是合法且安全的，而且对于比较敏感操作，必须设置来源本站，于是通过检测Referer信息，就可以避免此类攻击
-设置token
-	在请求中放入攻击者无法伪造的东西，从而避免此类攻击，如在http请求中加入随机的token，然后在数据提交时，先进行token验证，如果正确，则继续后续操作，否则阻止继续进行。
-
-## 前端安全
-
-https://juejin.im/entry/598d6eb46fb9a03c3a25d2c1
-
-一、XSS攻击与防御
-
-  跨站脚本攻击，是说攻击者通过注入恶意的脚本，在用户浏览网页的时候进行攻击，比如获取cookie，或者其他用户身份信息，可以分为存储型和反射型，存储型是攻击者输入一些数据并且存储到了数据库中，其他浏览者看到的时候进行攻击，反射型的话不存储在数据库中，往往表现为将攻击代码放在url地址的请求参数中，防御的话为cookie设置httpOnly属性，对用户的输入进行检查，进行特殊字符过滤 
-
-二、CSRF攻击
-
-跨站请求伪造，可以理解为攻击者盗用了用户的身份，以用户的名义发送了恶意请求，比如用户登录了一个网站后，立刻在另一个ｔａｂ页面访问量攻击者用来制造攻击的网站，这个网站要求访问刚刚登陆的网站，并发送了一个恶意请求，这时候CSRF就产生了，比如这个制造攻击的网站使用一张图片，但是这种图片的链接却是可以修改数据库的，这时候攻击者就可以以用户的名义操作这个数据库，防御方式的话：使用验证码，检查https头部的refer，使用token
-
-防御CSRF 攻击主要有三种策略：验证 HTTP Referer 字段；在请求地址中添加 token 并验证；在 HTTP 头中自定义属性并验证。
-
- 
-
-三、HTTP劫持与对策
-
-当我们访问页面的时候，运营商在页面的HTML代码中，插入弹窗、广告等HTML代码，来获取相应的利益。
-
-针对这种情况，最好的解决方式也就是使用HTTPS，加密过后，他们就没法插入广告代码了。
-
-那么对于还没有升级的情况，我们可以努力让影响降到最低。
-
- 
-
-四、界面操作劫持
-
-五、防御手段
-
-**上面列举的例子都不具备实际攻击作用**，因为浏览器厂商，W3C等已经做了很多安全工作，让我们的页面可以安稳的运行起来。但道高一尺魔高一丈，我们要合理运用防护手段，才能让页面不被攻击。
-
-1、HTTP响应头，在响应头可以通过这些字段来提高安全性
-
-- X-Frame-Options 禁止页面被加载进iframe中
-- X-XSS-Protection 对于反射型XSS进行一些防御
-- X-Content-Security-Policy 这个就比较复杂了，可选项很多，用来设置允许的的资源来源以及对脚本执行环境的控制等。
-
-2、使用HTTPS、使用HTTP ONLY的cookie。cookie的secure字段设置为true
-
-3、GET请求与POST请求，要严格遵守规范，不要混用，不要将一些危险的提交使用JSONP完成。
-
-## 大前端性能总结
-
-https://juejin.im/post/5b025d856fb9a07aa0484e54
-
-
-
-## 前端多线程--Web Worker
-
-**为什么引入多线程？**
-
-Javascript 的确是单线程的，阻塞和其他异步的需求的确是通过实现循环来解决的，但是这套机制当线程需要处理大规模的计算的时候就不大适用了
-
-为了利用多核 `CPU` 的计算能力，**`HTML5` 提出 `Web Worker` 标准（多线程解决方案），允许 `JavaScript` 脚本创建多个线程**。但子线程完全受主线程控制，不得操作 `DOM`。没有改变 `JavaScript` 单线程的本质。
-
-**使用场景：**
-1.复杂数据处理场景
-	某些检索、排序、过滤、分析会非常耗费时间，这时可以使用Web Worker来进行，不占用主线程。
-2预渲染
-	在某些渲染场景下，比如渲染复杂的canvas的时候需要计算的效果比如反射、折射、光影、材料等，这些计算的逻辑可以使用Worker线程来执行，也可以使用多个Worker线程
-
-3.页头消息状态更新，比如页头的消息个数通知
-
-4.高频用户交互，拼写检查，譬如：根据用户的输入习惯、历史记录以及缓存等信息来协助用户完成输入的纠错、校正功能等
-
-5.加密：加密有时候会非常地耗时，特别是如果当你需要经常加密很多数据的时候（比如，发往服务器前加密数据）。
-
-​	加密是一个使用 `Web Worker` 的绝佳场景，因为它并不需要访问 `DOM` ，只是纯粹使用算法进行计算。随着大众对个人敏感数据的日益重视，信息安全和加密也成为重中之重。这可以从近期的 12306 用户数据泄露事件中体现出来。
-
-​	在 Worker 进行计算，对于用户来说是无缝地且不会影响到用户体验。
-
-6.**预取数据**：为了优化网站或者网络应用及提升数据加载时间，你可以使用 `Workers` 来提前加载部分数据以备不时之需。  预加载图片：有时候一个页面有很多图片，或者有几个很大的图片的时候，如果业务限制不考虑懒加载，也可以使用Web Worker来加载图片
-
-
-
-**`workers` 和主线程间的数据传递**：
-
-​	双方都使用 `postMessage()` 方法发送各自的消息，使用`onmessage` 事件处理函数来响应消息（消息被包含在 `Message` 事件的 `data` 属性中）。
-
-​	这个过程中数据并不是被共享而是被复制。
-
-**注意**
-
-- 虽然使用worker线程不会占用主线程，但是启动worker会比较耗费资源
-- 主线程中使用XMLHttpRequest在请求过程中浏览器另开了一个异步http请求线程，但是交互过程中还是要消耗主线程资源
-
 
 
 ## 跨域
@@ -492,7 +352,7 @@ https://segmentfault.com/a/1190000011145364
 
 **跨域如何解决**
 
-1. JSONP：动态创建script，再请求一个带参网址实现跨域通信。
+1. <u>JSONP：动态创建script，再请求一个带参网址实现跨域通信。</u>
 
 2. document.domain + iframe跨域：两个页面都通过js强制设置document.domain为基础主域，就实现了同域。
 
@@ -502,9 +362,9 @@ https://segmentfault.com/a/1190000011145364
 
 5. postMessage跨域：可以跨域操作的window属性之一。（HTML5）
 
-6. CORS：服务端设置Access-Control-Allow-Origin即可，前端无须设置，若要带cookie请求，前后端都需要设置。
+6. <u>CORS：需要服务器设置header：`Access-Control-Allow-Origin`</u>，浏览器发送请求是携带origin字段。
 
-7. 代理跨域：启一个代理服务器，实现数据的转发
+7. <u>Nginx反向代理 可以不需要目标服务器配合，不过需要Nginx中转服务器，用于转发请求（服务端之间的资源请求不会有跨域限制）</u>
 
 8. WebSocket协议跨域
 
@@ -516,7 +376,7 @@ https://www.jianshu.com/p/e1e2920dac95
 
 1) JSONP原理
 
-JSONP的跨域方式是<u>利用`<script>`标签的src属性可以跨域引用资源的特点</u>，有这些属性的标签还有`<img>`、`<iframe>`，但是JSONP只支持GET方式。JSONP请求一定需要对方的服务器做支持才可以。
+<u>利用`<script>`标签的src属性可以跨域引用资源的特点</u>，有这些属性的标签还有`<img>`、`<iframe>`，但是JSONP只支持GET方式。需要对方的服务器做支持
 
 2) JSONP和AJAX对比
 
@@ -527,6 +387,8 @@ JSONP和AJAX相同，都是客户端向服务器端发送请求，从服务器�
 优点是简单兼容性好，可用于解决主流浏览器的跨域数据访问的问题。**缺点是仅支持get方法具有局限性,不安全可能会遭受XSS攻击。**
 
 下面我们以点击获取随机新闻列表的例子来演示一下JSONP的具体工作原理(test.com访问a.test.com)
+
+例子：https://www.jianshu.com/p/447fe4d86dd5
 
 HTML如下:
 
@@ -541,7 +403,7 @@ HTML如下:
 </div>
 ```
 
-<u>首先，我们在前端要在调用资源的时候动态创建script标签，并设置src属性指向资源的URL地址</u>，代码如下:
+<u>首先，我们在前端要在获取资源的时候动态创建script标签，并设置src属性指向资源的URL地址</u>，代码如下:
 
 ```javascript
 document.querySelector('.change').addEventListener('click', function() {
@@ -573,14 +435,10 @@ var news = [
     "女排将死磕巴西！郎平安排男陪练模仿对方核心",
     "没有中国选手和巨星的110米栏 我们还看吗？",
     "中英上演奥运金牌大战",
-    "博彩赔率挺中国夺回第二纽约时报：中国因对手服禁药而丢失的奖牌最多",
-    "最“出柜”奥运？同性之爱闪耀里约",
-    "下跪拜谢与洪荒之力一样 都是真情流露"
 ]
 var data = [];
 for (var i = 0; i < 3; i++) {
   var index = Math.floor(Math.random() * news.length);
-
   data.push(news[index]);
 }
 var callback = req.query.callback;   //查询前端有没有传入回调函数
@@ -595,9 +453,17 @@ if (callback) {
 
 ### cors  跨域资源共享
 
+**CORS需要浏览器和服务器同时支持**
+
+CORS是一个W3C标准，全称是"跨域资源共享"（Cross-origin resource sharing）。
+
+它允许浏览器向跨源服务器，发出[`XMLHttpRequest`](https://www.ruanyifeng.com/blog/2012/09/xmlhttprequest_level_2.html)请求，从而克服了AJAX只能[同源](https://www.ruanyifeng.com/blog/2016/04/same-origin-policy.html)使用的限制
+
+
+
 1. iframe   2.打开目标窗口并发送  https://zhuanlan.zhihu.com/p/26777882
 
-它允许浏览器向跨源服务器，发出[`XMLHttpRequest`](http://www.ruanyifeng.com/blog/2012/09/xmlhttprequest_level_2.html)请求，从而克服了AJAX只能[同源](http://www.ruanyifeng.com/blog/2016/04/same-origin-policy.html)使用的限制。
+![img](https://upload-images.jianshu.io/upload_images/4023562-50e621b42aa7641d.jpg?imageMogr2/auto-orient/strip|imageView2/2/w/922/format/webp)
 
 整个CORS通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，CORS通信与同源的AJAX通信没有差别，代码完全一样。浏览器一旦发现AJAX请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。
 
@@ -609,6 +475,44 @@ if (callback) {
 
 比较：JSONP只支持`GET`请求，CORS支持所有类型的HTTP请求。JSONP的优势在于支持老式浏览器，以及可以向不支持CORS的网站请求数据。
 
+
+
+### Nginx反向代理
+
+补充：反向代理：浏览器不知道真正的服务器。正向代理：服务器不知道浏览器 VPN 就是正向代理。
+
+https://zhuanlan.zhihu.com/p/94197713
+
+使用nginx反向代理实现跨域，只需要修改nginx的配置即可解决跨域问题。
+
+A网站向B网站请求某个接口时，向B网站发送一个请求，nginx根据配置文件接收这个请求，代替A网站向B网站来请求。
+nginx拿到这个资源后再返回给A网站，以此来解决了跨域问题。
+
+例如nginx的端口号为 8090，需要请求的服务器端口号为 3000。（localhost:8090 请求 localhost:3000/say）
+
+nginx配置如下:
+
+```
+server {
+    listen       8090;
+
+    server_name  localhost;
+
+    location / {
+        root   /Users/liuyan35/Test/Study/CORS/1-jsonp;
+        index  index.html index.htm;
+    }
+    location /say {
+        rewrite  ^/say/(.*)$ /$1 break;
+        proxy_pass   http://localhost:3000;
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Credentials' 'true';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+    }
+    # others
+}
+```
+
 ### postMessage()
 
 https://zhuanlan.zhihu.com/p/26777882 postMessage跨域
@@ -616,6 +520,8 @@ https://zhuanlan.zhihu.com/p/26777882 postMessage跨域
 HTML5的新方法，可以使用它来向其它的window对象发送数据，无论这个window对象是属于同源或不同源
 
 **发送页面使用postMessage()方法，接收监听window的message事件即可。**
+
+
 
 ## http2.0新特性
 

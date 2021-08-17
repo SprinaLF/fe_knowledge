@@ -1395,13 +1395,87 @@ for(let i=0;i<=10;i++){   //用var打印的都是11
    }
    ```
 
-   
 
 ### 实现事件订阅eventBus
 
-
-
 https://www.cnblogs.com/yalong/p/14294497.html
+
+```js
+      //声明类
+      class EventBus {
+        constructor() {
+          this.eventList = {} //创建对象收集事件
+        }
+        //发布事件
+        $on(eventName, fn) {
+          //判断是否发布过事件名称? 添加发布 : 创建并添加发布
+          this.eventList[eventName]
+            ? this.eventList[eventName].push(fn)
+            : (this.eventList[eventName] = [fn])
+        }
+        //订阅事件
+        $emit(eventName) {
+          if (!eventName) throw new Error('请传入事件名')
+          //获取订阅传参
+          const data = [...arguments].slice(1)
+          if (this.eventList[eventName]) {
+            this.eventList[eventName].forEach((i) => {
+              try {
+                i(...data) //轮询事件
+              } catch (e) {
+                console.error(e + 'eventName:' + eventName) //收集执行时的报错
+              }
+            })
+          }
+        }
+        //执行一次
+        $once(eventName, fn) {
+          const _this = this
+          function onceHandle() {
+            fn.apply(null, arguments)
+            _this.$off(eventName, onceHandle) //执行成功后取消监听
+          }
+          this.$on(eventName, onceHandle)
+        }
+        //取消订阅
+        $off(eventName, fn) {
+          //不传入参数时取消全部订阅
+          if (!arguments.length) {
+            return (this.eventList = {})
+          }
+          //eventName传入的是数组时,取消多个订阅
+          if (Array.isArray(eventName)) {
+            return eventName.forEach((event) => {
+              this.$off(event, fn)
+            })
+          }
+          //不传入fn时取消事件名下的所有队列
+          if (arguments.length === 1 || !fn) {
+            this.eventList[eventName] = []
+          }
+          //取消事件名下的fn
+          this.eventList[eventName] = this.eventList[eventName].filter(
+            (f) => f !== fn
+          )
+        }
+      }
+      const event = new EventBus()
+
+      let b = function (v1, v2, v3) {
+        console.log('b', v1, v2, v3)
+      }
+      let a = function () {
+        console.log('a')
+      }
+      event.$once('test', a)
+      event.$on('test', b)
+      event.$emit('test', 1, 2, 3, 45, 123)
+
+      event.$off(['test'], b)
+
+      event.$emit('test', 1, 2, 3, 45, 123)
+
+```
 
 ## Object.create和new的区别
 
@@ -1820,7 +1894,25 @@ function demo6(a,a,b){return ;} //报错
 
 ## [JS基础——同步异步的区别](https://segmentfault.com/a/1190000017996968)
 
-q: js是单线程的为什么可以进行异步操作？->js异步原理及事件循环机制
+### 单线程的JavaScript是如何实现异步的
+
+https://juejin.cn/post/6844904159385223175   这个讲的很清楚！！
+
+JavaScript是脚本语言，它需要在一个宿主环境里才能运行，显然我们接触较多的宿主环境就是--浏览器！虽说JavaScript是单线程的，然而浏览器却不是！
+
+![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/5/15/172140aad60f19a3~tplv-t2oaga2asx-watermark.awebp)
+
+
+
+如图所求，JavaScript引擎线程称为主线程，它负责解析JavaScript代码；其他可以称为辅助线程，这些辅助线程便是JavaScript实现异步的关键了！
+
+如（代码片段2）：主线程负责自上而下顺序执行，当遇到setTimeout函数后，便将其交给定时器线程去执行，自己继续执行下面的代码！从而达到异步的目的。
+
+不仅如此，更关键的是：
+
+![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/5/15/172140eedca0d03b~tplv-t2oaga2asx-watermark.awebp)
+
+
 
 **什么是异步操作？**
 
@@ -1873,7 +1965,48 @@ q: js是单线程的为什么可以进行异步操作？->js异步原理及事�
 
 所谓"回调函数"（callback），就是那些会被主线程挂起来的代码，前面说的点击事件$(selectot).click(function)中的function就是一个回调函数。异步任务必须指定回调函数，当主线程开始执行异步任务，就是执行对应的回调函数。例如ajax的success，complete，error也都指定了各自的回调函数，这些函数就会加入“任务队列”中，等待执行。
 
-### event loop
+
+
+### 前端多线程--Web Worker
+
+**为什么引入多线程？**
+
+Javascript 的确是单线程的，阻塞和其他异步的需求的确是通过事件循环来解决的，但是这套机制当线程需要处理大规模的计算的时候就不大适用了
+
+为了利用多核 `CPU` 的计算能力，**`HTML5` 提出 `Web Worker` 标准（多线程解决方案），允许 `JavaScript` 脚本创建多个线程**。<u>但子线程完全受主线程控制，不得操作 `DOM`</u>。没有改变 `JavaScript` 单线程的本质。
+
+**使用场景：**
+1.复杂数据处理场景
+	某些检索、排序、过滤、分析会非常耗费时间，这时可以使用Web Worker来进行，不占用主线程。
+2预渲染
+	在某些渲染场景下，比如渲染复杂的canvas的时候需要计算的效果比如反射、折射、光影、材料等，这些计算的逻辑可以使用Worker线程来执行，也可以使用多个Worker线程
+
+3.页头消息状态更新，比如页头的消息个数通知
+
+4.高频用户交互，拼写检查，譬如：根据用户的输入习惯、历史记录以及缓存等信息来协助用户完成输入的纠错、校正功能等
+
+5.加密：加密有时候会非常地耗时，特别是如果当你需要经常加密很多数据的时候（比如，发往服务器前加密数据）。
+
+​	<u>加密是一个使用 `Web Worker` 的绝佳场景，因为它并不需要访问 `DOM` ，只是纯粹使用算法进行计算。</u>随着大众对个人敏感数据的日益重视，信息安全和加密也成为重中之重。这可以从近期的 12306 用户数据泄露事件中体现出来。
+
+​	在 Worker 进行计算，对于用户来说是无缝地且不会影响到用户体验。
+
+6.**预取数据**：为了优化网站或者网络应用及提升数据加载时间，你可以使用 `Workers` 来提前加载部分数据以备不时之需。  预加载图片：有时候一个页面有很多图片，或者有几个很大的图片的时候，如果业务限制不考虑懒加载，也可以使用Web Worker来加载图片
+
+
+
+**`workers` 和主线程间的数据传递**：
+
+​	双方都使用 `postMessage()` 方法发送各自的消息，使用`onmessage` 事件处理函数来响应消息（消息被包含在 `Message` 事件的 `data` 属性中）。
+
+​	这个过程中数据并不是被共享而是被复制。
+
+**注意**
+
+- 虽然使用worker线程不会占用主线程，但是启动worker会比较耗费资源
+- 主线程中使用XMLHttpRequest在请求过程中浏览器另开了一个异步http请求线程，但是交互过程中还是要消耗主线程资源
+
+### 浏览器的event loop
 
 https://juejin.im/post/5b8f76675188255c7c653811#heading-4
 
@@ -2358,7 +2491,7 @@ function bindEvent(elem, type, selector, fn){
 > ul.addEventListener("click",function(e) { 
 >
 > 	if(e.target && e.target.nodeName.toLowerCase() == "li") { // 检查事件源e.target是否为Li 
-> 											
+> 												
 > 	 console.log("List item ",e.target.id.replace("post-","")," was clicked!"); // 打印当前点击是第几个item 
 >
 > } 
