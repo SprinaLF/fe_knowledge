@@ -241,6 +241,8 @@ c.构造函数：var fun = new Function("a",console.log(a));
 
 ![image-20200531220537262](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200531220537262.png)
 
+![原型的原型关系图](https://github.com/mqyqingfeng/Blog/raw/master/Images/prototype4.png)
+
 ps: 对象实例也有一条constructor指向它的构造函数
 
 可在原型链追加方法，实现对内置方法的扩展
@@ -465,7 +467,7 @@ console.log(cat instanceof Cat); //true
 ```javascript
 class Cat extends Animal {
   constructor(name,food){
-    //调用父类的constructor(name)bixvd
+    //调用父类的constructor(name)
     super(name);   //必须调用super方法
     this.food = food
   }
@@ -1780,7 +1782,7 @@ delete demo5.x; // 删除成功
 
 **3、禁止this关键字指向全局对象**
 
-全局作用域的函数中的this不再指向全局而是undefined。
+<u>全局作用域的函数中的this不再指向全局而是undefined。</u>
  如果使用构造函数时，如果忘了加new，this不再指向全局对象，而是undefined报错。
 
 ```
@@ -2009,6 +2011,8 @@ Javascript 的确是单线程的，阻塞和其他异步的需求的确是通过
 ### 浏览器的event loop
 
 https://juejin.im/post/5b8f76675188255c7c653811#heading-4
+
+**https://juejin.cn/post/6844903653120163848 (node的envent loop)**
 
 宏队列  setTimeout,  setInterval, setImmediate (Node独有)
 
@@ -2677,6 +2681,10 @@ isChineseChar('122') //false
 isChineseChar('一二三') //true
 ```
 
+## 变量提升和函数提升
+
+https://www.cnblogs.com/liuhe688/p/5891273.html
+
 ## ES6
 
 ### let, const
@@ -2700,7 +2708,7 @@ for (var i = 0; i < 10; i++) {
 a[6](); // 10
 ```
 
-**上面代码中，变量`i`是`var`命令声明的，在全局范围内都有效，全局只有一个变量`i`。每一次循环，变量`i`的值都会发生改变，**而循环内被赋给数组`a`的函数内部的`console.log(i)`，里面的`i`指向的就是全局的`i`。也就是说，所有数组`a`的成员里面的`i`，指向的都是同一个`i`，导致运行时输出的是最后一轮的`i`的值，也就是 10。
+**上面代码中，变量`i`是`var`命令声明的，在全局范围内都有效，<u>全局只有一个变量`i`。每一次循环，变量`i`的值都会发生改变，**</u>而循环内被赋给数组`a`的函数内部的`console.log(i)`，里面的`i`指向的就是全局的`i`。也就是说，所有数组`a`的成员里面的`i`，指向的都是同一个`i`，导致运行时输出的是最后一轮的`i`的值，也就是 10。
 
 如果使用`let`，**声明的变量仅在块级作用域内有效**，最后输出的是 6。
 
@@ -2732,7 +2740,7 @@ for (let i = 0; i < 3; i++) {
 
 **const**
 
-**并不是变量的值不得改动，而是变量指向的那个内存地址所保存的数据不得改动**。对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，等同于常量。复合类型的数据（主要是对象和数组），变量指向的内存地址保存的只是一个指向实际数据的指针，`const`只能保证这个指针是固定的（即总是指向另一个固定的地址）。因此，将一个对象声明为常量必须非常小心。
+**变量指向的那个内存地址所保存的数据不得改动**。对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，等同于常量。复合类型的数据（主要是对象和数组），变量指向的内存地址保存的只是一个指向实际数据的指针，`const`只能保证这个指针是固定的（即总是指向另一个固定的地址）。因此，将一个对象声明为常量必须非常小心。
 
 ```javascript
 const foo = {};
@@ -2781,6 +2789,8 @@ https://juejin.cn/post/6950193996538839077
 `var`存在变量提升，而`let`和`const`不存在变量提升
 
 <u>`var`声明的变量会添加进window对象中，而`let`和`const`声明的变量不会</u>
+
+![image-20210818182153206](https://tva1.sinaimg.cn/large/008i3skNly1gtl44j1fs8j61gw05g0ui02.jpg)
 
 `let`和`const`声明的变量不可以重复声明
 
@@ -2956,7 +2966,7 @@ https://segmentfault.com/a/1190000010946164
    // Throws "TypeError: Message is not a constructor"
    var helloMessage = new Message('Hello World!');  
 
-## **js this指向
+# **js this指向
 
 https://juejin.im/post/5c0c87b35188252e8966c78a
 
@@ -2977,7 +2987,7 @@ const obj = {
    print: function () { console.log(this.a) }   2
 }
 
-obj.print();
+obj.print();  // 2
 
 // Q3
 const obj = {
@@ -2995,7 +3005,7 @@ const obj = {
    print: () => { console.log(this.a) }
 }
 obj.print();
-undefined
+undefined  箭头函数的this指向它外层的this,也就是obj外层的this,这里为window
 
 // Q5
 var a = 5
@@ -3026,6 +3036,15 @@ function print () {
   console.log(this.a)
 }
 print()  报错 this为undefined
+
+// Q8
+var a="wfe"
+const obj = {
+   a: 3,
+   print: function () { console.log(this.a) }   
+}
+const foo = obj.print; 
+foo()   // wfe  把var换为let则为undefined
 ```
 
 

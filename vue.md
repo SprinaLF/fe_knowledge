@@ -67,7 +67,7 @@ const dataB = JSON.parse(sessionStorage.getItem('缓存名称')) // 此时 dataB
 
 ### vue中的nextTick
 
-**在数据变化后要执行的某个操作，而这个操作需要使用随数据改变而改变的DOM结构的时候**，这个操作都应该放进`Vue.nextTick()`的回调函数中。
+**在数据变化后要执行的某个操作需要使用随数据改变而改变的DOM结构的时候**，这个操作都应该放进`Vue.nextTick()`的回调函数中。 (需要操作更新后的dom对象)
 
 https://juejin.im/post/6844903557372575752
 
@@ -235,7 +235,6 @@ https://juejin.cn/post/6844903602356502542
 2. `mounted` 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染
 
 完毕，可以用 [vm.$nextTick](https://cn.vuejs.org/v2/api/#vm-nextTick)
-
 
 作者：iFangcy_
 链接：https://juejin.cn/post/6844903602356502542

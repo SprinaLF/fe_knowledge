@@ -16,13 +16,13 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-sizing
 
 2.border-box   IE盒模型
 
-## CSS布局模型
+# CSS布局模型
 
 1、流动模型（Flow）
  2、浮动模型 (Float)
  3、层模型（Layer）
 
-层模型
+## 层模型(定位)
 
 每个图层能够精确**定位操作**
 
@@ -36,27 +36,9 @@ static：静态定位，默认值。正常流
 
 3、固定定位(position: fixed)
 
-
-
 **绝对定位（相对于父类）**
 
 position:absolute，<u>脱离文档流</u>，使用left、right、top、bottom属性<u>相对于其最接近的一个具有定位属性的父包含块绝对定位</u>。不存在则相对于body，即浏览器窗口。
-
-如下面代码可以实现div元素相对于浏览器窗口移动div{
-
-  width:200px;
-
-  height:200px;
-
-  border:2px red solid;
-
-  position:absolute;
-
-  left:100px; //右移
-
-  top:50px; //下移
-
-}
 
 
 
@@ -68,7 +50,7 @@ position:absolute，<u>脱离文档流</u>，使用left、right、top、bottom�
 
 **固定定位**
 
-相对移动的坐标是**视图（屏幕内的网页窗口）**本身。不随浏览器窗口的滚动条滚动变化
+相对移动的坐标是**视图（屏幕内的网页窗口）**本身。不随浏览器滚动条滚动变化
 
  
 
@@ -230,8 +212,6 @@ BFC的布局规则**（特性）**
 
 
 
-
-
 1、**float**的值不是`none`。
 2、**position**的值不是`static`或者`relative`。
 3、**display**的值是`inline-block`、`table-cell`、`flex`、`table-caption`或者`inline-flex`
@@ -276,7 +256,7 @@ BFC的布局规则**（特性）**
 
 ## 清除浮动
 
-> 清除浮动主要是为了解决，父元素因为子级元素浮动引起的内部高度为0的问题。
+> 清除浮动主要是为了解决，父元素因为子级元素浮动引起的高度塌陷问题。
 
 ### 清除浮动的方法
 
@@ -552,7 +532,7 @@ CSS3中建议使用:表示伪元素，如：a:hover
 
 5. flex:  flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。
 
-   当 `flex` 取值为一个非负数字，则该数字为 `flex-grow` 值，`flex-shrink` 取 1，`flex-basis` 取 0%
+   <u>当 `flex` 取值为一个非负数字，则该数字为 `flex-grow` 值，`flex-shrink` 取 1，`flex-basis` 取 0%</u>
 
    flex取值详细：
 
@@ -682,7 +662,7 @@ animation: myfirst 5s;
 | [animation-play-state](https://www.w3school.com.cn/cssref/pr_animation-play-state.asp) | 规定动画是否正在运行或暂停。默认是 "running"。           | 3    |
 | [animation-fill-mode](https://www.w3school.com.cn/cssref/pr_animation-fill-mode.asp) | 规定对象动画时间之外的状态。                             |      |
 
-## em和rem,rpx
+## em和rem,rpx*
 
 - `rem`是相对于html根元素的`em`， 
 - `em`是相对长度单位，相对于当前对象内文本的字体尺寸。如当前对行内文本的字体尺寸未被人为设置，则相对于浏览器的默认字体尺寸。事实上，根据W3标准，em单位是相对于使用em单位的元素的字体大小。父元素的字体大小可以影响em值是因为继承。
