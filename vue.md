@@ -206,7 +206,7 @@ computed: {
 
  JavaScript 的限制(性能问题)， vue<u>不能检测到以下数组的变动</u>：
 
-- 利用索引直接设置一个数组项:  vm.items[indexOfItem] = newValue`
+- 利用索引直接设置一个数组项:  vm.items[indexOfItem] = newValue
 - 修改数组长度：`vm.items.length = newLength`
 
 解决第一个问题：
@@ -235,11 +235,6 @@ https://juejin.cn/post/6844903602356502542
 2. `mounted` 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染
 
 完毕，可以用 [vm.$nextTick](https://cn.vuejs.org/v2/api/#vm-nextTick)
-
-作者：iFangcy_
-链接：https://juejin.cn/post/6844903602356502542
-来源：掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 **（1）生命周期是什么？**
 
@@ -381,7 +376,7 @@ https://blog.csdn.net/shaleilei/article/details/78084171?utm_medium=distribute.p
 
   v-model 指令在表单 input、textarea、select 等元素上创建双向数据绑定
 
- v-model 本质上是语法糖，**<u>在内部为不同的输入元素使用不同的属性并抛出不同的事件**：</u>
+ v-model 本质上是语法糖，**在内部为不同的输入元素使用不同的属性并抛出不同的事件**：
 
 - text 和 textarea 元素使用 value 属性和 input 事件；
 - checkbox 和 radio 使用 checked 属性和 change 事件；
@@ -425,7 +420,7 @@ methods: {
 - 输入框内容变化时，Data 中的数据同步变化。即 View => Data。
 - Data 中的数据变化时，文本节点的内容同步变化。即 Data => View 。
 
-View 变化更新 Data ，可通过事件监听来实现<u>，所以数据双向绑定的工作主要是如何根据 Data 变化更新 View。</u>
+View 变化更新 Data ，可通过事件监听来实现，所以数据双向绑定的工作主要是如何根据 Data 变化更新 View。
 
 Vue 主要通过以下 4 个步骤来实现数据双向绑定的：
 

@@ -873,25 +873,6 @@ console.log(missingNumber([0,2]))
 
 
 
-#### 斐波那契数列
-
-```js
-//非递归求斐波那契，递归会超时
-var fib = function(n) {
-  if(n<2){
-    return n;
-  }
-  let p0 = 0,p1 = 1;
-  let res = 0;
-  for(let i = 2;i<=n;i++){
-    res = (p0 + p1) %(1e9+7);
-    p0 = p1;
-    p1 = res;
-  }
-  return res;
-};
-```
-
 ### 130被围绕的区域
 
 ```js
@@ -2253,6 +2234,28 @@ var findContinuousSequence = function(target) {
 
 ## 动态规划
 
+放苹果m个苹果放n个盘子(1 1 5==1 5 1)
+
+```js
+const line=readline()
+var lines = line.split(' ');
+var a = parseInt(lines[0]);
+var b = parseInt(lines[1]);
+
+function f(m, n) {
+    if(m<0||n<=0) return 0
+    // 注意m=0时有一种放法而不是0种
+    if(m<=1||n==1) return 1
+    if(m<n) {   // 这一步是优化性能，不写也没事
+        return f(m,m)
+    } 
+         // 分两种，1.有一个盘子为空 2.所有盘子都有苹果
+        return (f(m, n-1)+f(m-n,n))
+}
+console.log(f(a,b))
+
+```
+
 ### **最长公共子序列
 
 ```
@@ -2877,26 +2880,6 @@ LRUCache.prototype.put = function(key, value) {
  */
 ```
 
-### 汉诺塔
-
-```js
-var hanota = function(A, B, C) {
-   let move=function(length,A,B,C){
-       if(length==1){
-           C.push(A.pop())
-           return
-       }
-       //把前length-1个移动到B
-       move(length-1,A,C,B)
-       //移动完之后剩余的一个挪过来
-       C.push(A.pop())
-       //把前n-1个由B挪到C
-       move(length-1,B,A,C)
-   }
-   move(A.length,A,B,C)
-};
-```
-
 ### **实现千分位的分隔（有小数，负数）
 
 1. 最简单的方式，API一行解决
@@ -2974,9 +2957,98 @@ var generate = function(numRows) {
 };
 ```
 
+# 递归(含dp)
+
+## 求和
+
+```js
+function add(n) {
+      if(n===1) return 1
+      return add(n-1)+n
+}
+```
+
+##  m个苹果放n个盘子
+
+(1 1 5==1 5 1)
+
+```js
+const line=readline()
+var lines = line.split(' ');
+var a = parseInt(lines[0]);
+var b = parseInt(lines[1]);
+
+function f(m, n) {
+    if(m<0||n<=0) return 0
+    // 注意m=0时有一种放法而不是0种
+    if(m<=1||n==1) return 1
+    if(m<n) {   // 这一步是优化性能，不写也没事
+        return f(m,m)
+    } 
+         // 分两种，1.有一个盘子为空 2.所有盘子都有苹果
+        return (f(m, n-1)+f(m-n,n))
+}
+console.log(f(a,b))
+
+```
+
+## 汉诺塔**
+
+```js
+var hanota = function(A, B, C) {
+   let move=function(length,A,B,C){
+       if(length==1){
+           C.push(A.pop())
+           return
+       }
+       //把前length-1个移动到B
+       move(length-1,A,C,B)
+       //移动完之后剩余的一个挪过来
+       C.push(A.pop())
+       //把前n-1个由B挪到C
+       move(length-1,B,A,C)
+   }
+   move(A.length,A,B,C)
+};
+```
+
+## 斐波那契数列
+
+```js
+// 1.递归
+var fib = function(n) {
+  if(n<2) return n
+  return fib(n-1)+fib(n-2)
+}
+
+// 2.动态规划  n很大的情况下递归会超时
+var fib = function(n) {   //空间复杂度大
+    if(n<2) return n
+    let dp = [0,1]
+    for(let i=2; i<=n; i++) {
+        dp[i] = dp[i-1] + dp[i-2]
+    }
+    return dp[n]
+};
+
+var fib = function(n) {  // 空间复杂度小
+  if(n<2){
+    return n;
+  }
+  let p0 = 0,p1 = 1;
+  let res = 0;
+  for(let i = 2;i<=n;i++){
+    res = (p0 + p1) %(1e9+7);
+    p0 = p1;
+    p1 = res;
+  }
+  return res;
+};
+```
 
 
-## 其它
+
+# 其它
 
 ### **大数相加
 
@@ -3414,3 +3486,8 @@ This.map.keys().next().value   // 得到第一个键值
 ### Set
 
 ![image-20210317142853906](/Users/wenxin/Library/Application Support/typora-user-images/image-20210317142853906.png)
+
+## js输入输出处理
+
+
+

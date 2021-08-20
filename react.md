@@ -146,6 +146,57 @@ https://ahooks.js.org/zh-CN/hooks/dom/use-size/   ahooks
 
 你可以使用 Hook 从组件中提取状态逻辑，使得这些逻辑可以单独测试并复用。Hook 使你在无需修改组件结构的情况下复用状态逻辑。
 
+hooks出现的原因 https://zh-hans.reactjs.org/docs/hooks-intro.html
+
+在目前的react开发中，很多新项目都采用函数组件，因此，我们免不了会接触到hooks。
+
+此外，Hooks也是前端面试中react方面的一个高频考点，需要掌握常用的几种hooks。
+
+常用的有
+
+​	基本：useState, useEffect, useContext
+
+​	额外：useCallback, useMemo, useRef
+
+刚接触公司的react项目代码时，发现组件都是用的函数组件，不得不去学习hooks，之前只会类组件和react基础
+
+其中useState不用说了，很容易理解，使我们在函数组件中也能像类组件那样获取、改变state
+
+ 项目中很多地方都有useEffect, useCallback,  useMemo,初看时感觉这三个都是包着一个东西，有它们跟没有它们感觉也没什么区别，很难分清这三个什么时候要用
+
+所以这里就略微总结一下，附上一点个人在开发过程中的理解吧，
+其实这三个区别还是挺明显的，
+useEffect是在函数组件中实现像类组件中的生命周期那样某个阶段做某件事情(主要是`componentDidMount`，`componentDidUpdate` 和 `componentWillUnmount`)
+
+
+
+```
+useEffect(() => { getStuInfo({ id: stuId }); }, [getStuInfo, stuId]); //依赖项改变时调用getStuInfo函数
+```
+
+而useCallback和useMemo都是性能优化的手段，区别是
+useCallback返回一个函数，当把它返回的这个函数作为子组件使用时，可以避免每次都去重新渲染这个子组件，
+
+```
+const renderButton = useCallback(
+    () => (
+      <Button type="link">
+        {buttonText}
+      </Button>
+    ),
+    [buttonText]    // 当buttonText改变时才重新渲染
+);
+```
+
+useMemo返回的的是一个值，用于避免在每次渲染时都进行高开销的计算
+
+```
+const text = useMemo(() => (type === '1' ? '成功' : '失败'), [type]);
+
+```
+
+所以你这个可以用useCallback包裹或者都不用
+
 ## 虚拟DOM和diff
 
 https://juejin.im/post/5a3200fe51882554bd5111a0
