@@ -106,6 +106,8 @@ JS中，基本数据类型变量大小固定，操作简单，所以把放入栈
 
 ## 闭包
 
+https://segmentfault.com/a/1190000012646221  推荐  讲了作用域链与闭包的关系
+
 https://segmentfault.com/a/1190000021725949
 
 变量作用域->      <u>有权访问另一个函数作用域中变量的**函数**</u>
@@ -194,11 +196,17 @@ f2()   //11
 JS垃圾回收机制：
  JS规定在一个函数作用域内，程序执行完以后变量就会被销毁，这样可节省内存；**使用闭包时，按照作用域链的特点，闭包（函数）外面的变量不会被销毁，因为函数会一直被调用，所以一直存在，如果闭包使用过多会造成内存销毁。**
 
+![攻克闭包难题](https://segmentfault.com/img/remote/1460000008329355)
+
 #### 闭包应用
 
-防抖节流函数
+https://juejin.cn/post/6844903619595075592
 
-实现3秒后打印所有li的内容
+- 防抖节流函数
+
+
+- 实现3秒后打印所有li的内容
+
 
 ```js
 let lis=document.querySelector('.nav').querySelectorAll('li')
@@ -210,6 +218,8 @@ for(let i=0;i<lis.length;i++){
     })(i)
 }
 ```
+
+- ![image-20210908184741335](https://tva1.sinaimg.cn/large/008i3skNgy1gu9evuezs0j60rg12ijtz02.jpg)
 
 ## 声明提前
 
@@ -229,6 +239,42 @@ b.函数表达式：var fun = function(a){console.log(a)};
 
 c.构造函数：var fun = new Function("a",console.log(a));
 
+## 作用域链
+
+https://juejin.cn/post/6844903797135769614#heading-7
+
+作用域
+
+**作用域就是一个独立的地盘，让变量不会外泄、暴露出去**。也就是说**作用域最大的用处就是隔离变量，不同作用域下同名变量不会有冲突。**
+
+**ES6 之前 JavaScript 没有块级作用域,只有全局作用域和函数作用域**。ES6提供了‘块级作用域’, let const。
+
+**作用域是分层的，内层作用域可以访问外层作用域的变量，反之则不行**。
+
+
+
+**作用域链**
+
+首先认识一下什么叫做 **自由变量** 。如下代码中，`console.log(a)`要得到a变量，但是在当前的作用域中没有定义a（可对比一下b）。当前作用域没有定义的变量，这成为 自由变量 。自由变量的值如何得到 —— 向父级作用域寻找（注意：这种说法并不严谨，下文会重点解释）。
+
+```
+var a = 100
+function fn() {
+    var b = 200
+    console.log(a) // 这里的a在这里就是一个自由变量
+    console.log(b)
+}
+fn()
+复制代码
+```
+
+如果父级也没呢？再一层一层向上寻找，直到找到全局作用域还是没找到，就宣布放弃。这种一层一层的关系，就是 作用域链 。
+
+
+![image-20210908182355433](https://tva1.sinaimg.cn/large/008i3skNgy1gu9e749vwuj612p0u0n0y02.jpg)
+
+作用域和执行上下文之间最大的区别是： **执行上下文在运行时确定，随时可能改变；作用域在定义时就确定，并且不会改变**。
+
 ## 原型链
 
 构造函数：初始化对象
@@ -242,6 +288,8 @@ c.构造函数：var fun = new Function("a",console.log(a));
 ![image-20200531220537262](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200531220537262.png)
 
 ![原型的原型关系图](https://github.com/mqyqingfeng/Blog/raw/master/Images/prototype4.png)
+
+![原型链.png](https://segmentfault.com/img/remote/1460000021232137)
 
 ps: 对象实例也有一条constructor指向它的构造函数
 
@@ -1120,7 +1168,7 @@ https://juejin.im/post/6844903613584654344
 
 https://juejin.im/post/5c971ee16fb9a070ce31b64e#heading-3
 
-**es6提供的新方法 flat(depth)**
+1.**es6提供的新方法 flat(depth)**
 
 ```
 let a = [1,[2,3]];  
@@ -1134,6 +1182,46 @@ a.flat(1); //[1,2,3]
 let a = [1,[2,3,[4,[5]]]];  
 a.flat(Infinity); // [1,2,3,4,5]  a是4维数组
 ```
+
+2.利用concat
+
+```js
+function flatten(arr) {
+     var res = [];
+     for (let i in arr) {
+     if (Array.isArray(arr[i])) {
+     res = res.concat(flatten(arr[i])); //concat 并不会改变原数组
+     //res.push(...flatten(arr[i])); 或者用扩展运算符 
+     } else {
+         res.push(arr[i]);
+       }
+     }
+     return res;
+ }
+ let arr1 = [1, 2,[3,1],[2,3,4,[2,3,4]]]
+flatten(arr1); //[1, 2, 3, 1, 2, 3, 4, 2, 3, 4]
+```
+
+**补充：指定deep的flat**
+
+只需每次递归时将当前deep-1，若大于0，则可以继续展开
+
+```js
+ 			function flat(arr, deep) {
+            let res = []
+            for(let i in arr) {
+                if(Array.isArray(arr[i])&&deep) {
+                    res = res.concat(flat(arr[i],deep-1))
+                } else {
+                    res.push(arr[i])
+                }
+            }
+            return res
+        }
+        console.log(flat([12,[1,2,3],3,[2,4,[4,[3,4],2]]],1));
+```
+
+
 
 ### 函数柯里化
 
@@ -1149,7 +1237,7 @@ https://juejin.im/post/6844903882208837645
 
 ### 深拷贝和浅拷贝
 
-https://www.jianshu.com/p/68e563c54f63
+https://segmentfault.com/a/1190000020255831
 
 浅拷贝：只拷贝一层，更深层的对象级别的只拷贝引用
 
@@ -1183,7 +1271,99 @@ function deepCopy(newObj,oldObj){
         }
     }
 }
+
+
+// 只传一个参数的实现
+function deepCopy(target) {
+    if(typeof target === 'object') {
+        let res = Array.isArray(target)?[]:{}
+        for(let i in target) {
+            res[i] = deepCopy(target[i])
+        }
+        return res
+    } else {
+        return target
+    }
+}
+
 ```
+
+#### 循环引用
+
+对象的属性间接或直接的引用了自身的情况，此时深拷贝方法会进入死循环导致栈内存溢出
+
+![image-20210909150658772](https://tva1.sinaimg.cn/large/008i3skNgy1guae4ice6sj60750550sr02.jpg)
+
+解决循环引用问题，我们可以额外开辟一个存储空间，来存储当前对象和拷贝对象的对应关系，当需要拷贝当前对象时，先去存储空间中找，有没有拷贝过这个对象，如果有的话直接返回，如果没有的话继续拷贝，这样就巧妙化解的循环引用的问题。
+
+这个存储空间，需要可以存储`key-value`形式的数据，且`key`可以是一个引用类型，我们可以选择`Map`这种数据结构：
+
+- 检查`map`中有无克隆过的对象
+- 有 - 直接返回
+- 没有 - 将当前对象作为`key`，克隆对象作为`value`进行存储
+- 继续克隆
+
+```js
+const map = new WeakMap()
+function deepCopy(target) {
+    if(typeof target === 'object') {
+        let res = Array.isArray(target)?[]:{}
+        if(map.has(target)) return map.get(target)
+        map.set(target,res)
+        for(let i in target) {
+            res[i] = deepCopy(target[i])
+        }
+        return res
+    } else {
+        return target
+    }
+}
+
+const a = {
+    name: 'asd',
+    arr: [1,2,3],
+    age:12,
+}
+a.f = a
+const b = deepCopy(a)
+console.log(b)
+```
+
+#### weakMap
+
+> WeakMap 对象是一组键/值对的集合，其中的键是弱引用的。其键必须是对象，而值可以是任意的
+
+什么是弱引用呢？
+
+> 在计算机程序设计中，弱引用与强引用相对，是指不能确保其引用的对象不会被垃圾回收器回收的引用。 一个对象若只被弱引用所引用，则被认为是不可访问（或弱可访问）的，并因此可能在任何时刻被回收。
+
+我们默认创建一个对象：`const obj = {}`，就默认创建了一个强引用的对象，我们只有手动将`obj = null`，它才会被垃圾回收机制进行回收，如果是弱引用对象，垃圾回收机制会自动帮我们回收。
+
+举个例子：
+
+如果我们使用`Map`的话，那么对象间是存在强引用关系的：
+
+```javascript
+let obj = { name : 'ConardLi'}
+const target = new Map();
+target.set(obj,'code秘密花园');
+obj = null;
+```
+
+虽然我们手动将`obj`，进行释放，然是`target`依然对`obj`存在强引用关系，所以这部分内存依然无法被释放。
+
+再来看`WeakMap`：
+
+```javascript
+let obj = { name : 'ConardLi'}
+const target = new WeakMap();
+target.set(obj,'code秘密花园');
+obj = null;
+```
+
+如果是`WeakMap`的话，`target`和`obj`存在的就是弱引用关系，当下一次垃圾回收机制执行时，这块内存就会被释放掉。
+
+要拷贝的对象非常庞大时，<u>使用`Map`会对内存造成非常大的额外消耗，而且我们需要手动清除`Map`的属性才能释放这块内存，而`WeakMap`会帮我们巧妙化解这个问题。</u>
 
 ### 手写call, apply, bind
 
@@ -1328,6 +1508,13 @@ Function.prototype.bind = function (context, ...outerArgs) {
 
 ### 手动实现new
 
+文字描述过程：
+
+1. 创建一个空对象 obj;
+2. 将空对象的隐式原型（__proto__）指向构造函数的prototype。
+3. 使用 call 改变 this 的指向
+4. 如果无返回值或者返回一个非对象值，则将 obj 返回作为新对象；如果返回值是一个新对象的话那么直接直接返回该对象。
+
 ```js
 function Person(name,age){
     this.name=name
@@ -1364,12 +1551,7 @@ p2.sayHi()
     let res=fn.apply(obj,arg)
 ```
 
-文字描述过程：
 
-1. 创建一个空对象 obj;
-2. 将空对象的隐式原型（__proto__）指向构造函数的prototype。
-3. 使用 call 改变 this 的指向
-4. 如果无返回值或者返回一个非对象值，则将 obj 返回作为新对象；如果返回值是一个新对象的话那么直接直接返回该对象。
 
 ### 函数实现一秒钟输出一个数
 
@@ -1479,6 +1661,67 @@ https://www.cnblogs.com/yalong/p/14294497.html
 
 ```
 
+### setTimeout, setInterval相关
+
+每3秒打印str，打印4次
+
+```js
+       //1.  setTimeout实现   可引申为ssetTimeout实现setInterval的功能
+       function repeatFunc(str,count, time) {
+           if(count<=0) return
+           setTimeout(()=>{
+               console.log(str)
+               count--
+               repeatFunc(str,count,time)
+           },time)
+       }
+       repeatFunc('helloworld',4,3000)
+
+
+      // 2. 只传一个参数的实现**  setInterval
+			  function repeat (func, times, wait) { 
+           return function(content){
+            var count = 0;
+            var interval = setInterval(function(){
+                count += 1;
+                func(content);
+                if(count === times){    
+                    clearInterval(interval);    
+                }
+            }, wait);
+        }
+        }
+        let f = repeat(console.log,4,3000)
+        f('w')
+```
+
+setTimeout实现setInterval
+
+```
+   function mySetInterval() {
+        mySetInterval.timer = setTimeout(() => {
+            arguments[0]()
+            mySetInterval(...arguments)
+        }, arguments[1])
+    }
+
+    mySetInterval.clear = function() {
+        clearTimeout(mySetInterval.timer)
+    }
+
+    mySetInterval(() => {
+        console.log(11111)
+    }, 1000)
+
+    setTimeout(() => {
+        // 5s 后清理
+        mySetInterval.clear()
+    }, 5000)
+
+```
+
+
+
 ## Object.create和new的区别
 
 
@@ -1507,7 +1750,7 @@ https://www.cnblogs.com/coco1s/p/5499469.html
  A持续说了一段时间的话后停止讲话，过了10秒之后，判定A讲完了，B开始回答；如果10秒内A又继续讲话，那么我们判定A没讲完，B不响应，等A再次停止后，我们再次计算停止的时间，如果超过10秒B响应，如果没有则B不响应。(防抖以最后一次触发为准)
 
 **节流与防抖的区别**
- 前提都是某个行为持续地触发，不同之处只要判断是要优化到减少它的执行次数还是只执行一次就行。
+ 前提都是某个行为持续地触发，<u>不同之处只要判断是要优化到减少它的执行次数还是只执行一次就行。</u>
 
 - 节流例子（连续不断动都需要调用时用，设一时间间隔），像dom的拖拽，如果用消抖的话，就会出现卡顿的感觉，因为只在停止的时候执行了一次，这个时候就应该用节流，在一定时间内多次执行，会流畅很多。
 - 防抖例子（连续不断触发时不调用，触发完后过一段时间调用），像仿百度搜索，就应该用防抖，当我连续不断输入时，不会发送请求；当我一段时间内不输入了，才会发送一次请求；如果小于这段时间继续输入的话，时间会重新计算，也不会发送请求。
@@ -1518,7 +1761,9 @@ https://www.jianshu.com/p/c8b86b09daf0
 
 防抖： 指触发事件后在 n 秒内函数只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数执行时间。
 
-**防抖函数**https://segmentfault.com/a/1190000018445196
+**实现防抖函数**https://segmentfault.com/a/1190000018445196
+
+debounce 和 throttle 函数的都是为了减少一个不断被触发的函数的执行次数，实现性能优化
 
 ```js
 const input1 = document.getElementById('input1')
@@ -1536,8 +1781,9 @@ const input1 = document.getElementById('input1')
 //   }, 500)
 // })
 
-上述注释掉的代码存在什么问题？   timer暴露在外面，容易被篡改
 
+//上述注释掉的代码 timer暴露在外面，容易被篡改
+//  因此采用下面的闭包来实现 timer放在函数里面
 function debounce(fn, delay) {
     if(typeof fn!=='function') {
         throw new TypeError('fn不是函数')
@@ -1606,7 +1852,7 @@ div1.addEventListener('drag', throttle((e) => {
 
 **注意**：AJAX 只能向同源网址（协议、域名、端口都相同）发出 HTTP 请求，如果发出跨域请求，就会报错。
 
-### 步骤
+步骤
 
 1. 创建 XMLHttpRequest 实例
 
@@ -1618,32 +1864,15 @@ div1.addEventListener('drag', throttle((e) => {
 
    不过随着历史进程的推进，XML 已经被淘汰，取而代之的是 **[JSON](https://www.json.org/json-zh.html)。**
 
-### 手写原生AJAX
+**readyState**
+是XMLHttpRequest对象的一个属性，用来标识当前XMLHttpRequest对象处于什么状态。
+共有5个状态值，分别为0~4，每个值代表了不同的含义
+
+![image-20210909202519338](https://tva1.sinaimg.cn/large/008i3skNly1guanbqbobpj60m607swfu02.jpg)
+
+**手写原生AJAX**
 
 了解了属性和方法之后，根据 AJAX 的步骤，手写最简单的 GET 请求。
-
-version 1.0：
-
-```js
-myButton.addEventListener('click', function() {
-    ajax()
-})
-
-function ajax() {
-    let xhr = new XMLHttpRequest() //实例化，以调用方法
-    xhr.open('get', 'https://www.google.com')  //参数2，url。参数三：异步
-    xhr.onreadystatechange = () => {  //每当 readyState 属性改变时，就会调用该函数。
-        if (xhr.readyState === 4) {  //XMLHttpRequest 代理当前所处状态。
-            if (xhr.status >= 200 && xhr.status < 300) {  //200-300请求成功
-                let string = request.responseText
-                //JSON.parse() 方法用来解析JSON字符串，构造由字符串描述的JavaScript值或对象
-                let object = JSON.parse(string)
-            }
-        }
-    }
-    request.send() //用于实际发出 HTTP 请求。不带参数为GET请求
-}
-```
 
 promise实现
 
@@ -1651,9 +1880,12 @@ promise实现
  function ajax(url){
     const p=new Promise((resolve,reject)=>{
         let xhr=new XMLHttpRequest()
+        // console.log(xhr.readyState);  0
         xhr.open('get',url)
+        // console.log(xhr.readyState);  1
         xhr.onreadystatechange=()=>{
-            if(xhr.readyState==4){
+          // readyState 0=>初始化 1=>载入 2=>载入完成 3=>解析 4=>完成
+            if(xhr.readyState==4){   // 2 3 4
                 if(xhr.status>=200&&xhr.status<=300){
                     resolve(JSON.parse(xhr.responseText))
                 }else{
@@ -2049,6 +2281,8 @@ https://www.jianshu.com/p/9d64450f547c  案例，判断输出顺序https://jueji
 
 []:   <u>setTimeout指定的时间不是从运行完setTimeout开始计算而是从当前执行栈执行完开始计算。</u>
 
+Node
+
 ### **JS 异步编程六种方案
 
 https://juejin.im/post/5c30375851882525ec200027#heading-1
@@ -2381,73 +2615,193 @@ console.log(numbers);
 
 不同浏览器实现原理不同，火狐是归并排序，谷歌是插入和快速排序的结合 大于10用快速排序
 
-## 事件流
+# 事件流
 
-1.原始事件模型（DOM 0级事件模型：没有事件流，事件发生，立刻处理）
+深入理解：
 
-2.IE事件模型 （目标和冒泡）
+https://zhuanlan.zhihu.com/p/114276880， https://www.cnblogs.com/zhuzhenwei918/p/6139880.html
+
+事件流描述从页面中接收事件的顺序。而早期的IE和Netscape提出了完全相反的事件流概念，IE事件流是事件冒泡，而Netscape的事件流就是事件捕获。
+
+![img](https://pic1.zhimg.com/80/v2-bf3b8dbab027713a2b21b9e8a5b7a6c4_1440w.jpg)
+
+1.原始事件模型（DOM 0级事件模型）
+
+事件绑定监听函数比较简单, 两种方式:
+
+- HTML代码中直接绑定:
+
+  ```xml
+  <input type="button" onclick="fun()">
+  ```
+
+- 
+
+  ```kotlin
+  var btn = document.getElementById('.btn');
+  btn.onclick = fun;
+  ```
+
+  移除监听函数：
+
+  ```ini
+    btn.onclick = null;
+  ```
+
+DOM0级事件具有极好的跨浏览器优势，会以最快的速度绑定。
+
+但是逻辑与显示并没有分离。同一个节点只能添加一次同类型事件(后面的会覆盖前面的)
+
+DOM0级只支持冒泡阶段。
+
+2.
+
+- IE提出的事件流是事件冒泡，从下至上，从目标触发的元素逐级向上传播，直到window对象。
+
+  
+
+  ![img](https://pic4.zhimg.com/80/v2-511a3e1aa67d66eda8bb6605a736f82b_1440w.jpg)
+
+  
+
+  网景的事件流就是事件捕获，即从document逐级向下传播到目标元素。由于IE低版本浏览器不支持，所以很少使用事件捕获。
+
+  
 
 3.DOM2事件模型
 
- *“DOM2**级事件**”中规定的事件流同时支持了事件捕获阶段和事件冒泡阶段，而作为开发者，我们可以选择事件处理函数在哪一个阶段被调用。*
- 一次事件的发生包含三个过程：
+同时支持事件捕获阶段和事件冒泡阶段，开发者可以选择事件处理函数在哪一个阶段被调用。
 
-(1)capturing phase:**事件捕获阶段**。
+(1)capturing phase: **事件捕获阶段**。
  事件被从document一直向下传播到目标元素,在这过程中依次检查经过的节点是否注册了**该事件的监听函数**，若有则执行。   （给元素绑定监听器）
 
-(2)target phase:事件处理阶段（处于目标阶段）。
+(2)target phase:  事件处理阶段（处于目标阶段）。
  事件到达目标元素,执行目标元素的事件处理函数.
 
-(3)bubbling phase:事件冒泡阶段。
+(3)bubbling phase:  冒泡阶段。
  事件从目标元素上升一直到达document，同样依次检查经过的节点是否注册了该事件的监听函数，有则执行。   （执行监听函数）
 
 事件监听
 
-`在``addEventListener()` 函数中, 我们具体化了两个参数——我们想要将处理器应用上去的事件名称，和包含我们用来回应事件的函数的代码。注意将这些代码全部放到一个匿名函数中是可行的:
+![image-20210908154525180](https://tva1.sinaimg.cn/large/008i3skNly1gu99m74obvj61lq0ikn2z02.jpg)
 
-```
-btn.addEventListener('click', function() {
-  var rndCol = 'rgb(' + random(255) + ',' + random(255) + ',' + random(255) + ')';
-  document.body.style.backgroundColor = rndCol;});
-```
+`在`addEventListener()` 函数中, 我们具体化了两个参数——我们想要将处理器应用上去的事件名称，和包含我们用来回应事件的函数的代码。注意将这些代码全部放到一个匿名函数中是可行的
 
-这个机制带来了一些相较于旧方式的优点。有一个相对应的方法，`removeEventListener()``，`这个方法移除事件监听器。在大型的、复杂的项目中就非常有用了，可以非常高效地清除不用的事件处理器，另外在其他的一些场景中也非常有效——比如您需要在不同环境下运行不同的事件处理器，您只需要恰当地删除或者添加事件处理器即可。
+`removeEventListener()`，这个方法移除事件监听器。在大型的、复杂的项目中可以非常高效地清除不用的事件处理器，另外在其他的一些场景中也非常有效——比如您需要在不同环境下运行不同的事件处理器，您只需要恰当地删除或者添加事件处理器即可。 removeEventListener(‘onclick’, handle):不能移除匿名添加的函数。
 
-您也可以给同一个监听器注册多个处理器，下面这种方式不能实现这一点：
+您也可以给同一个监听器注册多个处理器，(DOM0)不能实现这一点：
 
 ```
 myElement.onclick = functionA;
 myElement.onclick = functionB;
 ```
 
-第二行会覆盖第一行，但是下面这种方式就会正常工作了：
+第二行会覆盖第一行，但是下面这种方式就会正常工作了，当元素被点击时两个函数都会工作：
 
 ```
 myElement.addEventListener('click', functionA);
 myElement.addEventListener('click', functionB);
 ```
 
-当元素被点击时两个函数都会工作：
+（DOM Level 2 Events (`addEventListener()`, etc.)）的主要优点是，如果需要的话，可以使用`removeEventListener()`删除事件处理程序代码，而且如果有需要，您可以向同一类型的元素添加多个监听器。例如，您可以在一个元素上多次调用`addEventListener('click', function() { ... })`，并可在第二个参数中指定不同的函数。
 
- 
 
-（DOM Level 2 Events (`addEventListener()`, etc.)）的主要优点是，如果需要的话，可以使用`removeEventListener()`删除事件处理程序代码，而且如果有需要，您可以向同一类型的元素添加多个监听器。例如，您可以在一个元素上多次调用`addEventListener('click', function() { ... })`，并可在第二个参数中指定不同的函数。对于事件处理程序属性来说，这是不可能的，因为后面任何设置的属性都会尝试覆盖较早的属性，例如：
 
+**冒泡的终点**
+
+ button -> div1 -> div2 -> **body -> html -> document-> window****
+
+![image-20210905002320055](https://tva1.sinaimg.cn/large/008i3skNgy1gu523und1pj60ua0mqwgn02.jpg)
+
+
+
+**阻止冒泡 **
+
+**1. stopPropagation()**
+
+**当在事件对象上调用该函数时，它只会让当前事件处理程序运行，但事件不会在冒泡链上进一步扩大，因此将不会有更多事件处理器被运行(不会向上冒泡)**
+
+**即该方法不仅仅可以阻止冒泡，还可以阻止捕获和处于目标阶段。**
+
+![image-20210905153245653](https://tva1.sinaimg.cn/large/008i3skNgy1gu5se3i0u1j61eo0igwhf02.jpg)
+
+2. **event.target==event.currentTarget，让触发事件的元素等于绑定事件的元素，也可以阻止事件冒泡**
+
+e.target指向的是触发事件的元素；
+
+e.currentTarget指向的是事件绑定的元素；
+
+
+
+DOM0  DOM2  DOM3 事件模型的比较   https://blog.csdn.net/Ultraman_and_monster/article/details/104358762
+
+![image-20210905002630151](https://tva1.sinaimg.cn/large/008i3skNgy1gu52753tz6j613m0rk0we02.jpg)
+
+**DOM3级新增事件stopImmediatePropagation()**
+
+ **stopImmediatePropagation() 和 stopPropagation()的区别在哪儿呢？**
+
+　　**后者只会阻止冒泡或者是捕获。 但是前者除此之外还会阻止该元素的其他事件发生，但是后者就不会阻止其他事件的发生**  // 执行stopImmediatePropagation方法,阻止click事件冒泡,并且阻止p元素上绑定的其他click事件的事件监听函数的执行.
+
+
+
+event.preventDefault
+
+阻止默认行为。默认行为：比如checkbox点击后为被选中状态，比如输入框输入内容时显示内容。  此事件还是继续传播，除非碰到事件侦听器调用[`stopPropagation()`](https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopPropagation) 或[`stopImmediatePropagation()`](https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopImmediatePropagation)
+
+
+
+**有哪些事件没有冒泡?**
+
+“妈（mouseenter） 妈（mouseleave） 不（blur） 让（resize） 浪（load） 费（focus）”，“昂（unload）”。
+
+## **事件委托**
+
+https://zhuanlan.zhihu.com/p/26536815 (实现)
+
+把一个元素或者一组元素的响应事件（click、keydown......）的函数委托到另一个元素；一般会委托到它的父层或者更外层元素上
+
+绑定事件的是外层元素，当事件发生在需要绑定的元素上时，通过事件冒泡机制触发它的外层元素的绑定事件，然后在外层元素上去执行函数。
+
+优点：
+
+1. 减少内存消耗
+
+   列表之中有大量的列表项，给每个列表项一一都绑定一个函数内存消耗非常大
+
+2. 减少重复工作
+
+   动态的增加或者去除列表项元素，那么在每一次改变的时候都需要重新给新增的元素绑定事件，给即将删去的元素解绑事件；用了事件委托就没有这种麻烦了，因为事件是绑定在父层的，和目标元素的增减是没有关系的
+
+实现：
+
+```html
+<ul id="list">
+  <li>item 1</li>
+  <li>item 2</li>
+  <li>item 3</li>
+  ......
+  <li>item n</li>
+</ul>
+// ...... 代表中间还有未知数个 li
 ```
-element.onclick = function1;
-element.onclick = function2;
-etc.
+
+我们来实现把 #list 下的 li 元素的事件代理委托到它的父层元素也就是 #list 上：
+
+```js
+// 给父层元素绑定事件
+document.getElementById('list').addEventListener('click', function (e) {
+  // 兼容性处理
+  var event = e || window.event;
+  var target = event.target || event.srcElement;
+  // 判断是否匹配目标元素
+  if (target.nodeName.toLocaleLowerCase === 'li') {
+    console.log('the content is: ', target.innerHTML);
+  }
+});
 ```
 
-[stopPropagation()](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation)的函数, **当在事件对象上调用该函数时，它只会让当前事件处理程序运行，但事件不会在冒泡链上进一步扩大，因此将不会有更多事件处理器被运行(不会向上冒泡)**
-
-**事件委托应用场景**
-
-因为有时候需要给某一类元素加事件（例如给所有li加点击事件），因为网页内容经常改变，这类元素随时会增加或者减少，为了保证所有这类元素都有事件，也为了节约内存，所以都需要采用事件委托才可实现！ （只绑定一次事件
-
-4，可应用于多个元素，即使元素是后添加的->绑定给元素的共同祖先元素)
-
-## JS事件绑定通用函数
+JS事件绑定通用函数
 
 1.简易版
 
@@ -2488,17 +2842,7 @@ function bindEvent(elem, type, selector, fn){
 }
 ```
 
-【】
 
-代码实例：给所有的li绑定点击事件，极为繁琐，这时候需要用到事件代理。
-
-> ul.addEventListener("click",function(e) { 
->
-> 	if(e.target && e.target.nodeName.toLowerCase() == "li") { // 检查事件源e.target是否为Li 
-> 												
-> 	 console.log("List item ",e.target.id.replace("post-","")," was clicked!"); // 打印当前点击是第几个item 
->
-> } 
 
 ## 关于js中map集合中调用parseInt输出结果的问题
 
@@ -2866,6 +3210,12 @@ https://www.jianshu.com/p/0f49c88cf169
     `console.log(a)`
 
     `console.log(b)`
+
+**交换变量**
+
+```
+[a, b] = [b, a]`等同于`var arr=[b,a]; [a,b]=arr;
+```
 
 ### 箭头函数
 
@@ -3315,392 +3665,4 @@ console.log(me.age);//undefined
 
 ![image-20200915174745706](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200915174745706.png)
 
-## 前端常用设计模式
 
-https://www.runoob.com/design-pattern/state-pattern.html  最全
-
-设计模式是为了更好的代码重用性，可读性，可靠性，可维护性。
-
-### **1、工厂模式**
-
-> 常见的实例化对象模式，**相当于创建实例对象的new，提供一个创建对象的接口**
-
-```
-   // 某个需要创建的具体对象
-    class Product {
-        constructor (name) {
-            this.name = name;
-        }
-        init () {}
-    }
-    // 工厂对象
-    class Creator {
-        create (name) {
-            return new Product(name);
-        }
-    }
-    const creator = new Creator();
-    const p = creator.create(); // 通过工厂对象创建出来的具体对象
-复制代码
-```
-
-应用场景：JQuery中的$、Vue.component异步组件、React.createElement等
-
-### **2、单例模式**
-
-> 保证一个类仅有一个实例，并提供一个访问它的全局访问点，一般登录、购物车等都是一个单例。
-
-```
-    // 单例对象
-    class SingleObject {
-        login () {}
-    }
-    // 访问方法
-    SingleObject.getInstance = (function () {
-        let instance;    //闭包
-        return function () {
-            if (!instance) {
-                instance = new SingleObject();
-            }
-            return instance;     //有的话返回共同的instance
-        }
-    })()
-    const obj1 = SingleObject.getInstance();
-    const obj2 = SingleObject.getInstance();
-    console.log(obj1 === obj2); // true
-```
-
-应用场景：JQuery中的$、Vuex中的Store、Redux中的Store等
-
-**3、适配器模式**
-
-> 用来解决两个接口不兼容问题，由一个对象来包装不兼容的对象，比如参数转换，允许直接访问
-
-```
-    class Adapter {
-        specificRequest () {
-            return '德国标准插头';
-        }
-    }
-    // 适配器对象，对原来不兼容对象进行包装处理
-    class Target {
-        constructor () {
-            this.adapter = new Adapter();
-        }
-        request () {
-            const info = this.adapter.specificRequest();
-            console.log(`${info} - 转换器 - 中国标准插头`)
-        }
-    }
-    const target = new Target();
-    console.log(target.request()); // 德国标准插头 - 转换器 - 中国标准插头
-复制代码
-```
-
-应用场景：Vue的computed、旧的JSON格式转换成新的格式等
-
-**4、装饰器模式**
-
-> 在不改变对象自身的基础上，动态的给某个对象添加新的功能，同时又不改变其接口
-
-```
-    class Plane {
-        fire () {
-            console.log('发送普通子弹');
-        }
-    }
-    // 装饰过的对象
-    class Missile {
-        constructor (plane) {
-            this.plane = plane;
-        }
-        fire () {
-            this.plane.fire();
-            console.log('发射导弹');
-        }
-    }
-    let plane = new Plane();
-    plane = new Missile(plane);
-    console.log(plane.fire()); // 依次打印 发送普通子弹 发射导弹
-复制代码
-```
-
-利用AOP给函数动态添加功能，即Function的after或者before
-
-```
-Function.prototype.before = function (beforeFn) {
-  const _self = this;
-  return function () {
-    beforeFn.apply(this, arguments);
-    return _self.apply(this, arguments);
-  }
-}
-
-Function.prototype.after = function (afterFn) {
-  const _self = this;
-  return function () {
-    const ret = _self.apply(this, arguments);
-    afterFn.apply(this, arguments);
-    return ret;
-  }
-}
-
-let func = function () {
-  console.log('2');
-}
-
-func = func.before(function() {
-  console.log('1');
-}).after(function() {
-  console.log('3');
-})
-
-func();
-console.log(func()); // 依次打印 1 2 3
-复制代码
-```
-
-应用场景：ES7装饰器、Vuex中1.0版本混入Vue时，重写init方法、Vue中数组变异方法实现等
-
-**5、代理模式**
-
-> 为其他对象提供一种代理，便以控制对这个对象的访问，不能直接访问目标对象
-
-```
-class Flower {}
-// 源对象
-class Jack {
-    constructor (target) {
-        this.target = target;
-    }
-    sendFlower (target) {
-        const flower = new Flower();
-        this.target.receiveFlower(flower)
-    }
-}
-// 目标对象
-class Rose {
-    receiveFlower (flower) {
-        console.log('收到花: ' + flower)
-    }
-}
-// 代理对象
-class ProxyObj {
-    constructor () {
-        this.target = new Rose();
-    }
-    receiveFlower (flower) {
-        this.sendFlower(flower)
-    }
-    sendFlower (flower) {
-        this.target.receiveFlower(flower)
-    }
-}
-const proxyObj = new ProxyObj();
-const jack = new Jack(proxyObj);
-jack.sendFlower(proxyObj); // 收到花：[object Object]
-复制代码
-```
-
-应用场景：ES6 Proxy、Vuex中对于getters访问、图片预加载等
-
-**6、外观模式**
-
-> 为一组复杂的子系统接口提供一个更高级的统一接口，通过这个接口使得对子系统接口的访问更容易，不符合单一职责原则和开放封闭原则
-
-```
- class A {
-    eat () {}
-}
-class  B {
-    eat () {}
-}
-class C {
-    eat () {
-        const a = new A();
-        const b = new B();
-        a.eat();
-        b.eat();
-    }
-}
-// 跨浏览器事件侦听器
-function addEvent(el, type, fn) {
-    if (window.addEventListener) {
-        el.addEventListener(type, fn, false);
-    } else if (window.attachEvent) {
-        el.attachEvent('on' + type, fn);
-    } else {
-        el['on' + type] = fn;
-    }
-}
-复制代码
-```
-
-应用场景：JS事件不同浏览器兼容处理、同一方法可以传入不同参数兼容处理等
-
-### **7、观察者模式**
-
-> 定义对象间的一种一对多的依赖关系，**一个对象的状态发生改变时，所有依赖于它的对象都得到通知**
-
-```
-class Subject {
-  constructor () {
-    this.state = 0;
-    this.observers = [];
-  }
-  getState () {
-    return this.state;
-  }
-  setState (state) {         /////////
-    this.state = state;
-    this.notify();
-  }
-  notify () {          ///////////这里是重点   状态改变时，会调用所有观察者的update方法，控制台打印改变后的状态
-    this.observers.forEach(observer => {
-      observer.update();
-    })
-  }
-  attach (observer) {
-    this.observers.push(observer);
-  }
-}
-
-class Observer {
-  constructor (name, subject) {
-    this.name = name;
-    this.subject = subject;
-    this.subject.attach(this);
-  }
-  update () {
-    console.log(`${this.name} update, state: ${this.subject.getState()}`);
-  }
-}
-
-let sub = new Subject();
-let observer1 = new Observer('o1', sub);
-let observer2 = new Observer('o2', sub);
-
-sub.setState(1);
-```
-
-**观察者模式与发布/订阅模式区别: 本质上的区别是调度的地方不同**
-
-虽然两种模式都存在订阅者和发布者（具体观察者可认为是订阅者、具体目标可认为是发布者），但是**观察者模式是由具体目标调度的，而发布/订阅模式是统一由调度中心调的，所以观察者模式的订阅者与发布者之间是存在依赖的，而发布/订阅模式则不会。**
-
----观察者模式：目标提供维护观察者的一系列方法，观察者提供更新接口。具体观察者和具体目标继承各自的基类，然后具体观察者把自己注册到具体目标里，在具体目标发生变化时候，调度观察者的更新方法。
- 比如有个“天气中心”的具体目标A，专门监听天气变化，而有个显示天气的界面的观察者B，B就把自己注册到A里，当A触发天气变化，就调度B的更新方法，并带上自己的上下文。
-
----发布/订阅模式：订阅者把自己想订阅的事件注册到调度中心，当该事件触发时候，发布者发布该事件到调度中心（顺带上下文），由调度中心统一调度订阅者注册到调度中心的处理代码。
- 比如有个界面是实时显示天气，它就订阅天气事件（注册到调度中心，包括处理程序），当天气变化时（定时获取数据），就作为发布者发布天气信息到调度中心，调度中心就调度订阅者的天气处理程序。
-
-应用场景：JS事件、JS Promise、JQuery.$CallBack、Vue watch、NodeJS自定义事件，文件流等
-
-**8、迭代器模式**
-
-> 提供一种方法顺序访问一个聚合对象中各个元素, 而又无须暴露该对象的内部表示
-
-可分为：内部迭代器和外部迭代器
-
-内部迭代器： 内部已经定义好迭代规则，外部只需要调用一次即可。
-
-```
-const each = (args, fn) => {
-  for (let i = 0, len = args.length; i < len; i++) {
-    const value = fn(args[i], i, args);
-
-    if (value === false) break;
-  }
-}
-复制代码
-```
-
-应用场景： JQuery.each方法
-
-外部迭代器：必须显示的请求迭代下一个元素。
-
-```
-// 迭代器
-class Iterator {
-  constructor (list) {
-    this.list = list;
-    this.index = 0;
-  }
-  next () {
-    if (this.hasNext()) {
-      return this.list[this.index++]
-    }
-    return null;
-  }
-  hasNext () {
-    if (this.index === this.list.length) {
-      return false;
-    }
-    return true;
-  }
-}
-const arr = [1, 2, 3, 4, 5, 6];
-const ite = new Iterator();
-
-while(ite.hasNext()) {
-  console.log(ite.next()); // 依次打印 1 2 3 4 5 6
-}
-复制代码
-```
-
-应用场景：JS Iterator、JS Generator
-
-### **9、状态模式**
-
-> 对象在**内部状态发生改变时改变它的行为**
-
-```
-// 红灯
-class RedLight {
-    constructor (state) {
-        this.state = state;
-    }
-    light () {
-        console.log('turn to red light');
-        this.state.setState(this.state.greenLight)
-    }
-}
-// 绿灯
-class greenLight {
-    constructor (state) {
-        this.state = state;
-    }
-    light () {
-        console.log('turn to green light');
-        this.state.setState(this.state.yellowLight)
-    }
-}
-// 黄灯
-class yellowLight {
-    constructor (state) {
-        this.state = state;
-    }
-    light () {
-        console.log('turn to yellow light');
-        this.state.setState(this.state.redLight)
-    }
-}
-class State {
-    constructor () {
-        this.redLight = new RedLight(this)
-        this.greenLight = new greenLight(this)
-        this.yellowLight = new yellowLight(this)
-        this.setState(this.redLight) // 初始化为红灯
-    }
-    setState (state) {
-        this.currState = state;
-    }
-}
-const state = new State();
-state.currState.light() // turn to red light
-setInterval(() => {
-    state.currState.light() // 每隔3秒依次打印红灯、绿灯、黄灯
-}, 3000)
-复制代码
-```
-
-应用场景：灯泡状态、红绿灯切换等

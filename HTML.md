@@ -34,169 +34,7 @@ HTTP使用统一资源标识符（Uniform Resource Identifiers, URI）来传输�
 
 7.参数部分：从“？”开始到“#”为止之间的部分为参数部分，又称搜索部分、查询部分。本例中的参数部分为“boardID=5&ID=24618&page=1”。参数可以允许有多个参数，参数与参数之间用“&”作为分隔符。
 
-## 前端性能优化
-
-**性能优化黄金法则**： 只有10%~20%的最终用户响应时间花在了下载HTML文档上，其余的80%~90%时间花在了下载页面中的所有组件上（脚本、CSS样式表、图片、Flash）。(改动前端的收益大)
-
-https://segmentfault.com/a/1190000020867090
-
-https://segmentfault.com/a/1190000021580224
-
-### 1.加载优化
-
-**减少HTTP请求**
-
-![rule1.2.png](https://segmentfault.com/img/bVbCH94)
-
-- 图片地图  若导航栏和超链接中使用多个图片，则使用图片地图是加速页面的最简单的方式
-- 合并CSS和JS
-- CSS精灵图
-
-**缓存资源**
-
-​	所有静态资源都要在服务器端设置缓存，并且尽量使用长缓存(**使用时间戳更新缓存**)
-
-**压缩代码**
-
-**无阻塞**：头部内联的样式和脚本会阻塞页面的渲染，样式放在头部并使用`link`方式引入，脚本放在尾部并使用异步方式加载。（关于CSS和JS放置位置https://juejin.im/post/5de5cd1951882573135415fd）
-
-**首屏加载**：首屏快速显示
-
-**按需加载**：将不影响首屏的资源和当前屏幕不用的资源放到用户需要时才加载(会导致大量重绘，影响渲染性能**)
-
-- 懒加载（1.延时加载；2.条件加载；3.可视区加载）
-- 滚屏加载 当拉动浏览器的滚动条时到页底时，页面会继续自动加载更多内容供用户浏览，AJAX应用
-
-**预加载**：大型资源页面可使用`Loading`，资源加载完成后再显示页面，但加载时间过长，会造成用户流失
-
-- 可感知Loading：进入页面时`Loading`
-- 不可感知Loading：提前加载下一页
-
-**压缩图像**
-
-**避免重定向**
-
-**异步加载第三方资源**：第三方资源不可控会影响页面的加载和显示，要异步加载
-
-```
-加载过程是最为耗时的过程，可能会占到总耗时的`80%时间(**优化重点**)
-```
-
-### 2.执行优化
-
-- **CSS写在头部，JS写在尾部并异步**
-
-- **避免img、iframe等的src为空**：空`src`会重新加载当前页面，影响速度和效率
-
-- **尽量避免重置图像大小**：会引发图像的多次重绘，影响性能
-
-- **图像尽量避免使用DataURL**：`DataURL`图像没有使用图像的压缩算法，文件会变大，并且要解码后再渲染，加载慢耗时长
-
-- 频繁DOM操作合成一个
-  	
-  	[使用文档碎片（DocumentFragments）追加DOM元素](https://www.cnblogs.com/jehorn/p/8117100.html)
-  	
-  	因为DocumentFragment不是真实DOM树的一部分，它的变化不会引起DOM树的重新渲染的操作(reflow)，且不会导致性能等问题。
-  	
-  	```js
-  	const listNode=document.getElementsByClassName('list')
-  		//创建一个文档片段
-  		const frag=document.createDocumentFragment()
-  		//执行插入
-  		for(let x=0;x<10;x++){
-  			const li=document.createElement('li')
-  			frag.appendChild(li)
-  		}
-  		//再插入到DOM树
-  		listNode.appendChild(frag)
-  	```
-  
-- DOM查询缓存
-  
-- 尽量使用DOMContentLoaded代替window.onLoad
-
-```
-执行处理不当会阻塞页面加载和渲染
-```
-
-### 3.渲染优化
-
-- **设置viewport**：HTML的`viewport`可加速页面的渲染
-
-  ```
-  <meta name="viewport" content="wi
-  dth=device-width, user-scalable=no, initial-scale=1, minimum-scale=1, maximum-scale=1">
-  ```
-
-- **减少DOM节点**：DOM节点太多影响页面的渲染，尽量减少DOM节点
-
-- **优化动画**
-
-  - 尽量使用CSS3动画
-  - 合理使用requestAnimationFrame动画代替setTimeout
-  - 适当使用Canvas动画：5个元素以内使用`CSS动画`，5个元素以上使用`Canvas动画`，`iOS8+`可使用`WebGL动画`
-
-- **优化高频事件**：`scroll`、`touchmove`等事件可导致多次渲染
-
-  - 函数节流 (每隔一定的时间去执行,应用拖拽)
-  - 函数防抖 (避免第一次执行未结束再执行下一次，应用多次点击)
-  - 使用requestAnimationFrame监听帧变化：使得在正确的时间进行渲染
-  - 增加响应变化的时间间隔：减少重绘次数
-
-- **GPU加速**：使用某些HTML5标签和CSS3属性会触发`GPU渲染`，请合理使用(**过渡使用会引发手机耗电量增加**)
-
-  - HTML标签：`video`、`canvas`、`webgl`
-  - CSS属性：`opacity`、`transform`、`transition`
-
-### 4.样式优化
-
-​      隐藏在屏幕外，或在页面滚动时，尽量停止动画；
-
-- **避免在HTML中书写style**
-- **避免CSS表达式**：CSS表达式的执行需跳出CSS树的渲染
-- **移除CSS空规则**：CSS空规则增加了css文件的大小，影响CSS树的执行
-- **正确使用display**：`display`会影响页面的渲染
-  - `display:inline`后不应该再使用`float`、`margin`、`padding`、`width`和`height`
-  - `display:inline-block`后不应该再使用`float`
-  - `display:block`后不应该再使用`vertical-align`
-  - `display:table-*`后不应该再使用`float`和`margin`
-- **不滥用float**：`float`在渲染时计算量比较大，尽量减少使用
-- **不滥用Web字体**：Web字体需要下载、解析、重绘当前页面
-- **不声明过多的font-size**：影响CSS树的效率
-- **值为0时不需要任何单位**
-- **标准化各种浏览器前缀**
-  - 无前缀属性应放在最后
-  - CSS动画属性只用-webkit-、无前缀两种
-  - 其它前缀为-webkit-、-moz-、-ms-、无前缀四种：`Opera`改用`blink`内核，`-o-`已淘汰
-- **避免让选择符看起来像正则表达式**：高级选择符执行耗时长且不易读懂，避免使用
-
-### 5.脚本优化
-
-- **减少重绘和回流**
-  - 避免不必要的DOM操作
-  - 避免使用document.write
-  - 减少drawImage
-  - 尽量改变class而不是style，使用classList代替className
-- **缓存DOM选择与计算**：每次DOM选择都要计算和缓存
-- **缓存.length的值**：每次`.length`计算用一个变量保存值
-- **尽量使用事件代理**：避免批量绑定事件
-- **尽量使用id选择器**：`id`选择器选择元素是最快的
-- **touch事件优化**：使用`tap`(`touchstart`和`touchend`)代替`click`(**注意`touch`响应过快，易引发误操作**)
-
-## 
-
-```
-*加载更快
-	减少资源体积 压缩代码
-	减少访问次数  缓存304  SSR服务端渲染
-	CSS精灵图（同一张图片不同位置）
-	使用更快的CDN网络
-*渲染更快
-	渐进式渲染（只加载一个页面所需文件），预加载，
-		渲染过程：HTMLDOMTree->CSSOMTree->RenderTree(JS代码终止)
-```
-
-## 浏览器渲染过程
+# 浏览器渲染过程
 
 ### 浏览器组件
 
@@ -237,6 +75,8 @@ https://segmentfault.com/a/1190000021580224
 5. 将渲染树每个节点绘制到屏幕。
 
 渲染过程中，**遇到script标签，如果是普通JS标签则同步加载并执行，阻塞页面渲染，如果标签上有defer / async属性则异步加载JS资源**
+
+什么时候发生重绘、重排  https://juejin.cn/post/6844904083212468238#heading-9
 
 ### 渲染阻塞
 
@@ -300,6 +140,21 @@ https://juejin.im/entry/59e1d31f51882578c3411c77
 
 在绘制阶段，遍历渲染树，调用渲染器的**paint()**方法在屏幕上显示其内容。渲染树的绘制工作是由浏览器的UI后端组件完成的。
 
+### css加载会造成阻塞吗？
+
+https://zhuanlan.zhihu.com/p/43282197
+
+1. css加载不会阻塞DOM树的解析
+2. css加载会阻塞DOM树的渲染
+3. css加载会阻塞后面js语句的执行
+
+因此，为了避免让用户看到长时间的白屏时间，我们应该尽可能的提高css加载速度，比如可以使用以下几种方法:
+
+1. 使用CDN(因为CDN会根据你的网络状况，替你挑选最近的一个具有缓存内容的节点为你提供资源，因此可以减少加载时间)
+2. 对css进行压缩(可以用很多打包工具，比如webpack,gulp等，也可以通过开启gzip压缩)
+3. 合理的使用缓存(设置cache-control,expires,以及E-tag都是不错的，不过要注意一个问题，就是文件更新后，你要避免缓存而带来的影响。其中一个解决防范是在文件名字后面加一个版本号)
+4. 减少http请求数，将多个css文件合并，或者是干脆直接写成内联样式(内联样式的一个缺点就是不能缓存)
+
 #### reflow与repaint：
 
 HTML默认是流式布局的，CSS和js会打破这种布局，改变DOM的外观样式以及大小和位置。这时就要提到：replaint和reflow。
@@ -318,217 +173,7 @@ https://juejin.im/post/5c15f797f265da61141c7f86#heading-13
 
 
 
-## 跨域
 
-https://segmentfault.com/a/1190000011145364
-
-跨域是指一个域下的文档或脚本试图去请求另一个域下的资源，这里跨域是广义的。
-
-广义的跨域：
-
-1.) 资源跳转： A链接、重定向、表单提交
-
-2.) 资源嵌入： <link>、<script>、<img>、<frame>等dom标签，还有样式中background:url()、@font-face()等文件外链
-
-3.) 脚本请求： js发起的ajax请求、dom和js对象的跨域操作等
-
-通常所说的跨域是狭义的，是由浏览器相似策略限制的一类请求场景
-
-同源策略/ SOP（Same origin policy）是一种约定，是浏览器最核心最基本的安全功能，
-
-​     “协议+域名+端口”三者相同
-
-**同源策略限制内容有：**
-
-- Cookie、LocalStorage、IndexedDB 等存储性内容
-- DOM 节点
-- AJAX 请求发送后，结果被浏览器拦截了
-
-但是有三个标签是允许跨域加载资源：
-
-- `<img src=XXX>`
-- `<link href=XXX>`
-- `<script src=XXX>`
-
-**跨域如何解决**
-
-1. <u>JSONP：动态创建script，再请求一个带参网址实现跨域通信。</u>
-
-2. document.domain + iframe跨域：两个页面都通过js强制设置document.domain为基础主域，就实现了同域。
-
-3. location.hash + iframe跨域：a欲与b跨域相互通信，通过中间页c来实现。 三个页面，不同域之间利用iframe的location.hash传值，相同域之间直接js访问来通信。
-
-4. window.name + iframe跨域：通过iframe的src属性由外域转向本地域，跨域数据即由iframe的window.name从外域传递到本地域。
-
-5. postMessage跨域：可以跨域操作的window属性之一。（HTML5）
-
-6. <u>CORS：需要服务器设置header：`Access-Control-Allow-Origin`</u>，浏览器发送请求是携带origin字段。
-
-7. <u>Nginx反向代理 可以不需要目标服务器配合，不过需要Nginx中转服务器，用于转发请求（服务端之间的资源请求不会有跨域限制）</u>
-
-8. WebSocket协议跨域
-
-### jsonp
-
-https://www.jianshu.com/p/e1e2920dac95
-
-面试相关：https://blog.csdn.net/weixin_43424101/article/details/84288991
-
-1) JSONP原理
-
-<u>利用`<script>`标签的src属性可以跨域引用资源的特点</u>，有这些属性的标签还有`<img>`、`<iframe>`，但是JSONP只支持GET方式。需要对方的服务器做支持
-
-2) JSONP和AJAX对比
-
-JSONP和AJAX相同，都是客户端向服务器端发送请求，从服务器端获取数据的方式。但AJAX属于同源策略，JSONP属于非同源策略（跨域请求）
-
-3) JSONP优缺点
-
-优点是简单兼容性好，可用于解决主流浏览器的跨域数据访问的问题。**缺点是仅支持get方法具有局限性,不安全可能会遭受XSS攻击。**
-
-下面我们以点击获取随机新闻列表的例子来演示一下JSONP的具体工作原理(test.com访问a.test.com)
-
-例子：https://www.jianshu.com/p/447fe4d86dd5
-
-HTML如下:
-
-```html
-<div class="container">
-  <ul class="news">
-    <li>第11日前瞻：中国冲击4金 博尔特再战</li>
-    <li>男双力争会师决赛 </li>
-    <li>女排将死磕巴西！</li>
-  </ul>
-  <button class="change">换一组</button>
-</div>
-```
-
-<u>首先，我们在前端要在获取资源的时候动态创建script标签，并设置src属性指向资源的URL地址</u>，代码如下:
-
-```javascript
-document.querySelector('.change').addEventListener('click', function() {
-  var script = document.createElement('script')
-  script.setAttribute('src', '//a.test.com:8080/getNews?callback=appendHtml')   //callback=appendHtml是给后端资源打包数据用的参数，同时也是前端定义的回调函数
-  document.head.appendChild(script)
-  document.head.removeChild(script) //删除script标签是因为script标签插入页面的时候资源已经请求到了
-})
-```
-
-定义获取资源后需要执行的回调函数:
-
-```javascript
-function appendHtml(news) {
-    var html = ''
-    for (var i = 0; i < news.length; i++) {
-        html += '<li>' + news[i] + '</li>'
-    }
-    document.querySelector('.news').innerHTML = html
-}
-```
-
-后端是把前端发送的URL地址拿到的数据以前端定义的回调函数（appendHtml）的<u>参数的形式返回</u>给前端，这样到了前端就可以调用执行了:
-
-```javascript
-var news = [
-    "第11日前瞻：中国冲击4金 博尔特再战200米羽球",
-    "正直播柴飚/洪炜出战 男双力争会师决赛",
-    "女排将死磕巴西！郎平安排男陪练模仿对方核心",
-    "没有中国选手和巨星的110米栏 我们还看吗？",
-    "中英上演奥运金牌大战",
-]
-var data = [];
-for (var i = 0; i < 3; i++) {
-  var index = Math.floor(Math.random() * news.length);
-  data.push(news[index]);
-}
-var callback = req.query.callback;   //查询前端有没有传入回调函数
-if (callback) {
-    res.send(callback + '(' + JSON.stringify(data) + ')');    //数据以函数参数的方式传给前端
-} else {
-    res.send(data);
-}
-```
-
-这样我们就从test.com访问到了a.test.com下的资源
-
-### cors  跨域资源共享
-
-**CORS需要浏览器和服务器同时支持**
-
-CORS是一个W3C标准，全称是"跨域资源共享"（Cross-origin resource sharing）。
-
-它允许浏览器向跨源服务器，发出[`XMLHttpRequest`](https://www.ruanyifeng.com/blog/2012/09/xmlhttprequest_level_2.html)请求，从而克服了AJAX只能[同源](https://www.ruanyifeng.com/blog/2016/04/same-origin-policy.html)使用的限制
-
-
-
-1. iframe   2.打开目标窗口并发送  https://zhuanlan.zhihu.com/p/26777882
-
-![img](https://upload-images.jianshu.io/upload_images/4023562-50e621b42aa7641d.jpg?imageMogr2/auto-orient/strip|imageView2/2/w/922/format/webp)
-
-整个CORS通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，CORS通信与同源的AJAX通信没有差别，代码完全一样。浏览器一旦发现AJAX请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。
-
-因此，实现CORS通信的关键是服务器。只要服务器实现了CORS接口，就可以跨源通信。
-
-分为**简单请求和非简单请求**
-
-一旦服务器通过了"预检"请求，以后每次**浏览器正常的`CORS`请求，就都跟简单请求一样，会有一个`Origin`头信息字段。服务器的回应，也都会有一个`Access-Control-Allow-Origin`头信息字段。**
-
-比较：JSONP只支持`GET`请求，CORS支持所有类型的HTTP请求。JSONP的优势在于支持老式浏览器，以及可以向不支持CORS的网站请求数据。
-
-
-
-### Nginx反向代理
-
-补充：反向代理：浏览器不知道真正的服务器。正向代理：服务器不知道浏览器 VPN 就是正向代理。
-
-https://zhuanlan.zhihu.com/p/94197713
-
-使用nginx反向代理实现跨域，只需要修改nginx的配置即可解决跨域问题。
-
-A网站向B网站请求某个接口时，向B网站发送一个请求，nginx根据配置文件接收这个请求，代替A网站向B网站来请求。
-nginx拿到这个资源后再返回给A网站，以此来解决了跨域问题。
-
-例如nginx的端口号为 8090，需要请求的服务器端口号为 3000。（localhost:8090 请求 localhost:3000/say）
-
-nginx配置如下:
-
-```
-server {
-    listen       8090;
-
-    server_name  localhost;
-
-    location / {
-        root   /Users/liuyan35/Test/Study/CORS/1-jsonp;
-        index  index.html index.htm;
-    }
-    location /say {
-        rewrite  ^/say/(.*)$ /$1 break;
-        proxy_pass   http://localhost:3000;
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-    }
-    # others
-}
-```
-
-### postMessage()
-
-https://zhuanlan.zhihu.com/p/26777882 postMessage跨域
-
-HTML5的新方法，可以使用它来向其它的window对象发送数据，无论这个window对象是属于同源或不同源
-
-**发送页面使用postMessage()方法，接收监听window的message事件即可。**
-
-
-
-## http2.0新特性
-
-１.HTTP/2 采用二进制格式传输数据，而非 HTTP/1.x 的文本格式。二进制格式在协议的解析和优化扩展上带来更多的优势和可能。 
- 2.HTTP/2 对消息头采用 HPACK 进行压缩传输，能够节省消息头占用的网络的流量。而 HTTP/1.x 每次请求，都会携带大量冗余头信息，浪费了很多带宽资源。头压缩能够很好的解决该问题。 
-3.多路复用，所有的请求都是通过一个 TCP 连接并发完成。HTTP/1.x 虽然通过 pipeline 也能并发请求，但是多个请求之间的响应会被阻塞。HTTP/2 做到了真正的并发请求。同时，流还支持优先级和流量控制。 （不需要精灵图，一个TCP连接加载一整个页面）
-4.Server Push：服务端能够更快的把资源推送给客户端。例如服务端可以主动把 JS 和 CSS 文件推送给客户端，而不需要客户端解析 HTML 再发送这些请求。当客户端需要的时候，它已经在客户端了。
 
 
 
@@ -573,7 +218,7 @@ innerText,   除了内部标签的内容
 
 outerHTML  包含自身标签，内部标签以及内容
 
-## 两个静态html页面传值方法的总结
+# 两个静态html页面传值方法的总结
 
 https://blog.csdn.net/csdn_ds/article/details/78393564
 
@@ -613,7 +258,7 @@ H5: localStorage：储存空间大，有5M存储空间。
 
 **请用html知识解决seo(搜索引擎优化)优化问题**
 
-答：1.设置 TDK    
+答：1.设置 TDK
 
 TDK是SEO术语，是三个单词的缩写。 即：title/description/keywords。
 
@@ -628,3 +273,83 @@ TDK是SEO术语，是三个单词的缩写。 即：title/description/keywords�
 方便其它设备解析。 便于团队开发和维护，语义化根据可读性。
 
 关于HTML语义化，你知道的都有哪些标签？header、article、address
+
+# 小知识点
+
+## 块状，行内，内联块状元素
+
+1.**块状元素**
+
+```xml
+<div>、<p>、<h1>-<h6>、<ol>、<ul>、<dl>、<table>、<address>、<blockquote> 、<form>
+```
+
+2.**行内元素**(内联元素)
+
+一个行内元素只占据它**对应标签的边框所包含的空间**。
+
+```xml
+<a>、<span>、<br>、<i>、<em>、<strong>、<label>、<q>、<var>、<cite>、<code>
+```
+
+（1）设置宽度 **width 无效**。
+
+（2）设置高度 **height 无效**，但可以通过 **line-height** 来设置。
+
+（3）设置 margin 只有 **左右有效，上下无效。**
+
+（4）设置 padding 只有 **左右有效，上下无效**。注意元素范围是增大了，但是对元素周围的内容是没影响的。
+
+**行内元素和块级元素对比**
+
+- 行内元素只能包含**数据和其他行内元素**。而块级元素可以包含**行内元素和其他块级元素**。这种结构上的包含继承区别可以使块级元素创建比行内元素更”大型“的结构。
+
+- 默认情况下，行内元素**不会以新行开始**，而块级元素会**新起一行**。
+
+- 行内元素**不可以**设置宽高，块级元素**可以**设置宽高
+
+- 行内元素**水平方向**的 margin 和 padding 可以生效。但**竖直方向**的 margin 和 padding 不能生效。块级元素可以设置margin，padding
+
+3.内联-块状元素
+
+inline-block 元素特点：
+1.和其他元素都在一行上；
+
+2.元素的高度、宽度、行高以及**顶和底边距**都可设置。
+
+3.它也会有元素间出现空白区域的问题
+
+常用的内联块状元素有：
+
+```xml
+<img>、<input>
+```
+
+补充：
+
+若设置行内元素 **float:left/right**，则该行内元素转换为**块级元素** ，且具有浮动特性。
+
+若为行内元素进行定位，**position:absolute** 或者 **position:fixed** 都会把行内元素转换为**块级元素**。
+
+
+
+## *Inline-Block的坑 
+
+空白间隙问题以及解决
+
+http://layout.imweb.io/article/inline-block.html
+
+## 自闭合标签
+
+在HTML中，标签分为两种：一般标签和自闭合标签。
+
+**只有开始符号而没有结束符号，因此不可以在内部插入标签或文字**
+
+| 标签      | 说明                             |
+| :-------- | :------------------------------- |
+| <meta />  | 定义网页的信息（供搜索引擎查看） |
+| <link />  | 引入“外部CSS文件”                |
+| <br />    | 换行标签                         |
+| <hr />    | 水平线标签                       |
+| <img />   | 图片标签                         |
+| <input /> | 表单标签                         |

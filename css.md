@@ -1,20 +1,33 @@
-## 盒模型
+# 盒模型
 
 ![image-20200603230854512](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200603230854512.png)               ![image-20200603230906497](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200603230906497.png)
 
 ![image-20210729103410792](https://tva1.sinaimg.cn/large/008i3skNgy1gsxm7sin5ej31140ne76n.jpg)
 
+宽度和高度的计算值  不包含内容的边框（border）和内边距（padding）
+
+
+
 ![image-20210729103432441](https://tva1.sinaimg.cn/large/008i3skNgy1gsxm84tbvwj311c0mcgnt.jpg)
 
-### box-sizing
+*`width` = border + padding + 内容的宽度*
+
+
+
+**box-sizing   **
+
+**确定使用哪种盒模型**  来计算一个元素的总宽度和总高度。
 
 https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-sizing
 
-确定使用哪种盒模型 
-
-1.content box(默认)、
+1.content box(默认)
 
 2.border-box   IE盒模型
+
+<u>box-sizing 属性可以被用来调整这些表现:</u>
+
+- `content-box` 是默认值。如果你设置一个元素的宽为100px，那么这个元素的内容区会有100px 宽，并且任何边框和内边距的宽度都会被增加到最后绘制出来的元素宽度中。
+- `border-box` 告诉浏览器：你想要设置的边框和内边距的值是包含在width内的。也就是说，如果你将一个元素的width设为100px，那么这100px会包含它的border和padding，内容区的实际宽度是width减去(border + padding)的值。大多数情况下，这使得我们更容易地设定一个元素的宽高。
 
 # CSS布局模型
 
@@ -22,11 +35,11 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-sizing
  2、浮动模型 (Float)
  3、层模型（Layer）
 
-## 层模型(定位)
+## 层模型 (position定位)
 
 每个图层能够精确**定位操作**
 
-static：静态定位，默认值。正常流
+static：静态定位，默认值。正常流,此时 `top`, `right`, `bottom`, `left` 和 `z-index `属性无效。
 
 层模型有三种形式： 
 
@@ -35,6 +48,8 @@ static：静态定位，默认值。正常流
 2、相对定位(position: relative)
 
 3、固定定位(position: fixed)
+
+4、粘性定位 sticky 
 
 **绝对定位（相对于父类）**
 
@@ -52,7 +67,30 @@ position:absolute，<u>脱离文档流</u>，使用left、right、top、bottom�
 
 相对移动的坐标是**视图（屏幕内的网页窗口）**本身。不随浏览器滚动条滚动变化
 
- 
+补充：当元素祖先的 `transform`, `perspective` 或 `filter` 属性非 `none` 时，容器由视窗改为该祖先。 
+
+
+
+粘性定位
+
+```awk
+元素的表现为在跨越指定的阀值（top,bottom,left,right）之前(大于)是相对定位，之后（小于）是固定定位。
+
+该属性生效有一些限制：
+//1.必须指定阀值才会生效，  优先级 top > bottom , left > right;
+//2.达到设定阀值，  如果没有达到，大于阀值，显示为相对定位，如果到达阀值，或小于的情况显示为固定定位
+//3.如果父元素设置overflow 就必须是visible，如果是hidden父容器也就没有办法滚动，所以sticky的元素也不会滚动
+//4.sticky的任一父元素如果设置了定位则这个sticky元素是相对于父元素进行定位，不会相对于视口定位
+
+注意，一个sticky元素会“固定”在离它最近的一个拥有“滚动机制”的祖先上（当该祖先的`overflow` 是 `hidden`, `scroll`, `auto`, 或 `overlay`时），即便这个祖先不是最近的真实可滚动祖先。这有效地抑制了任何“sticky”行为
+
+```
+
+应用有如下：上面标题，下面是导航栏
+
+![image-20210902174443860](https://tva1.sinaimg.cn/large/008i3skNgy1gu2fcjbm4gj60su0h2q5902.jpg)
+
+
 
 Relative与Absolute组合使用
 
@@ -169,6 +207,35 @@ Autoprefixer是一款自动管理浏览器前缀的插件，它可以解析CSS�
 **\1. 父元素的高度无法被撑开，影响与父元素同级的元素**
 
 \2. 与浮动元素同级的非浮动元素会跟随其后浮动起来
+
+![image-20210820181316026](https://tva1.sinaimg.cn/large/008i3skNgy1gtnf476qi3j60v204idfy02.jpg)
+
+222浮动了，111浮动在222上面
+
+```
+ <div class="parent">
+    <div class="c1">111</div>
+    <div class="c2">222</div>
+    <div class="c3">333</div>
+  </div>
+  
+   .parent {
+    background-color: aqua;
+  }
+  .c1{
+    width: 100px;
+    background-color: antiquewhite;
+    float: left;
+  }
+  .c2{
+    width: 200px;
+    background-color: chartreuse;
+  }
+  .c3 {
+    width: 500px;
+    background-color: rgb(163, 27, 118);
+  }
+```
 
 \3. 若非第一个元素浮动，则该元素之前的元素也需要浮动，否则会影响页面显示的结构
 

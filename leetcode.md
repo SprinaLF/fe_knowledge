@@ -1,5 +1,213 @@
+# 排序
+
+https://www.cnblogs.com/onepixel/articles/7674659.html
+
+![img](https://upload-images.jianshu.io/upload_images/1726554-156436f8dda59bf9.png?imageMogr2/auto-orient/strip|imageView2/2/w/966/format/webp)
+
+## 快速排序
+
+1. 两个数组存放左右元素
+
+```js
+       const quickSort = (arr) => {
+            if(arr.length<=1) return arr
+            let p = Math.floor(arr.length/2)  // 基准的位置 pivotIndex
+            let a = arr.splice(p,1)[0]   // a为基准元素,把它从数组中删除 pivot
+            const left = [],right=[]
+            for(let i in arr) {
+                if(arr[i]<a) {
+                    left.push(arr[i])
+                } else {
+                    right.push(arr[i])
+                }
+            }
+            return quickSort(left).concat(a,quickSort(right))
+        }
+        let a = [3,2,4,1]
+        console.log(quickSort(a));
+```
+
+以上代码的实现方式是，选择一个中间的数字为基准点，用两个数组分别去保存比基准数小的值，和比基准数大的值，最后递归左边的数组和右边的数组，用concat去做一个数组的合并。
+
+对于这段代码的分析：
+缺点：
+
+- 获取基准点使用了一个splice操作，在js中splice会对数组进行一次拷贝的操作，而它最坏的情况下复杂度为O(n)，而O(n)代表着针对数组规模的大小进行了一次循环操作。
+- 首先我们每次执行都会使用到两个数组空间，产生空间复杂度。
+- concat操作会对数组进行一次拷贝，而它的复杂度也会是O(n)
+- 对大量数据的排序来说相对会比较慢
+
+优点：代码简单明了，可读性强，易于理解
+
+2. 方法二：找基准值 (原地排序)，把比基准值小的换到前面
+
+```js
+function partition(arr, start, end){
+    // 以最后一个元素为基准
+    const pivotValue = arr[end];  // 保护基准值，如果选中间的元素作为基准，一样可以交换到最后保护起来
+    let pivotIndex = start; 
+    for (let i = start; i < end; i++) {  // 一遍循环下来，将小的换到前面
+        console.log(i,pivotIndex);
+        if (arr[i] < pivotValue) {
+            // 交换
+            [arr[i], arr[pivotIndex]] = [arr[pivotIndex], arr[i]];
+            // 移动到下一个元素
+            pivotIndex++;
+        }
+        // 当前值大于基准值的话，pivotIndex指的就是大于的那个值
+    }
+    // 把基准值放在中间
+    [arr[pivotIndex], arr[end]] = [arr[end], arr[pivotIndex]] 
+    return pivotIndex;
+};
+function quickSort(arr, start, end) {
+    // 终止条件
+    if (start >= end) {
+        return;
+    }
+    // 返回 pivotIndex 基准位置
+    let index = partition(arr, start, end);
+    
+    // 将相同的逻辑递归地用于左右子数组
+    quickSort(arr, start, index - 1);
+    quickSort(arr, index + 1, end);
+}
+let a = [6,2,4,7,-1,5]
+quickSort(a,0,a.length-1);
+console.log(a);
+```
+
+第二段的排序算法我们减少了两个O(n)的操作，得到了一定的性能上的提升，而第一种方法数据规模足够大的情况下会相对来说比较慢一些
+
+
+
+快排时间复杂度分析
+
+![image-20210908144400608](https://tva1.sinaimg.cn/large/008i3skNgy1gu97ucl7ylj60wy0u0n0g02.jpg)
+
+## 冒泡排序
+
+```js
+function bubbleSort(arr) {
+    if(arr.length<2) return arr
+    for(let i=0; i<arr.length-1; i++) {
+        for(let j=0; j<arr.length-i; j++) {   // 后i个元素已排序完成，只需关心前面的元素
+            if(a[j]>a[j+1]) {
+                [a[j], a[j+1]] = [a[j+1], a[j]]
+            }
+        }
+    }
+}
+let a = [3,2,4,1,-1]
+bubbleSort(a)
+console.log(a);
+```
+
+### 插入排序
+
+```js
+function insertionSort(arr) {
+    var len = arr.length;
+    var preIndex, current;
+    for (var i = 1; i < len; i++) {
+        preIndex = i - 1;
+        current = arr[i];
+        while(preIndex >= 0 && arr[preIndex] > current) {
+            arr[preIndex+1] = arr[preIndex];
+            preIndex--;
+        }
+        arr[preIndex+1] = current;
+    }
+    return arr;
+}
+let a = [3,2,4,1,-1]
+console.log(insertionSort(a));
+```
+
+## 桶排序
+
+原理：将数组分到有限数量的桶里。每个桶再个别排序（<u>有可能再使用别的排序算法或是以递归方式继续使用桶排序进行排序</u>）
+
+1. 什么时候最快
+
+当输入的数据可以均匀的分配到每一个桶中。
+
+2. 什么时候最慢
+
+当输入的数据被分配到了同一个桶中。
+
+3. 示意图
+
+元素分布在桶中：
+
+![img](https://www.runoob.com/wp-content/uploads/2019/03/Bucket_sort_1.svg_.png)
+
+然后，元素在每个桶中排序：
+
+![img](https://www.runoob.com/wp-content/uploads/2019/03/Bucket_sort_2.svg_.png)
+
+**代码：**
+
+```js
+function bucketSort(arr, bucketSize) {
+    if (arr.length === 0) {
+      return arr;
+    }
+
+    let minValue = arr[0],maxValue = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] < minValue) {
+          minValue = arr[i];                // 输入数据的最小值
+      } else if (arr[i] > maxValue) {
+          maxValue = arr[i];                // 输入数据的最大值
+      }
+    }
+
+    //桶的初始化
+    var DEFAULT_BUCKET_SIZE = 5;            // 桶的默认数量为5
+    bucketSize = bucketSize || DEFAULT_BUCKET_SIZE;
+    var bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;  
+    var buckets = new Array(bucketCount);
+    for (let i = 0; i < buckets.length; i++) {
+        buckets[i] = [];
+    }
+
+    //利用映射函数将数据分配到各个桶中
+    for (let i = 0; i < arr.length; i++) {
+        buckets[Math.floor((arr[i] - minValue) / bucketSize)].push(arr[i]);
+    }
+    arr.length = 0;    //清空，重新放入排序好的数
+    for (let i = 0; i < buckets.length; i++) {
+        insertionSort(buckets[i]);            // 对每个桶进行排序，这里使用了插入排序
+        for (let j = 0; j < buckets[i].length; j++) {
+            arr.push(buckets[i][j]);                      
+        }
+    }
+    return arr;
+}
+
+//补充：插入排序
+function insertionSort(arr){
+  let length = arr.length;
+  for(let i = 1; i < length; i++) {
+    let temp = arr[i];
+    let j = i;
+    for(; j > 0; j--) {
+      if(temp >= arr[j-1]) {
+        break;      // 当前考察的数大于前一个数，证明有序，退出循环
+      }
+      arr[j] = arr[j-1]; // 将前一个数复制到后一个数上
+    }
+    arr[j] = temp;  // 找到考察的数应处于的位置
+  }
+  return arr;
+}
+```
+
+# 
 
 ##  leetcode 07 整数反转
+
 ```js
 // 在java中整除用/  取余用% 但js /  所的结果为浮点数
 // 应该调用以下方法
@@ -870,8 +1078,6 @@ var solution = function(isBadVersion) {
 };
 console.log(missingNumber([0,2]))
 ```
-
-
 
 ### 130被围绕的区域
 
@@ -2478,7 +2684,24 @@ var longestPalindrome = function(s) {
 时间复杂度: O(N^2)
 空间复杂度: 0(N^2)
 
-## 贪心
+# 贪心
+
+## [55. 跳跃游戏](https://leetcode-cn.com/problems/jump-game/)
+
+![55.跳跃游戏](https://pic.leetcode-cn.com/1625389335-CBSGsC-file_1625389333714)
+
+```js
+// 思路：若能走到某个位置，则它前面的所有位置一定都能走到，即求能走到的最大位置，若小于最后一个位置，则一定走不到
+var canJump = function(nums) {
+    let cover = 0  // 当前能覆盖到的最大范围的索引
+    for(let i=0;i<=cover;i++) {
+        if(i+nums[i]>cover) {   
+            cover = i+nums[i]  //更新能覆盖到的最大索引
+        }
+    }
+    return cover>=nums.length-1
+};
+```
 
 #### 1403. 非递增顺序的最小子序列
 
@@ -2499,7 +2722,7 @@ var minSubsequence = function(nums) {
 };
 ```
 
-## 回溯
+# 回溯
 
 ### 全排列1
 
@@ -2813,7 +3036,19 @@ var isHappy = function(n) {
 };
 ```
 
-## 脑筋急转弯
+# 摩尔投票法
+
+![image-20210823162829799](https://tva1.sinaimg.cn/large/008i3skNly1gtqsy3cr8zj61h40dqtan02.jpg)
+
+## [169. 多数元素](https://leetcode-cn.com/problems/majority-element/)
+
+给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+
+
+# 脑筋急转弯
 
 ### [面试题 02.03. 删除中间节点](https://leetcode-cn.com/problems/delete-middle-node-lcci/)
 
@@ -2834,7 +3069,37 @@ var deleteNode = function(node) {
 
 
 
-## 应用
+# 应用
+
+驼峰和bem命名互转
+
+```js
+// 驼峰转bem
+function f(str) {
+    let tmp = ''   // 存当前的单词
+    let res = ''
+    for(let i in str) {
+        if(str[i]>='A'&&str[i]<='Z') { // 或者正则
+            if(res.length>0) {
+                res=res+'-'+tmp
+            } else {
+                res+=tmp
+            }
+            tmp=''
+            tmp = tmp + str[i].toLowerCase()
+            
+        } else {
+            tmp = tmp + str[i]
+        }
+    }
+    // 此时最后的tmp还没有加进去
+    res = res + '-' + tmp
+    return res
+}
+
+console.log(f('fooBarTest'))
+
+```
 
 删除 最久未访问过的项目
 
@@ -3149,8 +3414,8 @@ https://blog.csdn.net/weixin_44827421/article/details/93717370
 解法：
 
 加减法 a=b-a;b=b-a;a=b+a （要考虑溢出问题）
-数组反转 numbers.reverse(); （取巧！！！）
-es6新特性 [a,b]=[b,a]
+数组反转 numbers.reverse(); 
+es6新特性 [a,b]=[b,a]     原理：[a, b] = [b, a]`等同于`var arr=[b,a]; [a,b]=arr;
 y=[x, x = y] [0]
 异或 a=a^b;b=a^b;a=a^b;
 
@@ -3227,14 +3492,14 @@ return ' ';
 };
 ```
 
-### [面试题 01.01. 判定字符是否唯一](https://leetcode-cn.com/problems/is-unique-lcci/)
+### [面试题 01.01. 判定字符是否唯一**](https://leetcode-cn.com/problems/is-unique-lcci/)
 
 ```
-1. set/map 空间复杂度
+1. set/map 空间复杂度    或比较set的长度和之前的长度
 2. indexOf, lastIndexOf
 3. 排序，比较相邻的
 4. 双指针(双重循环)
-5. 位运算
+5. *位运算
 ```
 
 
@@ -3329,89 +3594,45 @@ class Stack {
 11. indexOf:  方法返回在数组中可以找到一个给定元素的第一个索引，如果不存在，则返回-1。
 12. includes(es7)：方法用来判断一个数组是否包含一个指定的值，根据情况，如果包含则返回true，否则返回false。
 
-## 排序
+# 知识点
 
-### 桶排序；
+## 数学运算
 
-原理：将数组分到有限数量的桶里。每个桶再个别排序（<u>有可能再使用别的排序算法或是以递归方式继续使用桶排序进行排序</u>）
-
-1. 什么时候最快
-
-当输入的数据可以均匀的分配到每一个桶中。
-
-2. 什么时候最慢
-
-当输入的数据被分配到了同一个桶中。
-
-3. 示意图
-
-元素分布在桶中：
-
-![img](https://www.runoob.com/wp-content/uploads/2019/03/Bucket_sort_1.svg_.png)
-
-然后，元素在每个桶中排序：
-
-![img](https://www.runoob.com/wp-content/uploads/2019/03/Bucket_sort_2.svg_.png)
-
-**代码：**
+取整
 
 ```js
-function bucketSort(arr, bucketSize) {
-    if (arr.length === 0) {
-      return arr;
-    }
+Math.floor(3/2)    // 向下取整   Math.floor(num*100)/100   
+1
 
-    let minValue = arr[0],maxValue = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-      if (arr[i] < minValue) {
-          minValue = arr[i];                // 输入数据的最小值
-      } else if (arr[i] > maxValue) {
-          maxValue = arr[i];                // 输入数据的最大值
-      }
-    }
+Math.ceil(3/2)     // 向上取整
+2
 
-    //桶的初始化
-    var DEFAULT_BUCKET_SIZE = 5;            // 桶的默认数量为5
-    bucketSize = bucketSize || DEFAULT_BUCKET_SIZE;
-    var bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;  
-    var buckets = new Array(bucketCount);
-    for (let i = 0; i < buckets.length; i++) {
-        buckets[i] = [];
-    }
+Math.round(num)   // 四舍五入取整
 
-    //利用映射函数将数据分配到各个桶中
-    for (let i = 0; i < arr.length; i++) {
-        buckets[Math.floor((arr[i] - minValue) / bucketSize)].push(arr[i]);
-    }
-    arr.length = 0;    //清空，重新放入排序好的数
-    for (let i = 0; i < buckets.length; i++) {
-        insertionSort(buckets[i]);            // 对每个桶进行排序，这里使用了插入排序
-        for (let j = 0; j < buckets[i].length; j++) {
-            arr.push(buckets[i][j]);                      
-        }
-    }
-    return arr;
-}
-
-//补充：插入排序
-function insertionSort(arr){
-  let length = arr.length;
-  for(let i = 1; i < length; i++) {
-    let temp = arr[i];
-    let j = i;
-    for(; j > 0; j--) {
-      if(temp >= arr[j-1]) {
-        break;      // 当前考察的数大于前一个数，证明有序，退出循环
-      }
-      arr[j] = arr[j-1]; // 将前一个数复制到后一个数上
-    }
-    arr[j] = temp;  // 找到考察的数应处于的位置
-  }
-  return arr;
-}
+parseInt(3123.231)   // parseInt直接舍弃小数点后面的内容
 ```
 
-# 知识点
+保留n位小数
+
+```js
+1.9913.toFixed(1)    // 四舍五入保留n位小数
+// 2.0
+
+Math.floor(num*100)/100   // Math.floor...也可用于保留小数  
+```
+
+字符串转数字
+
+```js
+parseInt('01243.aw')  // 1243  会自动去掉首位0
+
+Number('0123') // 123
+Number('0123a')  // NaN
+
+'1'*1   // 运算符 可以乘除1，减0  前提是只含有数字，否则结果为NaN
+```
+
+
 
 ### 几种数组遍历
 
