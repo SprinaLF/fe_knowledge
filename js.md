@@ -1,8 +1,8 @@
-## 引用类型与基本数据类型
+## 数据类型
 
 6种基本：string number Boolean undefined null  symbol
 
-引用类型有这几种：object、Array、RegExp、Date、Function、特殊的基本包装类型(String、Number、Boolean)以及单体内置对象(Global、Math)。**ES6 新增：**set, map
+引用类型有这几种：object、Array、RegExp、Date、Function、特殊的基本包装类型(String、Number、Boolean)以及单体内置对象(Global、Math)。<u>**ES6 新增：**set, map</u>
 
 let obj = {name: 'xiaoming'}; let obj2 = obj; obj2.name = "xiaohong"
  Obj.name = ??   //xiaohong
@@ -11,7 +11,7 @@ obj = null , obj2.name =??   //仍然为xiaohong   obj不指向这块堆区域�
 
 
 
-### Map
+Map
 
 对象的键必须是字符串。map的键可以是数字或其他数据类型
 
@@ -30,7 +30,19 @@ m.delete('Adam'); // 删除key 'Adam'
 m.get('Adam'); // undefined
 ```
 
-### Set
+WeakMap与Map主要有下图三个区别：
+
+| 区别         | Map                                                          | WeakMap                           |
+| ------------ | ------------------------------------------------------------ | --------------------------------- |
+| “键”类型：   | 任何类型                                                     | Object对象                        |
+| 自身方法：   | 基本方法：set、get、has、delete； 遍历方法：keys、values、entries、forEach； 其他方法：size、clear。 | 基本方法：set、get、has、delete。 |
+| 键引用类型： | 强引用                                                       | 弱引用                            |
+
+此处我们对强弱引用进行简单介绍：弱引用在回收机制上比强引用好，在“适当”的情况将会被回收，减少内存资源浪费，但由于不是强引用，WeakMap不能进行遍历与size方法取得内部值数量。
+
+
+
+Set
 
 `Set`和`Map`类似，也是一组key的集合，不存储value。在`Set`中，没有重复的key。
 
@@ -92,9 +104,9 @@ JS中，基本数据类型变量大小固定，操作简单，所以把放入栈
 
 **垃圾回收**
 
-栈内存中变量一般在当前执行环境结束就会被销毁， 
+<u>栈内存中变量一般在当前执行环境结束就会被销毁，</u> 
 
-堆内存中的变量只有在**所有对它的引用**都结束的时候才会被回收。
+<u>堆内存中的变量只有在**所有对它的引用**都结束的时候才会被回收。</u>
 
 详细：https://juejin.im/post/6844903869525262349
 
@@ -920,7 +932,11 @@ console.log(b.constructor == Object);//true
 
 **3.Object的toString方法**
 
-再加上call或者apply方法来改变toString方法的执行上下文来判断，每一个继承自Object的对象都拥有toString的方法。如果一个对象的toString方法**没有被重写过的话**，那么toString方法将会返回"[object type]"。
+每个对象都有一个 `toString()` 方法，默认情况下，`toString()` 方法被每个 `Object` 对象继承。如果此方法在自定义对象中未被覆盖，`toString()` 返回 "[object *type*]"，其中 `type` 是对象的类型
+
+加上call或者apply方法来改变toString方法的执行上下文来判断，每一个继承自Object的对象都拥有toString的方法. 
+
+array自带的toString方法是这样的：[1,2,3].toString() = '1,2,3'
 
 ```js
 const a = ['Hello','Howard'];
@@ -1057,6 +1073,7 @@ forEach:
 
 ```js
 for (var i in obj) { 
+   // hasOwnProperty
     return true
 }
 return false 
@@ -1960,7 +1977,7 @@ https://juejin.im/post/5c66c24df265da2da83560d7
 
 1.消除js语法不合理严谨的地方，减少怪异行为
 
-   变量必须声明才能使用
+   变量必须声明才能使用aa
 
 2.消除代码运行不安全之处
 
@@ -2201,6 +2218,10 @@ JavaScript是脚本语言，它需要在一个宿主环境里才能运行，显�
 
 
 
+settimeout的延迟时间是从什么时候开始算？
+
+对于`setTimeout(fn,200)`， 在执行到这一行代码时开始计时， <u>当到200ms时，`fn`才会被放进“任务队列”</u>，而“任务队列”必须要等到主线程已有的代码执行完才会执行`fn`，所以当程序执行到`setTimeout(fn,200)`这一行时，时间就开始计算，但是`fn`实际执行时并不一定是在200ms后，可能是在更久的时间后（取决于主线程上的同步代码的执行时间）。
+
 ### 前端多线程--Web Worker
 
 **为什么引入多线程？**
@@ -2278,8 +2299,6 @@ https://www.jianshu.com/p/9d64450f547c  案例，判断输出顺序https://jueji
 **nextTick 放到微队列最前面**
 
 **setImmediate保持在宏队列最后面（同类型谁先来谁执行）**
-
-[]:   <u>setTimeout指定的时间不是从运行完setTimeout开始计算而是从当前执行栈执行完开始计算。</u>
 
 Node
 
@@ -3029,6 +3048,20 @@ isChineseChar('一二三') //true
 
 https://www.cnblogs.com/liuhe688/p/5891273.html
 
+通常JS引擎会在正式执行之前先进行一次预编译，在这个过程中，首先将变量声明及函数声明提升至当前作用域的顶端，然后进行接下来的处理。
+
+引擎把将变量声明 var a，函数声明(整个)提升到了当前作用域的顶部
+
+函数提升就是为了解决相互递归的问题，
+
+
+
+**非匿名函数和匿名函数区别**
+
+匿名函数只有在被调用时才能初始化（return 1）；普通函数在编译后函数声明和他的赋值都会被提前（包括： return 1 都会被提前）。
+
+普通函数的调用可以在任意位置。
+
 ## ES6
 
 ### let, const
@@ -3132,7 +3165,7 @@ https://juejin.cn/post/6950193996538839077
 
 `var`存在变量提升，而`let`和`const`不存在变量提升
 
-<u>`var`声明的变量会添加进window对象中，而`let`和`const`声明的变量不会</u>
+<u>`var`声明的变量会添加进window对象中，而`let`和`const`声明的变量不会</u> （全局变量和全局对象window的属性脱钩）
 
 ![image-20210818182153206](https://tva1.sinaimg.cn/large/008i3skNly1gtl44j1fs8j61gw05g0ui02.jpg)
 
@@ -3142,7 +3175,7 @@ https://juejin.cn/post/6950193996538839077
 
 `const`声明的基础类型不可修改，const声明的引用类型只能修改该引用类型的属性而不能给该变量重新赋值（`const`确定了一个地址，该地址不能被修改）
 
-`let`和`const`存在块级作用域，而var不存在
+`let`和`const`存在块级作用域，var不存在
 
 let在for循环中每循环一次就会重新声明一次（因为let有块级作用域）
 
@@ -3219,13 +3252,19 @@ https://www.jianshu.com/p/0f49c88cf169
 
 ### 箭头函数
 
-**箭头函数表达式**的语法比[函数表达式](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/function)更简洁，并且没有自己的`this`，`arguments`，`super`或`new.target`。箭头函数表达式更适用于那些本来需要匿名函数的地方，并且它不能用作构造函数。
+**箭头函数表达式**的语法比[函数表达式](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/function)更简洁，并且没有自己的`this`，`arguments`，`super`或`new.target`。箭头函数表达式<u>更适用于那些本来需要匿名函数的地方，并且它不能用作构造函数。</u>
+
+箭头函数不能做构造函数的原因->new的原理
+
+![image-20210915212648282](https://tva1.sinaimg.cn/large/008i3skNgy1guhmtmkj1hj61g80dk0ue02.jpg)
+
+
 
 - **箭头函数this指向**
 
 https://zhuanlan.zhihu.com/p/26475137
 
-箭头函数中的this，指向与一般function定义的函数不同，
+**箭头函数没有自己的 this，而是继承父作用域中的 this。**
 
 箭头函数中的this是在定义函数的时候绑定，而不是在执行函数的时候绑定。
 
@@ -3251,7 +3290,7 @@ const fn1=i=>alert(i)
 fn1(10)
 ```
 
-箭头函数不指定this关键字，箭头函数中的this指的是函数定义位置的上下文this
+
 
 在箭头函数中的this指向箭头函数定义位置中的this
 
@@ -3285,11 +3324,13 @@ fn(1,2,5,6,7,8)
 
 
 
-### 箭头函数使用禁忌
+箭头函数使用禁忌
 
 https://segmentfault.com/a/1190000010946164
 
 1. 主要是因为箭头函数的this指向问题，对象中的方法用this会导致无法指向调用方法的这个对象(返回undefined)
+
+   ![image-20210916141635007](https://tva1.sinaimg.cn/large/008i3skNgy1guig0925n5j61b20pkjvc02.jpg)
 
 2. this是js中非常强大的特点，他让函数可以根据其调用方式**动态的改变上下文**，然后箭头函数直接在声明时就绑定了this对象，所以不再是动态的。
 
@@ -3315,6 +3356,8 @@ https://segmentfault.com/a/1190000010946164
    };
    // Throws "TypeError: Message is not a constructor"
    var helloMessage = new Message('Hello World!');  
+
+3. 不能做构造函数的原因：https://xie.infoq.cn/article/f9731068cbfcb08926e4297bc **
 
 # **js this指向
 
@@ -3437,10 +3480,6 @@ Async/Await是基于Promise的语法糖，它让我们可以使用同步的方�
 async/await提高了代码的可读性。出错处理非常方便，因为可以把同步代码和异步代码写在同一个try…catch…语句中。代码调试更加方便，使用Promise时，我们无法设置断点，而async/await代码可以像同步代码一样设置断点。
 
  
-
-## **模块化
-
-https://juejin.im/post/5dd956b8518825732e6668a8#heading-11
 
 ### 剩余参数
 
@@ -3653,7 +3692,7 @@ var myMessage=_realMessage.substring(5,15);
 _realMessgae=null; //方法调用后即销毁
 ```
 
-所以，并不是基本类型string执行了自身方法，是后台为它创建了一个对应的基本包装类型String，它根据基本类型的值实例化出了一个实例，让这个实例去调用指定方法，最后销毁自己。
+<u>并不是基本类型string执行了自身方法，是后台为它创建了一个对应的基本包装类型String，它根据基本类型的值实例化出了一个实例，让这个实例去调用指定方法，最后销毁自己。</u>
 
 注意最后一步基本包装类型“会销毁”的特性，这决定了我们不能为基本类型值添加自定义属性和方法。
 

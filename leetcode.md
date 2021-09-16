@@ -332,13 +332,7 @@ console.log(subSort( [1,2,4,7,10,11,7,12,6,7,16,18,19]));
 ```
 ## 数组
 
-### 数组遍历性能
-
-![img](file:///C:/Users/sprina/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
-
-
-
-![image-20200614211050085](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200614211050085.png)
+### 三数之和
 
 
 
@@ -1214,7 +1208,7 @@ var defangIPaddr = function(address) {
 s.replace(/\s/g,'%20')  //替换空格
 s.replace(/ /g,'%20')  //替换空格
 ```
-### [200. 岛屿数量](https://leetcode-cn.com/problems/number-of-islands/)
+# [200. 岛屿数量](https://leetcode-cn.com/problems/number-of-islands/)
 
 ```
 var numIslands = function(grid) {
@@ -1696,6 +1690,56 @@ var validateStackSequences = function(pushed, popped) {
 
 ## 树
 
+### 数组转二叉树
+
+http://www.jerrymei.cn/algorithm-array-to-binary-tree/
+
+如果对一棵有 n 个结点的完全二叉树的结点按层序编号，对任一结点 i (1≤i≤n)有：
+
+1. 如果 i=1，则结点 i 是二叉树的根，无双亲；
+2. 如果 2i≤n，则结点 i 的左孩子是结点 2i；
+3. 如果 2i+1≤n，则结点 i 的右孩子是结点 2i+1
+
+```js
+class TreeNode {
+  constructor(data) {
+    this.data = data; //数据域
+    this.lchild = null; //左孩子
+    this.rchild = null; //右孩子
+  }
+}
+
+export default class BinaryTree {
+  constructor() {}
+  arrayToTree(arr) {
+    return createTreeNode(arr, 0);
+  }
+}
+
+/**
+创建树的结点：根据二叉树的性质递归来创建
+第 index 个结点的左子节点的位置 = index *2
+第 index 个结点的右子节点的位置 = index *2 +1
+我们使用数组的下标来表示位置，从0开始，就得到： index *2 +1 ; index *2 +2
+ */
+function createTreeNode(arr, index) {
+  if (index > arr.length) {
+    return null;
+  }
+  if (arr[index] == null) {
+    return null;
+  }
+  const node = new TreeNode(arr[index]);
+  node.lchild = createTreeNode(arr, index * 2 + 1);
+  node.rchild = createTreeNode(arr, index * 2 + 2);
+  return node;
+}
+
+
+```
+
+
+
 ### [814. 二叉树剪枝](https://leetcode-cn.com/problems/binary-tree-pruning/)
 
 ```js
@@ -1841,7 +1885,7 @@ var treeToDoublyList = function(root) {
 };
 ```
 
-### 平衡二叉树    ***
+### 是否平衡二叉树    ***
 
 ```js
 var isBalanced = function(root) {
@@ -2438,7 +2482,7 @@ var findContinuousSequence = function(target) {
 
 ```
 
-## 动态规划
+# 动态规划
 
 放苹果m个苹果放n个盘子(1 1 5==1 5 1)
 
@@ -3036,37 +3080,6 @@ var isHappy = function(n) {
 };
 ```
 
-# 摩尔投票法
-
-![image-20210823162829799](https://tva1.sinaimg.cn/large/008i3skNly1gtqsy3cr8zj61h40dqtan02.jpg)
-
-## [169. 多数元素](https://leetcode-cn.com/problems/majority-element/)
-
-给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
-
-你可以假设数组是非空的，并且给定的数组总是存在多数元素。
-
-
-
-# 脑筋急转弯
-
-### [面试题 02.03. 删除中间节点](https://leetcode-cn.com/problems/delete-middle-node-lcci/)
-
-相当于它变成了下一个节点，再删除了它的下一个节点
-
-```js
-var deleteNode = function(node) {
-    node.val = node.next.val
-    node.next = node.next.next
-};
-```
-
-### [面试题 03.02. 栈的最小值](https://leetcode-cn.com/problems/min-stack-lcci/)
-
-执行push、pop和min操作的时间复杂度必须为**O(1)**。
-
-双栈，用一个栈去记录最小值    <空间换时间>
-
 
 
 # 应用
@@ -3173,7 +3186,7 @@ function format(num){
 }
 ```
 
-整数的千分位分割：（简单）
+整数的千分位分割：
 
 ```js
 var thousandSeparator = function(n) {
@@ -3708,7 +3721,44 @@ This.map.keys().next().value   // 得到第一个键值
 
 ![image-20210317142853906](/Users/wenxin/Library/Application Support/typora-user-images/image-20210317142853906.png)
 
-## js输入输出处理
+数组遍历性能
+
+![img](file:///C:/Users/sprina/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
 
 
+
+![image-20200614211050085](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200614211050085.png)
+
+
+
+# 技巧
+
+### [面试题 02.03. 删除中间节点](https://leetcode-cn.com/problems/delete-middle-node-lcci/)
+
+相当于它变成了下一个节点，再删除了它的下一个节点
+
+```js
+var deleteNode = function(node) {
+    node.val = node.next.val
+    node.next = node.next.next
+};
+```
+
+### [面试题 03.02. 栈的最小值](https://leetcode-cn.com/problems/min-stack-lcci/)
+
+执行push、pop和min操作的时间复杂度必须为**O(1)**。
+
+双栈，用一个栈去记录最小值    <空间换时间>
+
+
+
+## [169. 多数元素  摩尔投票法](https://leetcode-cn.com/problems/majority-element/)
+
+给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+![image-20210823162829799](https://tva1.sinaimg.cn/large/008i3skNly1gtqsy3cr8zj61h40dqtan02.jpg)
+
+# 
 

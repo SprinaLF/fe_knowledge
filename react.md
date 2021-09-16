@@ -279,7 +279,7 @@ useEffect(() => { getStuInfo({ id: stuId }); }, [getStuInfo, stuId]); //依赖�
 
 https://zhuanlan.zhihu.com/p/348701319
 
-`useEffect` 是渲染完之后异步执行的，所以会导致 hello world 先被渲染到了屏幕上，再变成 world hello，就会出现闪烁现象。 `useLayoutEffect` 是<u>渲染之前同步执行</u>的，所以会等它执行完再渲染上去，就避免了闪烁现象。也就是说我们最好把操作 dom 的相关操作放到 `useLayouteEffect` 中去，避免导致闪烁。
+`useEffect` 是渲染完之后异步执行的，所以会导致 hello world(useState) 先被渲染到了屏幕上，再变成 world hello，就会出现闪烁现象。 `useLayoutEffect` 是<u>渲染之前同步执行</u>的，所以会等它执行完再渲染上去，就避免了闪烁现象。也就是说我们最好把操作 dom 的相关操作放到 `useLayouteEffect` 中去，避免导致闪烁。
 
 总结
 
@@ -440,6 +440,32 @@ vue 采用的是虚拟 dom 通过重写 setter ， getter 实现观察者监听 
 react**
 
 react 也是通过虚拟 dom 和 setState 更改 data 生成新的虚拟 dom 以及 **diff 算法来计算和生成需要替换的 dom 做到局部更新的。**
+
+
+
+# ref
+
+获取真实DOM节点
+
+组件并不是真实的 DOM 节点，而是存在于内存之中的一种数据结构，叫做虚拟 DOM （virtual DOM）。只有当它插入文档以后，才会变成真实的 DOM 。要从组件获取真实 DOM 的节点，这时就要用到 ref 属性。
+
+```javascript
+var MyComponent = React.createClass({
+   handleClick: function() {
+     this.refs.myTextInput.focus();
+   },
+   render: function() {
+     return (
+     <div>
+       <input type="text" ref="myTextInput" />
+       <input type="button" value="Focus the text input" onClick={this.handleClick} />
+     </div>
+     );
+   }
+});
+```
+
+为了获取真实的DOM节点，html元素必须有一个 ref 属性，然后 this.refs.[refName] 就会返回这个真实的 DOM 节点。
 
 # 高阶组件
 

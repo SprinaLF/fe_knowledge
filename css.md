@@ -27,7 +27,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-sizing
 <u>box-sizing 属性可以被用来调整这些表现:</u>
 
 - `content-box` 是默认值。如果你设置一个元素的宽为100px，那么这个元素的内容区会有100px 宽，并且任何边框和内边距的宽度都会被增加到最后绘制出来的元素宽度中。
-- `border-box` 告诉浏览器：你想要设置的边框和内边距的值是包含在width内的。也就是说，如果你将一个元素的width设为100px，那么这100px会包含它的border和padding，内容区的实际宽度是width减去(border + padding)的值。大多数情况下，这使得我们更容易地设定一个元素的宽高。
+- `border-box` 告诉浏览器：你想要设置的边框和内边距的值是包含在width内的。也就是说，如果你将一个元素的width设为100px，那么这100px会包含它的border和padding，内容区的实际宽度是width减去(border + padding)的值。大多数情况下，<u>这使得我们更容易地设定一个元素的宽高。</u>
 
 # CSS布局模型
 
@@ -67,7 +67,7 @@ position:absolute，<u>脱离文档流</u>，使用left、right、top、bottom�
 
 相对移动的坐标是**视图（屏幕内的网页窗口）**本身。不随浏览器滚动条滚动变化
 
-补充：当元素祖先的 `transform`, `perspective` 或 `filter` 属性非 `none` 时，容器由视窗改为该祖先。 
+！！补充：当元素祖先的 `transform`, `perspective` 或 `filter` 属性非 `none` 时，容器由视窗改为该祖先。 
 
 
 
@@ -168,15 +168,17 @@ Autoprefixer是一款自动管理浏览器前缀的插件，它可以解析CSS�
 
 层叠：后面的样式覆盖前面的样式。（内联样式表（标签内部）> 嵌入样式表（当前文件中）> 外部样式表（外部文件中）。
 
-## 元素选择
+## 元素选择器
 
 **css选择器优先级最高到最低顺序为：**
 
 !important
 
+内联样式
+
 1.id选择器（#myid）
 
-2.类选择器（.myclassname）
+2.类选择器（.myclassname）=  属性选择器
 
 3.标签选择器（div,h1,p）
 
@@ -186,21 +188,41 @@ Autoprefixer是一款自动管理浏览器前缀的插件，它可以解析CSS�
 
 6.伪类选择（a:hover,li:nth-child）
 
-**最后，需要注意的是：**　　
+继承得来的属性，其优先级最低。
+
+
 
 - !important的优先级是最高的，但出现冲突时则需比较”四位数“;
   优先级相同时，则采用就近原则，选择最后出现的样式;
   继承得来的属性，其优先级最低。
 
-## 浮动
-
-### 	浮动布局
+# 	浮动布局
 
 ​	https://www.cnblogs.com/jing-tian/p/10987298.html
 
 清楚浮动、BFChttps://segmentfault.com/a/1190000022016703
 
-注意：设置浮动的同时一定要先设置块状元素的宽度，且需要浮动的几个元素宽度加起来小于容器元素的宽度。
+注意：<u>设置浮动的同时一定要先设置块状元素的宽度，且需要浮动的几个元素宽度加起来小于容器元素的宽度。</u>
+
+特点
+
+- 对自身的影响
+
+  - float 元素可以形成块，如 span 元素。可以让行内元素也拥有宽和高，因为块级元素具有宽高
+  - 浮动元素的位置尽量靠上
+  - 尽量靠左（float:left）或右（float:right），如果那一行满足不了浮动元素的宽度要求，则元素会往下掉
+
+- 对兄弟元素的影响
+
+  - 不影响其他块级元素的位置
+  - 影响其他块级元素的文本
+  - 上面贴非 float 元素
+  - 旁边贴 float 元素或者边框
+
+- 对父级元素的影响
+
+- - 从布局上 “消失”
+  - 高度塌陷
 
 **浮动元素引起的问题：**
 
@@ -323,13 +345,9 @@ BFC的布局规则**（特性）**
 
 ## 清除浮动
 
-> 清除浮动主要是为了解决，父元素因为子级元素浮动引起的高度塌陷问题。
-
-### 清除浮动的方法
-
 BFC能清除浮动
 
-#### 1. 额外标签法
+1. 额外标签法
 
 > 在最后一个浮动标签后，新加一个标签，给其设置clear：both；(不推荐)
 
@@ -368,7 +386,7 @@ BFC能清除浮动
 </body>
 ```
 
-#### 2.父级添加overflow属性
+**2.父级添加overflow属性**
 
 > 通过触发BFC方式，实现清除浮动。（不推荐）
 
@@ -410,7 +428,7 @@ BFC能清除浮动
 </html>
 ```
 
-#### 3.使用after伪元素清除浮动（推荐使用）
+<u>3.使用after伪元素清除浮动（推荐使用）</u>
 
 **优点**：符合闭合浮动思想，结构语义化正确。
 **缺点**：ie6-7不支持伪元素：after，使用zoom:1触发hasLayout。
@@ -451,7 +469,7 @@ BFC能清除浮动
 </div>
 ```
 
-#### 4.使用before和after双伪元素清除浮动
+**4.使用before和after双伪元素清除浮动**
 
 **优点**：不仅可以清除浮动，也可以解决高度塌陷的问题（给父盒子添加类名clearfix）
 **缺点**：用zoom:1触发hasLayout.
@@ -477,24 +495,6 @@ BFC能清除浮动
     <div class="footer"></div>
 
 ```
-
-## 三栏布局的七种实现方式
-
-三栏布局：左右模块固定宽度，中间模块随浏览器变化自适应
-
-https://zhuanlan.zhihu.com/p/25070186
-
-见html文件
-
-重点记 圣杯，双飞翼，flex
-
-深入理解圣杯，双飞翼：https://juejin.im/post/5caf4043f265da039f0eff94
-
-**几种布局方式** 
-
-圣杯布局，双飞翼布局，Flex布局，绝对定位布局，表格布局，网格布局
-
-圣杯布局，双飞翼布局：https://www.zhihu.com/question/21504052
 
 ## 水平垂直居中
 
@@ -566,22 +566,18 @@ CSS3中建议使用:表示伪元素，如：a:hover
 | position: absolute; opacity: 0; filter:Alpha(opacity=0);     | 不占据空间，可以点击                                         |
 | zoom: 0.001;-moz-transform: scale(0); -webkit-transform: scale(0); -o-transform: scale(0);transform: scale(0); | IE6/IE7/IE9不占据空间，IE8/FireFox/Chrome/Opera占据空间。都无法点击 |
 
-## js的各种位置，比如clientHeight,scrollHeight,o...
-
-请你讲一下对于js中各种位置的理解，比如clientHeight,scrollHeight,offsetHeight ,以及scrollTop, offsetTop,clientTop的各自表示什么，它们的区别是什么？
-
 ## flex布局***
 
 移动端**
 
 灵活性
 
-***容器需开启display: flex, 创建容器，里面的子元素称为*flex item(伸缩项目)
+*容器需开启display: flex, 创建容器，里面的子元素称为*flex item(伸缩项目)
 
 **容器属性**
 
 > - flex-direction     决定主轴的方向（即项目的排列方向） 默认水平从左向右
-> - flex-wrap     如果一条轴线排不下，如何换行  默认不换行44
+> - flex-wrap     如果一条轴线排不下，如何换行   默认nowrap不换行
 > - flex-flow     flex-direction属性和flex-wrap属性的简写形式，默认值为row nowrap
 > - justify-content     项目在主轴上的对齐方式。flex-start（默认值）主轴起点对齐
 > - align-items       项目在交叉轴上如何对齐。 flex-start（默认值）
@@ -591,11 +587,15 @@ CSS3中建议使用:表示伪元素，如：a:hover
 
 1.  order  越小排列越靠前 默认0
 
-2. flex-grow    项目的放大比例，默认为0，即如果存在剩余空间，也**不放大**。
+2. flex-grow    项目的放大比例，默认为0，即如果存在剩余空间，也**不放大**。   如果所有项目的`flex-grow`属性都为1，则它们将等分剩余空间（如果有的话）。如果一个项目的`flex-grow`属性为2，其他项目都为1，则前者占据的剩余空间将比其他项多一倍。
 
-3. flex-shrink     项目的缩小比例，默认为1，即如果空间不足，该项目**将缩小**
+   ![img](https://www.ruanyifeng.com/blogimg/asset/2015/bg2015071014.png)
 
-4. flex-basis属性定义了在分配多余空间之前，项目占据的主轴空间（main size）。浏览器根据这个属性，计算主轴是否有多余空间。默认值为auto，项目的本来大小。
+3. flex-shrink(1/0)     项目的缩小比例，默认为1，如果空间不足将缩小 如果所有项目的`flex-shrink`属性都为1，当空间不足时，都将等比例缩小。如果一个项目的`flex-shrink`属性为0，其他项目都为1，则空间不足时，前者不缩小。
+
+4. flex-basis属性定义了在分配多余空间之前，项目占据的主轴空间（main size）。浏览器根据这个属性，计算主轴是否有多余空间。默认值为auto，项目的本来大小。   为0时被内容撑开
+
+   ![image-20210912145036278](https://tva1.sinaimg.cn/large/008i3skNgy1guduiguc1vj617y04cq4102.jpg)
 
 5. flex:  flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。
 
@@ -628,7 +628,7 @@ CSS3中建议使用:表示伪元素，如：a:hover
 
 补充：文本居中：只需要简单地把 `line-height` 设置为那个对象的 `height` 值就可以使文本居中了（或者用flex）
 
-## CSS3有什么样的新特性？
+## CSS3新特性
 
 · 圆角（border-radius:8px）阴影（box-shadow:10px）   文字特效（text-shadow）
 
@@ -650,7 +650,7 @@ CSS3中建议使用:表示伪元素，如：a:hover
 
 https://www.w3school.com.cn/css3/css3_animation.asp
 
-需 @keyframes 规则。在 @keyframes 中规定某项 CSS 样式，就能创建由当前样式逐渐改为新样式的动画效果
+需要在 @keyframes 中规定某项 CSS 样式，就能创建由当前样式逐渐改为新样式的动画效果
 
 1. 不同浏览器创建动画前缀不同。例：
 
@@ -744,7 +744,7 @@ animation: myfirst 5s;
 > rpx（responsive pixel）: 可以根据屏幕宽度进行自适应。规定屏幕宽为750rpx。如在 iPhone6 上，屏幕宽度为375px，共有750个物理像素，则750rpx = 375px = 750物理像素，1rpx = 0.5px = 1物理像素。
 > rpx 为小程序中使用的相对单位，用法和rem类似， 1rpx = 屏幕宽度/750 px, 所以在屏幕宽度为750的设计稿中，1rpx = 1px。
 
-### px、em、rem、rpx 用法 与 区别
+px、em、rem、rpx 用法 与 区别
 
 https://blog.csdn.net/qq_36208461/article/details/80665125
 
@@ -796,11 +796,11 @@ display:-webkit-box; //作为弹性伸缩盒子模型显示。
 
 #### **嵌套块元素垂直外边距的合并**
 
-当块级元素进行嵌套时，如果父盒子没有设置上边框和上内边距的话，子盒子的上外边距和父盒子的上外边距会进行合并。合并后的外边距为两者中的较大者，即使父元素的上外边距为0，也会发生合并。
+当块级元素进行嵌套时，如果父盒子没有设置上边框和上内边距的话，子盒子的上外边距和父盒子的上外边距会进行合并。<u>合并后的外边距为两者中的较大者</u>，即使父元素的上外边距为0，也会发生合并。
 
 如果希望外边距不合并，那么可以为父元素定义1像素的上边框或上内边距。
 
-#### CSS绘制基本图形
+## 绘制基本图形
 
 圆形
 
@@ -888,6 +888,16 @@ div{
 
  ![image-20201031161449336](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20201031161449336.png)
 
+
+
+绘制0.5px直线
+
+https://juejin.cn/post/6844903582370643975
+
+1. height: 1px;    transform: scaleY(0.5);
+
+
+
 响应式图片的CSS
  根据图片所在容器的大小来实时地按比例缩放。设置img标签的width:100%即可。
 
@@ -906,3 +916,57 @@ max-width: 100%;}
 。(Reset重置浏览器提供的的css默认属性，统一起始开发。浏览器的品种不同，样式不同，然后重置，让他们统一)规范化只是对一些常见错误的更正。
 
 ![image-20201031161614054](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20201031161614054.png)
+
+
+
+## 两栏布局，三栏布局
+
+
+
+两栏布局
+
+flex:
+
+```js
+.contanier{
+  width:500px;
+  display:flex;
+}
+.float{
+  height:200px;
+  background:red;
+  opacity:0.3;
+}
+.main{
+  background:green;
+  height:200px;
+  flex-grow:1;
+}
+
+```
+
+三栏布局的七种实现方式
+
+![image-20210912213723905](https://tva1.sinaimg.cn/large/008i3skNgy1gue69oqhhrj60gm0w2dhr02.jpg)
+
+三栏布局：左右模块固定宽度，中间模块随浏览器变化自适应
+
+https://zhuanlan.zhihu.com/p/25070186
+
+见html文件
+
+重点记 圣杯，双飞翼，flex
+
+深入理解圣杯，双飞翼：https://juejin.im/post/5caf4043f265da039f0eff94
+
+**几种布局方式** 
+
+圣杯布局，双飞翼布局，Flex布局，绝对定位布局，表格布局，网格布局
+
+圣杯布局，双飞翼布局：https://www.zhihu.com/question/21504052
+
+## 
+
+## js的各种位置，比如clientHeight,scrollHeight,o...
+
+请你讲一下对于js中各种位置的理解，比如clientHeight,scrollHeight,offsetHeight ,以及scrollTop, offsetTop,clientTop的各自表示什么，它们的区别是什么？

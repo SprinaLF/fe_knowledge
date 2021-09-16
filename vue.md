@@ -1,3 +1,7 @@
+[TOC]
+
+
+
 ## VUE
 
 快速入门https://www.cnblogs.com/keepfool/p/5619070.html
@@ -283,14 +287,12 @@ vm.items.splice(indexOfItem, 1, newValue)
 vm.items.splice(newLength)
 ```
 
-## 7、谈谈你对 Vue 生命周期的理解？
+## 7、 Vue 生命周期
 
 https://juejin.cn/post/6844903602356502542
 
 1. **created阶段的ajax请求与mounted请求的区别**：前者页面视图未出现，如果请求信息过多，页面会长时间处于白屏状态
-2. `mounted` 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染
-
-完毕，可以用 [vm.$nextTick](https://cn.vuejs.org/v2/api/#vm-nextTick)
+2. `mounted` 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 [vm.$nextTick](https://cn.vuejs.org/v2/api/#vm-nextTick)
 
 **（1）生命周期是什么？**
 
@@ -319,7 +321,7 @@ https://juejin.im/post/6844903780736040973#heading-5
 
 ## 8、Vue 的父组件和子组件生命周期钩子函数执行顺序？
 
-Vue 的父组件和子组件生命周期钩子函数执行顺序可以归类为以下 4 部分：
+可以归类为以下 4 部分：
 
 - 加载渲染过程
 
@@ -712,7 +714,7 @@ history 路由模式的实现主要基于存在下面几个特性：
 
 ## 20、什么是 MVVM？
 
-Model–View–ViewModel （MVVM） 是一个软件架构设计模式，是一种简化用户界面的事件驱动编程方式。由 
+Model–View–ViewModel （MVVM） <u>是一个软件架构设计模式</u>，是一种简化用户界面的事件驱动编程方式。
 
 MVVM 源自于经典的 Model–View–Controller（MVC）模式 ，<u>促进了前端开发与后端业务逻辑的分离，极大地提高了前端开发效率</u>，MVVM 的核心是 ViewModel 层，它就像是一个中转站（value converter），<u>负责转换 Model 中的数据对象来让数据变得更容易管理和使用，该层向上与视图层进行双向数据绑定，向下与 Model 层通过接口请求进行数据交互</u>，起呈上启下作用。如下图所示：
 
@@ -720,7 +722,7 @@ MVVM 源自于经典的 Model–View–Controller（MVC）模式 ，<u>促进了
 
 （1）View 层
 
-视图层，也就是用户界面。前端主要由 HTML 和 CSS 来构建 。
+视图层，用户界面。前端主要由 HTML 和 CSS 来构建 。
 
 （2）Model 层
 
@@ -728,7 +730,7 @@ MVVM 源自于经典的 Model–View–Controller（MVC）模式 ，<u>促进了
 
 （3）ViewModel 层
 
-ViewModel 是由前端开发人员组织生成和维护的视图数据层。在这一层，前端开发者对从后端获取的 Model 数据进行转换处理，做二次封装，以生成符合 View 层使用预期的视图数据模型。需要注意的是 ViewModel 所封装出来的数据模型包括视图的状态和行为两部分，而 Model 层的数据模型是只包含状态的，比如页面的这一块展示什么，而页面加载进来时发生什么，点击这一块发生什么，这一块滚动时发生什么这些都属于视图行为（交互），视图状态和行为都封装在了 ViewModel 里。这样的封装使得 ViewModel 可以完整地去描述 View 层。
+由前端开发人员组织生成和维护的视图数据层。在这一层，前端开发者对从后端获取的 Model 数据进行转换处理，做二次封装，以生成符合 View 层使用预期的视图数据模型。需要注意的是 ViewModel 所封装出来的数据模型包括视图的状态和行为两部分，而 Model 层的数据模型是只包含状态的，比如页面的这一块展示什么，而页面加载进来时发生什么，点击这一块发生什么，这一块滚动时发生什么这些都属于视图行为（交互），视图状态和行为都封装在了 ViewModel 里。这样的封装使得 ViewModel 可以完整地去描述 View 层。
 
 MVVM 框架实现了双向绑定，这样 ViewModel 的内容会实时展现在 View 层，前端开发者再也不必低效又麻烦地通过操纵 DOM 去更新视图，MVVM 框架已经把最脏最累的一块做好了，我们开发者只需要处理和维护 ViewModel，更新数据视图就会自动得到相应更新<u>。这样 View 层展现的不是 Model 层的数据，而是 ViewModel 的数据，由 ViewModel 负责与 Model 层交互，这就完全解耦了 View 层和 Model 层</u>，这个解耦是至关重要的，它是前后端分离方案实施的重要一环。
 
@@ -905,3 +907,6 @@ vue3.0 的改变是全面的，上面只涉及到主要的 3 个方面，还有�
 - 支持 Fragment（多个根节点）和 Protal（在 dom 其他部分渲染组建内容）组件，针对一些特殊的场景做了处理。
 - 基于 treeshaking 优化，提供了更多的内置功能。
 
+
+
+## Vue 动态路由
