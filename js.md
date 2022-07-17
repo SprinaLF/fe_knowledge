@@ -297,7 +297,7 @@ fn()
 
 原型也是对象，因此它也有自己的原型。这样构成一个原型链。
 
-![image-20200531220537262](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200531220537262.png)
+![image-20200531220537262](https://raw.githubusercontent.com/SprinaLF/pictures/master/img/image-20200531220537262.png)
 
 ![原型的原型关系图](https://github.com/mqyqingfeng/Blog/raw/master/Images/prototype4.png)
 
@@ -811,9 +811,7 @@ clientRect是一个DOMRect对象，包含left，top，right，bottom，它是相
 
 `window`对象对象表示一个浏览器窗口或一个`frame`框架，它处于对象层次的最顶端，它提供了处理浏览器窗口的方法和属性。
 
-`window`对象是浏览器对象中的默认对象，所以可以**隐式**地引用`window`对象的属性和方法。JavaScript中的标准内置对象，在浏览器环境中也是做为`window`的方法和属性出现的。
-
-如，以下两行代码是等价的：
+`window`对象是浏览器对象中的默认对象，所以可以**隐式**地引用`window`对象的属性和方法。JavaScript中的标准内置对象，在浏览器环境中也是作为`window`的方法和属性出现的。
 
 ```
 new Date();
@@ -1696,7 +1694,7 @@ https://www.cnblogs.com/yalong/p/14294497.html
 
 
       // 2. 只传一个参数的实现**  setInterval
-			  function repeat (func, times, wait) { 
+	  function repeat (func, times, wait) { 
            return function(content){
             var count = 0;
             var interval = setInterval(function(){
@@ -2581,7 +2579,7 @@ fn()
 
 ## sort原理
 
-作用：排序，默认情况下按照数组元素们的Unicode码进行升序排序。
+作用：排序，默认情况下按数组元素的Unicode码升序排序。
 
 语法：数组名.sort();
 
@@ -2875,7 +2873,6 @@ function bindEvent(elem, type, selector, fn){
 
 **正则匹配手机**
 
-
  \* 手机号的规则：
  \*   1 3567890123 （11位）
  \*   1. 以1开头
@@ -3117,7 +3114,7 @@ for (let i = 0; i < 3; i++) {
 
 **const**
 
-**变量指向的那个内存地址所保存的数据不得改动**。对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，等同于常量。复合类型的数据（主要是对象和数组），变量指向的内存地址保存的只是一个指向实际数据的指针，`const`只能保证这个指针是固定的（即总是指向另一个固定的地址）。因此，将一个对象声明为常量必须非常小心。
+**变量指向的那个内存地址所保存的数据不得改动**。对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，等同于常量。复合类型的数据（主要是对象和数组），变量指向的内存地址保存的只是一个指向实际数据的指针，`const`只能保证这个指针是固定的（指向固定地址）。因此，将一个对象声明为常量必须非常小心。
 
 ```javascript
 const foo = {};

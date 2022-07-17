@@ -1,7 +1,5 @@
 # 盒模型
 
-![image-20200603230854512](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200603230854512.png)               ![image-20200603230906497](C:\Users\sprina\AppData\Roaming\Typora\typora-user-images\image-20200603230906497.png)
-
 ![image-20210729103410792](https://tva1.sinaimg.cn/large/008i3skNgy1gsxm7sin5ej31140ne76n.jpg)
 
 宽度和高度的计算值  不包含内容的边框（border）和内边距（padding）
